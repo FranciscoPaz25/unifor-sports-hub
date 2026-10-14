@@ -1,0 +1,124 @@
+.cadastro-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #003DA5;
+  padding: 24px 0;
+}
+
+.cadastro-card {
+  background: white;
+  border-radius: 16px;
+  padding: 40px;
+  width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.cadastro-logo {
+  text-align: center;
+  color: #003DA5;
+  margin-bottom: 8px;
+}
+
+.cadastro-subtitulo {
+  text-align: center;
+  color: #666;
+  margin-top: -8px;
+}
+
+.cadastro-card label {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  font-weight: bold;
+  gap: 4px;
+}
+
+.cadastro-card input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.cadastro-senha-wrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.cadastro-senha-wrapper input {
+  flex: 1;
+}
+
+.cadastro-olho {
+  position: absolute;
+  right: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.cadastro-campo-erro {
+  color: #c0392b;
+  font-size: 12px;
+  font-weight: normal;
+  margin-top: 2px;
+}
+
+.cadastro-forca-barra {
+  display: flex;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.cadastro-forca-barra span {
+  height: 4px;
+  flex: 1;
+  border-radius: 2px;
+  background-color: #e0e0e0;
+}
+
+.cadastro-forca-barra span.ativa.fraca {
+  background-color: #c0392b;
+}
+
+.cadastro-forca-barra span.ativa.media {
+  background-color: #e6a817;
+}
+
+.cadastro-forca-barra span.ativa.forte {
+  background-color: #2e9e44;
+}
+
+.cadastro-forca-texto {
+  font-size: 12px;
+  font-weight: normal;
+  color: #666;
+}
+
+.cadastro-botao {
+  background-color: #003DA5;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.cadastro-botao:disabled {
+  background-color: #999;
+  cursor: not-allowed;
+}
+
+.cadastro-login-link {
+  text-align: center;
+  font-size: 13px;
+  margin-top: 8px;
+}
