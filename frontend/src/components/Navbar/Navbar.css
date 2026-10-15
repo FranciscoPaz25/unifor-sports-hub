@@ -1,0 +1,61 @@
+.navbar {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  background-color: #003DA5;
+  color: white;
+  padding: 12px 24px;
+}
+
+.navbar-logo {
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.navbar-links {
+  display: flex;
+  gap: 18px;
+  flex: 1;
+}
+
+.navbar-links a {
+  color: white;
+  text-decoration: none;
+  font-size: 13.5px;
+  opacity: 0.8;
+  padding-bottom: 2px;
+  border-bottom: 2px solid transparent;
+}
+
+.navbar-links a:hover {
+  opacity: 1;
+}
+
+.navbar-links a.navbar-link-ativo {
+  opacity: 1;
+  font-weight: bold;
+  border-bottom: 2px solid white;
+}
+
+.navbar-usuario {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.navbar-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: white;
+  color: #003DA5;
+  font-size: 13px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navbar-nome {
+  font-size: 13.5px;
+}

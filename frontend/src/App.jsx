@@ -10,6 +10,19 @@ import Configuracoes from './pages/Configuracoes/Configuracoes';
 import Gerencia from './pages/Gerencia/Gerencia';
 import CriarEsporte from './pages/CriarEsporte/CriarEsporte';
 import GerenciarInscricoes from './pages/GerenciarInscricoes/GerenciarInscricoes';
+import { usuario } from './mocks/usuario';
+
+// Placeholder pra rotas que o Navbar já referencia mas que ainda não foram
+// construídas nesta fase do MVP (ex.: Eventos, Home admin). Evita tela
+// totalmente em branco quando alguém clica num link ainda não implementado.
+function EmConstrucao() {
+  return (
+    <div style={{ padding: '60px 20px', textAlign: 'center', color: '#666' }}>
+      <h1 style={{ color: '#003DA5' }}>Em construção</h1>
+      <p>Essa tela ainda não foi implementada nesta versão do MVP.</p>
+    </div>
+  );
+}
 
 function App() {
   return (
@@ -17,20 +30,28 @@ function App() {
       <Route path="/" element={<Login />} />
       <Route path="/cadastro" element={<Cadastro />} />
 
-      <Route element={<Layout tipoUsuario="aluno" />}>
+      <Route element={<Layout tipoUsuario="aluno" nomeUsuario={usuario.nome} />}>
         <Route path="/home" element={<Home />} />
         <Route path="/esportes" element={<Esportes />} />
         <Route path="/esportes/:id" element={<DetalhesEsporte />} />
         <Route path="/minhas-inscricoes" element={<MinhasInscricoes />} />
         <Route path="/configuracoes" element={<Configuracoes />} />
+        <Route path="/eventos" element={<EmConstrucao />} />
       </Route>
 
-      <Route path="/admin" element={<Layout tipoUsuario="admin" />}>
+      <Route path="/admin" element={<Layout tipoUsuario="admin" nomeUsuario={usuario.nome} />}>
+        <Route path="home" element={<EmConstrucao />} />
+        <Route path="eventos" element={<EmConstrucao />} />
         <Route path="gerencia" element={<Gerencia />} />
         <Route path="gerencia/criar-esporte" element={<CriarEsporte />} />
         <Route path="gerencia/inscricoes" element={<GerenciarInscricoes />} />
+        <Route path="gerencia/resenhas" element={<EmConstrucao />} />
+        <Route path="gerencia/criar-evento" element={<EmConstrucao />} />
         <Route path="configuracoes" element={<Configuracoes />} />
       </Route>
+
+      {/* qualquer URL fora das rotas acima, ao invés de tela em branco */}
+      <Route path="*" element={<EmConstrucao />} />
     </Routes>
   );
 }

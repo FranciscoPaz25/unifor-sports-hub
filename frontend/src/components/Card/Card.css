@@ -1,0 +1,52 @@
+.card-esporte {
+  background: white;
+  border: 1px solid #e2e4e9;
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-esporte-imagem {
+  height: 110px;
+  background: linear-gradient(135deg, #003DA5, #0057d9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-esporte-corpo {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.card-esporte-nome {
+  margin: 0;
+  font-size: 15px;
+}
+
+.card-esporte-local {
+  margin: 0;
+  font-size: 13px;
+  color: #666;
+}
+
+.card-esporte-vagas {
+  font-size: 12px;
+  color: #003DA5;
+  font-weight: bold;
+  margin-top: 4px;
+}
+
+.card-esporte-botao {
+  margin-top: 10px;
+  background-color: #003DA5;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 9px;
+  font-size: 13.5px;
+  cursor: pointer;
+}

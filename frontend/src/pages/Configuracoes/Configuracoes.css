@@ -1,0 +1,112 @@
+.config-container {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 28px 20px 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.config-container h1 {
+  margin: 0;
+  font-size: 22px;
+  color: #003DA5;
+}
+
+.config-secao {
+  background: white;
+  border: 1px solid #e2e4e9;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.config-secao h2 {
+  margin: 0 0 4px;
+  font-size: 15.5px;
+}
+
+.config-secao label {
+  display: flex;
+  flex-direction: column;
+  font-size: 13px;
+  font-weight: bold;
+  gap: 4px;
+}
+
+.config-secao input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.config-input-readonly {
+  background: #f0f1f3;
+  color: #777;
+}
+
+.config-senha-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.config-senha-wrapper input {
+  flex: 1;
+}
+
+.config-olho {
+  position: absolute;
+  right: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.config-botao {
+  margin-top: 6px;
+  background-color: #003DA5;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 11px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.config-erro {
+  color: #c0392b;
+  background: #fdecea;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  margin: 0;
+}
+
+.config-sucesso {
+  color: #1f8a44;
+  background: #e1f5e8;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  margin: 0;
+}
+
+.config-divisoria {
+  border: none;
+  border-top: 1px solid #e2e4e9;
+  margin: 0;
+}
+
+.config-botao-sair {
+  background: white;
+  border: 1px solid #c0392b;
+  color: #c0392b;
+  border-radius: 8px;
+  padding: 11px;
+  font-size: 14px;
+  cursor: pointer;
+}
