@@ -1,0 +1,103 @@
+.home-container {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 28px 20px 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.home-saudacao h1 {
+  margin: 0 0 6px;
+  font-size: 22px;
+  color: #003DA5;
+}
+
+.home-saudacao p {
+  margin: 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.home-busca {
+  display: flex;
+  gap: 8px;
+}
+
+.home-busca-input {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.home-busca-filtros,
+.home-busca-botao {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.home-busca-filtros {
+  background: white;
+  border: 1px solid #ccc;
+  color: #333;
+}
+
+.home-busca-botao {
+  background-color: #003DA5;
+  color: white;
+}
+
+.home-secao h2 {
+  font-size: 17px;
+  margin: 0 0 12px;
+}
+
+.home-grid-esportes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 14px;
+}
+
+.home-lista-eventos {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.home-evento-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: white;
+  border: 1px solid #e2e4e9;
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+
+.home-evento-data {
+  background: #003DA5;
+  color: white;
+  font-size: 11.5px;
+  font-weight: bold;
+  border-radius: 8px;
+  padding: 8px 10px;
+  text-align: center;
+  min-width: 56px;
+}
+
+.home-evento-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 13.5px;
+}
+
+.home-evento-info span {
+  color: #666;
+  font-size: 12.5px;
+}

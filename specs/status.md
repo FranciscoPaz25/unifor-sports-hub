@@ -1,6 +1,6 @@
 # Status atual — Unifor Sports Hub
 
-> Atualizar esta tabela conforme as telas avançam. Última atualização: 14/10/2026.
+> Atualizar esta tabela conforme as telas avançam. Última atualização: 15/10/2026.
 
 ## Grupo essencial (backend + banco reais)
 
@@ -8,13 +8,13 @@
 |---|---|---|
 | RF01 Login | ✅ pronto (com validação de campos obrigatórios) | ❌ login é `console.log`, aguardando `POST /auth/login` |
 | RF02 Cadastro | ✅ pronto (validação de e-mail institucional, força de senha, confirmação) | ❌ cadastro é `console.log`, aguardando `POST /auth/cadastro` |
-| RF04 Home | ⬜ não iniciado | ❌ |
-| RF05 Esportes | ⬜ não iniciado | ❌ |
-| RF08 Detalhes do esporte | ⬜ não iniciado | ❌ |
-| RF09 Popup inscrição no esporte | ⬜ não iniciado | ❌ |
-| RF10 Minhas inscrições | ⬜ não iniciado | ❌ |
-| RF17 Configurações | ⬜ não iniciado | ❌ |
-| RF19 Gerência | ⬜ não iniciado | ❌ |
+| RF04 Home | ✅ pronto (saudação, busca, destaque de esportes e eventos) | ❌ usa `mocks/esportes.js` e `mocks/eventos.js` |
+| RF05 Esportes | ✅ pronto (catálogo completo, busca) | ❌ usa `mocks/esportes.js` |
+| RF08 Detalhes do esporte | ✅ pronto (nota, informações, avaliações, variação ADM "Excluir") | ❌ usa `mocks/esportes.js` |
+| RF09 Popup inscrição no esporte | ✅ pronto (confirmação, validação de já-inscrito/vagas) | ❌ usa `mocks/inscricoes.js` |
+| RF10 Minhas inscrições | ✅ pronto (lista esporte+evento, status, estado vazio) | ❌ usa `mocks/inscricoes.js` |
+| RF17 Configurações | ✅ pronto (editar perfil, trocar senha, sair da conta) | ❌ usa `mocks/usuario.js` |
+| RF19 Gerência | ⬜ não iniciado — próxima da fila | ❌ |
 | RF20 Criar esporte | ⬜ não iniciado | ❌ |
 | RF23 Gerenciar inscrições | ⬜ não iniciado | ❌ |
 
@@ -24,7 +24,7 @@
 |---|---|---|
 | RF03 Esqueceu a senha | ⬜ não iniciado | ❌ |
 | RF11 Detalhes da inscrição | ⬜ não iniciado | ❌ |
-| RF18 Popup sair da conta | ⬜ não iniciado | ❌ |
+| RF18 Popup sair da conta | ✅ pronto (feito junto com RF17) | ❌ só redireciona pro login, sem limpar sessão real |
 
 ## Grupo secundário (pode ficar mockado)
 
@@ -50,7 +50,15 @@
 | Item | Status |
 |---|---|
 | Frontend (Vite + React) | ✅ rodando, porta 5173 |
-| React Router | ✅ instalado e configurado |
+| React Router | ✅ instalado e configurado, com NavLink ativo na navbar |
+| Navbar | ✅ avatar + nome do usuário, item ativo destacado |
+| Mocks compartilhados | ✅ `mocks/esportes.js`, `mocks/eventos.js`, `mocks/inscricoes.js`, `mocks/usuario.js` |
 | Backend (Node + Express) | ✅ rodando, porta 3000, só com rota de teste |
 | Banco de dados | ⬜ não escolhido, não criado |
 | Backend ↔ banco | ⬜ não conectado |
+
+## Resumo rápido
+
+- **Telas essenciais prontas (visual):** 8 de 11 — faltam RF19, RF20, RF23.
+- **"Sempre fácil" prontas:** 1 de 3 — faltam RF03, RF11.
+- **Total de telas visuais restantes antes de partir pro banco de dados: 5.**

@@ -1,0 +1,53 @@
+.esportes-container {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 28px 20px 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.esportes-container h1 {
+  margin: 0;
+  font-size: 22px;
+  color: #003DA5;
+}
+
+.esportes-busca {
+  display: flex;
+  gap: 8px;
+}
+
+.esportes-busca-input {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.esportes-busca-filtros,
+.esportes-busca-botao {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.esportes-busca-filtros {
+  background: white;
+  border: 1px solid #ccc;
+  color: #333;
+}
+
+.esportes-busca-botao {
+  background-color: #003DA5;
+  color: white;
+}
+
+.esportes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 14px;
+}

@@ -1,11 +1,11 @@
 import { Outlet } from 'react-router-dom';
 import Navbar from '../Navbar/Navbar';
 
-function Layout({ tipoUsuario }) {
+function Layout({ tipoUsuario, nomeUsuario }) {
   return (
     <>
-      <Navbar tipoUsuario={tipoUsuario} />
-      <Outlet />
+      <Navbar tipoUsuario={tipoUsuario} nomeUsuario={nomeUsuario} />
+      <Outlet context={{ tipoUsuario, nomeUsuario }} />
     </>
   );
 }
