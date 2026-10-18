@@ -1,0 +1,80 @@
+.gerencia-container {
+  max-width: 1000px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 32px 24px 60px;
+  box-sizing: border-box;
+  text-align: left;
+}
+
+.gerencia-container h1 {
+  margin: 0 0 22px;
+  font-size: 28px;
+  font-weight: bold;
+  letter-spacing: -0.5px;
+  color: #003DA5;
+}
+
+.gerencia-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 900px) {
+  .gerencia-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 520px) {
+  .gerencia-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.gerencia-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  background: white;
+  border: 1px solid #e2e4e9;
+  border-radius: 12px;
+  padding: 20px;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+}
+
+.gerencia-card:hover {
+  border-color: #003DA5;
+  box-shadow: 0 6px 16px rgba(0, 61, 165, 0.12);
+  transform: translateY(-2px);
+}
+
+.gerencia-card-icone {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #e6edf9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.gerencia-card h2 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: bold;
+  color: #1a1a1a;
+}
+
+.gerencia-card p {
+  margin: 0;
+  font-size: 12.5px;
+  color: #666;
+  line-height: 1.4;
+}
