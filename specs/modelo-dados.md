@@ -1,93 +1,136 @@
 # Modelo de dados — Unifor Sports Hub
 
-> **Status: a definir.** O banco físico ainda não foi criado nem escolhido (MySQL vs PostgreSQL). As 7 tabelas abaixo são as que foram mapeadas a partir dos requisitos funcionais fechados; os campos listados são os que já aparecem nas telas/RFs. Falta formalizar tipos, chaves e constraints antes de criar o banco de verdade.
+> Última atualização: 18/10/2026.
+> Banco escolhido: MySQL 8.4. ORM: Prisma 7.10.1.
+> O banco local existe; a integração das rotas Express com o Prisma está pendente.
 
-## 1. usuarios
+## Arquivos de referência
 
-Guarda aluno e administrador na mesma tabela (um campo distingue o perfil — RF01.11 identifica automaticamente a partir das credenciais).
+- `backend/prisma/schema.prisma`: modelos, tipos e relacionamentos.
+- `backend/prisma/migrations/`: SQL das migrations, incluindo constraints CHECK.
+- `backend/prisma.config.ts`: configuração do Prisma e leitura de DATABASE_URL.
+- `backend/compose.yaml`: configuração do MySQL local.
 
-| Campo | Origem / observação |
-|---|---|
-| id | chave primária |
-| nome_completo | RF02.3 |
-| email | RF02.4 — institucional, domínio `@edu.unifor.br` (RF02.5) |
-| matricula | RF02.6 |
-| senha_hash | RF02.7 — nunca salvar em texto puro |
-| tipo | `aluno` ou `admin` — ADM não se cadastra pela tela (seção 1 do contexto geral), acesso criado direto no banco |
+Os nomes abaixo correspondem aos nomes físicos usados no banco.
 
-## 2. esportes
+## Tabelas
 
-| Campo | Origem / observação |
-|---|---|
-| id | chave primária |
-| nome | RF20 — Criar esporte |
-| imagem_url | RF20.3 — upload PNG/JPG/WEBP até 5MB |
-| local | — |
-| vagas_totais | usado para calcular "[n] vagas disponíveis" |
-| criado_por | FK → usuarios.id (admin que cadastrou) |
+| Tabela | Finalidade | Chave primária |
+|---|---|---|
+| usuario | Alunos e administradores | idUsuario |
+| local | Locais das atividades | idLocal |
+| modalidade_esportiva | Modalidades oferecidas | idModalidade |
+| modalidade_dia | Dias da semana de cada modalidade | ModalidadeEsportiva_idModalidade + DiaSemana |
+| inscricao_modalidade | Inscrições em modalidades | ModalidadeEsportiva_idModalidade + Usuario_idUsuario |
+| avaliar | Avaliações de modalidades | Usuario_idAluno + ModalidadeEsportiva_idModalidade |
+| evento | Eventos esportivos | idEvento |
+| inscricao_evento | Participantes dos eventos | Usuario_idAluno + Evento_idEvento |
 
-## 3. esporte_horarios
+As chaves simples listadas acima são inteiras e autoincrementais.
 
-Um esporte pode ter mais de um horário/dia da semana (RF09.5 mostra "dias da semana" no popup de inscrição).
+## Campos e relacionamentos
 
-| Campo | Origem / observação |
-|---|---|
-| id | chave primária |
-| esporte_id | FK → esportes.id |
-| dia_semana | — |
-| horario | — |
+### usuario
 
-## 4. inscricoes_esporte
+- idUsuario: identificador.
+- Nome: nome do usuário.
+- Matricula: VARCHAR(7), única.
+- Email: VARCHAR(255), único.
+- Senha: VARCHAR(255), destinado ao hash da senha.
+- TipoUsuario: enum `admin` ou `aluno`.
 
-| Campo | Origem / observação |
-|---|---|
-| id | chave primária |
-| usuario_id | FK → usuarios.id |
-| esporte_id | FK → esportes.id |
-| status | `em_analise` \| `confirmada` \| `cancelada` (RF10, RF23) |
-| criado_em | para ordenar "mais recente para o mais antigo" (RF10) |
+O administrador não se cadastra pela interface.
+A geração e verificação do hash ainda precisam ser implementadas no backend.
 
-## 5. avaliacoes
+### local
 
-Secundário no MVP (pode ficar mockado) — mapeado aqui para não esquecer.
+- idLocal: identificador.
+- Nome: nome do local.
+- Capacidade: capacidade do espaço.
 
-| Campo | Origem / observação |
-|---|---|
-| id | chave primária |
-| usuario_id | FK → usuarios.id |
-| esporte_id | FK → esportes.id |
-| nota | RF13 |
-| comentario | RF13 |
-| status | pendente de aprovação / aprovada (RF21) |
+Um local pode estar associado a várias modalidades e eventos.
 
-## 6. eventos
+### modalidade_esportiva
 
-Se sobrar tempo no MVP (seção 13) — estrutura espelha `esportes`.
+- idModalidade: identificador.
+- Nome, Descricao, Categoria e Professor.
+- Capacidade: quantidade máxima de participantes.
+- HorarioInicio e HorarioFim: campos TIME.
+- Usuario_idAdmin: referência a usuario.idUsuario.
+- Local_idLocal: referência a local.idLocal.
 
-| Campo | Origem / observação |
-|---|---|
-| id | chave primária |
-| nome | RF22 |
-| data | RF22 |
-| local | RF22 |
-| horario | — |
-| vagas_totais | — |
-| criado_por | FK → usuarios.id |
+Os dias são armazenados em modalidade_dia.
+O modelo atual usa o mesmo intervalo de horários para todos os dias da modalidade.
 
-## 7. inscricoes_evento
+### modalidade_dia
 
-Espelha `inscricoes_esporte`.
+- ModalidadeEsportiva_idModalidade: referência à modalidade.
+- DiaSemana: inteiro entre 1 e 7.
 
-| Campo | Origem / observação |
-|---|---|
-| id | chave primária |
-| usuario_id | FK → usuarios.id |
-| evento_id | FK → eventos.id |
-| status | `confirmada` (eventos não têm "Em análise" — RF10 nota 11) |
+A chave composta impede repetir o mesmo dia para uma modalidade.
+A correspondência dos números com os dias da semana precisa ser padronizada na API.
 
----
+### inscricao_modalidade
 
-**Pendências antes de criar o banco de verdade:**
-- Escolher MySQL ou PostgreSQL.
-- Definir tipos exatos de cada campo (VARCHAR com tamanho, ENUM vs VARCHAR pra status, etc.).
-- Definir se `senha_hash` usa bcrypt ou outra lib, e em qual camada (backend) o hash é gerado.
+- ModalidadeEsportiva_idModalidade: referência à modalidade.
+- Usuario_idUsuario: referência ao usuário.
+- status: enum `em_analise`, `confirmada` ou `cancelada`; padrão `em_analise`.
+- data: data de criação, preenchida por padrão com o horário atual.
+
+A chave composta permite apenas um registro por usuário e modalidade.
+Uma nova solicitação após cancelamento precisa ter seu comportamento definido.
+
+### avaliar
+
+- Usuario_idAluno: referência ao usuário.
+- ModalidadeEsportiva_idModalidade: referência à modalidade.
+- Nota: inteiro entre 1 e 5.
+- Comentario: VARCHAR(255), opcional.
+- Status: enum `em_analise`, `confirmada` ou `cancelada`; padrão `em_analise`.
+- Data: data de criação, preenchida por padrão com o horário atual.
+
+A chave composta permite uma avaliação por usuário e modalidade.
+
+### evento
+
+- idEvento: identificador.
+- Nome e Descricao.
+- DATA: data e horário do evento.
+- Capacidade: quantidade máxima de participantes.
+- Ativo: TINYINT, padrão 1.
+- Local_idLocal: referência ao local.
+- Usuario_idAdmin: referência ao usuário responsável.
+
+### inscricao_evento
+
+- Usuario_idAluno: referência ao usuário.
+- Evento_idEvento: referência ao evento.
+- Data: data de criação, preenchida por padrão com o horário atual.
+
+A chave composta impede inscrições duplicadas.
+A tabela não possui campo de status.
+
+## Regras registradas nas migrations
+
+- Capacidades de local, modalidade e evento devem ser positivas.
+- Nota de avaliação deve estar entre 1 e 5.
+- DiaSemana deve estar entre 1 e 7.
+- O intervalo da modalidade deve começar a partir de 00:00:00,
+  terminar antes de 24:00:00 e ter término posterior ao início.
+- O banco aceita e-mails dos domínios unifor.br e edu.unifor.br.
+- A migration de correção da matrícula define o padrão
+  `^[0-9]{2}[1-2][0-9]{4}$`.
+
+A aplicação da migration de correção deve ser confirmada no histórico do banco.
+As constraints CHECK estão documentadas no SQL das migrations.
+
+## Pendências de integração
+
+- Conectar o Express ao Prisma Client.
+- Implementar geração e verificação de hash de senha.
+- Validar permissões: as FKs para usuario não garantem o perfil admin ou aluno.
+- Manter a validação de cadastro de aluno com domínio @edu.unifor.br.
+- Definir armazenamento de imagens; imagem_url ainda não existe no modelo.
+- Definir o comportamento de cancelamento de inscrição em evento.
+- Definir a identificação das inscrições na API, pois usam chaves compostas.
+- Implementar controle de vagas no backend, considerando requisições simultâneas.
