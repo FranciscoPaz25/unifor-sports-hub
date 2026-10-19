@@ -1,15 +1,18 @@
 import { Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout/Layout';
-import Login from './pages/Login/Login';
-import Cadastro from './pages/Cadastro/Cadastro';
-import Home from './pages/Home/Home';
-import Esportes from './pages/Esportes/Esportes';
-import DetalhesEsporte from './pages/DetalhesEsporte/DetalhesEsporte';
-import MinhasInscricoes from './pages/MinhasInscricoes/MinhasInscricoes';
-import Configuracoes from './pages/Configuracoes/Configuracoes';
-import Gerencia from './pages/Gerencia/Gerencia';
-import CriarEsporte from './pages/CriarEsporte/CriarEsporte';
-import GerenciarInscricoes from './pages/GerenciarInscricoes/GerenciarInscricoes';
+// Telas organizadas por perfil — mapa "Tela nº → arquivo" em specs/status.md
+import Login from './pages/auth/Login/Login';
+import Cadastro from './pages/auth/Cadastro/Cadastro';
+import Home from './pages/aluno/Home/Home';
+import Esportes from './pages/aluno/Esportes/Esportes';
+import MinhasInscricoes from './pages/aluno/MinhasInscricoes/MinhasInscricoes';
+import DetalhesEsporte from './pages/compartilhadas/DetalhesEsporte/DetalhesEsporte';
+import Configuracoes from './pages/compartilhadas/Configuracoes/Configuracoes';
+import Gerencia from './pages/admin/Gerencia/Gerencia';
+import CriarEsporte from './pages/admin/CriarEsporte/CriarEsporte';
+import AceitarResenhas from './pages/admin/AceitarResenhas/AceitarResenhas';
+import CriarEvento from './pages/admin/CriarEvento/CriarEvento';
+import GerenciarInscricoes from './pages/admin/GerenciarInscricoes/GerenciarInscricoes';
 import { usuario } from './mocks/usuario';
 
 // Placeholder pra rotas que o Navbar já referencia mas que ainda não foram
@@ -45,8 +48,8 @@ function App() {
         <Route path="gerencia" element={<Gerencia />} />
         <Route path="gerencia/criar-esporte" element={<CriarEsporte />} />
         <Route path="gerencia/inscricoes" element={<GerenciarInscricoes />} />
-        <Route path="gerencia/resenhas" element={<EmConstrucao />} />
-        <Route path="gerencia/criar-evento" element={<EmConstrucao />} />
+        <Route path="gerencia/resenhas" element={<AceitarResenhas />} />
+        <Route path="gerencia/criar-evento" element={<CriarEvento />} />
         <Route path="configuracoes" element={<Configuracoes />} />
       </Route>
 

@@ -2,6 +2,38 @@
 
 > Atualizar esta tabela conforme as telas avançam. Última atualização: 18/10/2026.
 
+## Onde fica cada tela
+
+Numeração igual à do documento do projeto (protótipo de baixa fidelidade). As telas ficam em `frontend/src/pages/`, agrupadas por perfil: `auth/` (sem navbar), `aluno/`, `admin/` e `compartilhadas/` (usadas pelos dois perfis). Popups ficam em `frontend/src/popups/`. Cada arquivo começa com o comentário `// Tela NN — Nome (RFNN)`.
+
+| Tela | Nome | Arquivo |
+|---|---|---|
+| 01 | Login | `pages/auth/Login/` |
+| 02 | Cadastro | `pages/auth/Cadastro/` |
+| 03 | Esqueceu a senha | — (ainda não criada, vai em `pages/auth/`) |
+| 04 | Home | `pages/aluno/Home/` |
+| 05 | Esportes | `pages/aluno/Esportes/` |
+| 06 | Resultados de busca | — (vai em `pages/aluno/`) |
+| 07 | Popup de filtros de busca | — (vai em `popups/`) |
+| 08 | Detalhes do esporte | `pages/compartilhadas/DetalhesEsporte/` |
+| 09 | Popup de confirmar inscrição no esporte | `popups/PopupInscricaoEsporte/` |
+| 10 | Minhas inscrições | `pages/aluno/MinhasInscricoes/` |
+| 11 | Detalhes da inscrição | — (vai em `pages/aluno/`) |
+| 12 | Avaliações (resenhas) | — (vai em `pages/aluno/`) |
+| 13 | Popup de enviar resenha | — (vai em `popups/`) |
+| 14 | Eventos | — (vai em `pages/compartilhadas/`) |
+| 15 | Detalhes do evento | — (vai em `pages/compartilhadas/`) |
+| 16 | Popup de inscrição no evento | — (vai em `popups/`) |
+| 17 | Configurações | `pages/compartilhadas/Configuracoes/` |
+| 18 | Popup de sair da conta | `popups/PopupSairConta/` |
+| 19 | Gerência | `pages/admin/Gerencia/` |
+| 20 | Criar esporte | `pages/admin/CriarEsporte/` |
+| 21 | Aceitar resenhas | `pages/admin/AceitarResenhas/` |
+| 22 | Criar evento | `pages/admin/CriarEvento/` |
+| 23 | Gerenciar inscrições | `pages/admin/GerenciarInscricoes/` |
+
+`components/` guarda só peças reutilizáveis (Navbar, Layout, Card).
+
 ## Grupo essencial (backend + banco reais)
 
 | Tela | Visual (React) | Conectado ao backend/banco |
