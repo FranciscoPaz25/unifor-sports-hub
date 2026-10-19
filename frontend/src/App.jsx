@@ -3,9 +3,11 @@ import Layout from './components/Layout/Layout';
 // Telas organizadas por perfil — mapa "Tela nº → arquivo" em specs/status.md
 import Login from './pages/auth/Login/Login';
 import Cadastro from './pages/auth/Cadastro/Cadastro';
+import EsqueceuSenha from './pages/auth/EsqueceuSenha/EsqueceuSenha';
 import Home from './pages/aluno/Home/Home';
 import Esportes from './pages/aluno/Esportes/Esportes';
 import MinhasInscricoes from './pages/aluno/MinhasInscricoes/MinhasInscricoes';
+import DetalhesInscricao from './pages/aluno/DetalhesInscricao/DetalhesInscricao';
 import DetalhesEsporte from './pages/compartilhadas/DetalhesEsporte/DetalhesEsporte';
 import Configuracoes from './pages/compartilhadas/Configuracoes/Configuracoes';
 import Gerencia from './pages/admin/Gerencia/Gerencia';
@@ -32,12 +34,14 @@ function App() {
     <Routes>
       <Route path="/" element={<Login />} />
       <Route path="/cadastro" element={<Cadastro />} />
+      <Route path="/esqueci-senha" element={<EsqueceuSenha />} />
 
       <Route element={<Layout tipoUsuario="aluno" nomeUsuario={usuario.nome} />}>
         <Route path="/home" element={<Home />} />
         <Route path="/esportes" element={<Esportes />} />
         <Route path="/esportes/:id" element={<DetalhesEsporte />} />
         <Route path="/minhas-inscricoes" element={<MinhasInscricoes />} />
+        <Route path="/minhas-inscricoes/:id" element={<DetalhesInscricao />} />
         <Route path="/configuracoes" element={<Configuracoes />} />
         <Route path="/eventos" element={<EmConstrucao />} />
       </Route>

@@ -43,7 +43,7 @@ function MinhasInscricoes() {
             function handleVerDetalhes() {
               // RF10.9
               if (ehEsporte) {
-                navigate(`/minhas-inscricoes/${inscricao.id}`); // RF11 — ainda não existe
+                navigate(`/minhas-inscricoes/${inscricao.id}`); // RF11
               } else {
                 navigate(`/eventos/${item.id}`); // RF15 — ainda não existe
               }

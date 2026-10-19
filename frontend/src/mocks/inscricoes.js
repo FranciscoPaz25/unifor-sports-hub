@@ -32,7 +32,7 @@ export const minhasInscricoes = [
     status: 'em_analise',
     criadoEm: '2026-10-12T09:00:00Z',
     alunoNome: 'Lucas Ferreira',
-    alunoMatricula: '2023045678',
+    alunoMatricula: '2314567',
   }, // Futsal, pendente — pra testar o RF23
   {
     id: 4,
@@ -41,7 +41,7 @@ export const minhasInscricoes = [
     status: 'em_analise',
     criadoEm: '2026-10-13T15:30:00Z',
     alunoNome: 'Beatriz Lima',
-    alunoMatricula: '2023078912',
+    alunoMatricula: '2317891',
   }, // Atletismo, pendente — pra testar o RF23
 ];
 

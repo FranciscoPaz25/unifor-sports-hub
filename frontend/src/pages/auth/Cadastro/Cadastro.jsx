@@ -28,6 +28,7 @@ function Cadastro() {
   const [mostrarConfirmarSenha, setMostrarConfirmarSenha] = useState(false);
 
   const [erroEmail, setErroEmail] = useState('');
+  const [erroMatricula, setErroMatricula] = useState('');
   const [erroSenha, setErroSenha] = useState('');
 
   const forca = calcularForcaSenha(senha);
@@ -48,6 +49,14 @@ function Cadastro() {
       return;
     }
     setErroEmail('');
+
+    // Matrícula Unifor: 7 dígitos (ano com 2 dígitos + semestre 1 ou 2 + 4 dígitos).
+    // Mesmo padrão do CHECK chk_matricula_unifor no banco.
+    if (!/^[0-9]{2}[1-2][0-9]{4}$/.test(matricula.trim())) {
+      setErroMatricula('Matrícula inválida. São 7 dígitos: ano (2), semestre (1 ou 2) e número (4). Ex.: 2312345');
+      return;
+    }
+    setErroMatricula('');
 
     // RF02.10: senha e confirmação precisam bater
     if (senha !== confirmarSenha) {
@@ -97,7 +106,11 @@ function Cadastro() {
             type="text"
             value={matricula}
             onChange={(e) => setMatricula(e.target.value)}
+            inputMode="numeric"
+            maxLength={7}
+            placeholder="ex.: 2312345"
           />
+          {erroMatricula && <span className="cadastro-campo-erro">{erroMatricula}</span>}
         </label>
 
         <label>
