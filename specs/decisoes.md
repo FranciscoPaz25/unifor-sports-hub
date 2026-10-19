@@ -31,6 +31,7 @@
 
 - Login inválido: **"E-mail/matrícula ou senha inválidos"**
 - Cadastro, e-mail fora do domínio institucional: **"Use seu e-mail institucional (@edu.unifor.br)"**
+- Cadastro, matrícula fora do padrão: **"Matrícula inválida. São 7 dígitos: ano (2), semestre (1 ou 2) e número (4). Ex.: 2312345"**
 - Cadastro, senha e confirmação não batem: **"Erro ao confirmar senha. Verifique os padrões solicitados."**
 - Inscrição em esporte recusada (já inscrito ou vagas esgotadas): **"Erro, verifique se você já está inscrito no esporte ou se as vagas acabaram"**
 

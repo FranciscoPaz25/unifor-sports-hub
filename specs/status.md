@@ -1,6 +1,6 @@
 # Status atual — Unifor Sports Hub
 
-> Atualizar esta tabela conforme as telas avançam. Última atualização: 18/10/2026.
+> Atualizar esta tabela conforme as telas avançam. Última atualização: 19/10/2026.
 
 ## Onde fica cada tela
 
@@ -10,7 +10,7 @@ Numeração igual à do documento do projeto (protótipo de baixa fidelidade). A
 |---|---|---|
 | 01 | Login | `pages/auth/Login/` |
 | 02 | Cadastro | `pages/auth/Cadastro/` |
-| 03 | Esqueceu a senha | — (ainda não criada, vai em `pages/auth/`) |
+| 03 | Esqueceu a senha | `pages/auth/EsqueceuSenha/` |
 | 04 | Home | `pages/aluno/Home/` |
 | 05 | Esportes | `pages/aluno/Esportes/` |
 | 06 | Resultados de busca | — (vai em `pages/aluno/`) |
@@ -18,7 +18,7 @@ Numeração igual à do documento do projeto (protótipo de baixa fidelidade). A
 | 08 | Detalhes do esporte | `pages/compartilhadas/DetalhesEsporte/` |
 | 09 | Popup de confirmar inscrição no esporte | `popups/PopupInscricaoEsporte/` |
 | 10 | Minhas inscrições | `pages/aluno/MinhasInscricoes/` |
-| 11 | Detalhes da inscrição | — (vai em `pages/aluno/`) |
+| 11 | Detalhes da inscrição | `pages/aluno/DetalhesInscricao/` |
 | 12 | Avaliações (resenhas) | — (vai em `pages/aluno/`) |
 | 13 | Popup de enviar resenha | — (vai em `popups/`) |
 | 14 | Eventos | — (vai em `pages/compartilhadas/`) |
@@ -39,7 +39,7 @@ Numeração igual à do documento do projeto (protótipo de baixa fidelidade). A
 | Tela | Visual (React) | Conectado ao backend/banco |
 |---|---|---|
 | RF01 Login | ✅ pronto (com validação de campos obrigatórios) | ❌ login é `console.log`, aguardando `POST /auth/login` |
-| RF02 Cadastro | ✅ pronto (validação de e-mail institucional, força de senha, confirmação) | ❌ cadastro é `console.log`, aguardando `POST /auth/cadastro` |
+| RF02 Cadastro | ✅ pronto (validação de e-mail institucional, matrícula de 7 dígitos, força de senha, confirmação) | ❌ cadastro é `console.log`, aguardando `POST /auth/cadastro` |
 | RF04 Home | ✅ pronto (saudação, busca, destaque de esportes e eventos) | ❌ usa `mocks/esportes.js` e `mocks/eventos.js` |
 | RF05 Esportes | ✅ pronto (catálogo completo, busca) | ❌ usa `mocks/esportes.js` |
 | RF08 Detalhes do esporte | ✅ pronto (nota, informações, avaliações, variação ADM "Excluir") | ❌ usa `mocks/esportes.js` |
@@ -54,8 +54,8 @@ Numeração igual à do documento do projeto (protótipo de baixa fidelidade). A
 
 | Tela | Visual (React) | Conectado ao backend/banco |
 |---|---|---|
-| RF03 Esqueceu a senha | ⬜ não iniciado | ❌ |
-| RF11 Detalhes da inscrição | ⬜ não iniciado | ❌ |
+| RF03 Esqueceu a senha | ✅ pronto (solicitação + confirmação "E-mail enviado!") | ➖ fora do MVP: não consulta o banco nem envia e-mail (RF03.8/RF03.9) |
+| RF11 Detalhes da inscrição | ✅ pronto (dados do esporte, data da inscrição, cancelar inscrição) | ❌ usa `mocks/inscricoes.js` e `mocks/esportes.js` |
 | RF18 Popup sair da conta | ✅ pronto (feito junto com RF17) | ❌ só redireciona pro login, sem limpar sessão real |
 
 ## Grupo secundário (pode ficar mockado)
@@ -66,7 +66,7 @@ Numeração igual à do documento do projeto (protótipo de baixa fidelidade). A
 | RF07 Popup de filtros | ⬜ não iniciado | — |
 | RF12 Resenhas | ⬜ não iniciado | — |
 | RF13 Popup resenha | ⬜ não iniciado | — |
-| RF21 Aceitar resenhas | ⬜ não iniciado | — |
+| RF21 Aceitar resenhas | ✅ pronto (aceitar/rejeitar resenhas pendentes) | ❌ usa `mocks/resenhas.js` |
 
 ## Grupo "se sobrar tempo" (pode ficar só visual)
 
@@ -75,7 +75,7 @@ Numeração igual à do documento do projeto (protótipo de baixa fidelidade). A
 | RF14 Eventos | ⬜ não iniciado |
 | RF15 Detalhes do evento | ⬜ não iniciado |
 | RF16 Popup inscrição evento | ⬜ não iniciado |
-| RF22 Criar evento | ⬜ não iniciado |
+| RF22 Criar evento | ✅ pronto (formulário; adiciona evento ao mock em memória) |
 
 ## Infraestrutura
 
@@ -84,17 +84,20 @@ Numeração igual à do documento do projeto (protótipo de baixa fidelidade). A
 | Frontend (Vite + React) | ✅ rodando, porta 5173 |
 | React Router | ✅ instalado e configurado, com NavLink ativo na navbar |
 | Navbar | ✅ avatar + nome do usuário, item ativo destacado |
-| Mocks compartilhados | ✅ `mocks/esportes.js`, `mocks/eventos.js`, `mocks/inscricoes.js`, `mocks/usuario.js` |
+| Mocks compartilhados | ✅ `mocks/esportes.js`, `mocks/eventos.js`, `mocks/inscricoes.js`, `mocks/usuario.js`, `mocks/resenhas.js` (matrículas no formato de 7 dígitos) |
 | Backend (Node + Express) | ✅ rodando, porta 3000, só com rota de teste |
 | Banco de dados | ✅ MySQL 8.4 configurado via Docker Compose; banco local `unifor_hub` existente |
 | Prisma | ✅ versão 7.10.1, schema com oito tabelas e configuração por `DATABASE_URL` |
 | Histórico de migrations | ✅ `0_init` registrada como aplicada |
 | Correção da matrícula | 🟡 migration `20261018_corrige_matricula` criada; confirmar aplicação |
+| `id` em `inscricao_modalidade` | ⬜ decidido adicionar coluna `id` autoincremento (o frontend já usa `inscricao.id`); migration ainda não criada |
+| Seed (dados iniciais) | ⬜ falta script com locais e um usuário admin — sem eles não dá pra criar esporte |
 | Backend ↔ banco | ⬜ Express ainda não utiliza o Prisma para consultar ou gravar dados |
 
 ## Resumo rápido
 
-- **Telas essenciais prontas (visual):** 8 de 11 — faltam RF19, RF20, RF23.
-- **"Sempre fácil" prontas:** 1 de 3 — faltam RF03, RF11.
-- **Total de telas visuais restantes antes de partir pro banco de dados: 5.**
-- **MySQL e Prisma estão configurados; a próxima etapa de integração é conectar o Express ao banco.**
+- **Telas essenciais prontas (visual):** 11 de 11.
+- **"Sempre fácil" prontas:** 3 de 3.
+- **Extras já prontos (visual):** RF21 Aceitar resenhas e RF22 Criar evento.
+- **Total de telas visuais restantes antes de partir pro banco de dados: 0.**
+- **MySQL e Prisma estão configurados; a próxima etapa de integração é criar a migration do `id` e o seed, e então conectar o Express ao banco** (ordem: autenticação → esportes → inscrições → configurações).
