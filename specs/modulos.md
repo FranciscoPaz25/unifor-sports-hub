@@ -4,14 +4,14 @@
 
 ## 1. Autenticação
 
-**Objetivo:** permitir que aluno e administrador criem conta (só aluno) e entrem no sistema, sendo redirecionados para a Home do perfil correto.
+**Objetivo:** permitir que alunos criem conta e que alunos e administradores entrem no sistema, sendo redirecionados para a Home do perfil correto.
 
 **Telas:**
 - RF01 — Login (compartilhada aluno/admin)
 - RF02 — Cadastro (só aluno)
 - RF03 — Esqueceu a senha (só aluno)
 
-**Depende de:** tabela `usuarios`.
+**Depende de:** tabela `usuario`.
 
 ## 2. Esportes
 
@@ -22,7 +22,7 @@
 - RF08 — Detalhes do esporte (varia: Aluno vê "Inscrever-se", ADM vê "Excluir")
 - RF20 — Criar esporte (só ADM)
 
-**Depende de:** tabelas `esportes`, `esporte_horarios`.
+**Depende de:** tabelas `modalidade_esportiva`, `modalidade_dia` e `local`.
 
 ## 3. Inscrições (esporte)
 
@@ -33,7 +33,7 @@
 - RF10 — Minhas inscrições (só aluno)
 - RF23 — Gerenciar inscrições (só ADM)
 
-**Depende de:** tabela `inscricoes_esporte` (relaciona `usuarios` + `esportes`).
+**Depende de:** tabela `inscricao_modalidade` (relaciona `usuario` + `modalidade_esportiva`).
 
 ## 4. Gerência (ADM)
 
@@ -52,7 +52,7 @@
 - RF17 — Configurações (compartilhada)
 - RF18 — Popup sair da conta (compartilhada)
 
-**Depende de:** tabela `usuarios`.
+**Depende de:** tabela `usuario`.
 
 ---
 

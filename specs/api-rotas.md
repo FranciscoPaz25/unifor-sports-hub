@@ -33,6 +33,15 @@
 | GET | `/usuarios/:id` | Dados do perfil para a tela Configurações (RF17) | não implementada |
 | PUT | `/usuarios/:id` | Edita dados do perfil / troca senha (RF17) | não implementada |
 
+## Pendência de identificação das inscrições
+
+A tabela inscricao_modalidade utiliza chave composta por modalidade e usuário,
+sem um campo id isolado. Antes de implementar PATCH /inscricoes-esporte/:id,
+definir como a API identificará essa inscrição.
+
+O usuário das operações de aluno deve ser obtido da sessão autenticada.
+Parâmetros enviados pelo cliente não substituem a validação de autorização.
+
 ---
 
 **Convenção combinada:** todas as rotas reais ficam sob `/api/...` no Express (ex.: `/api/auth/login`), conforme a rota de teste já existente (`GET /api/teste`). Ajustar a tabela acima com o prefixo quando as rotas forem criadas.

@@ -1,6 +1,6 @@
 # Status atual — Unifor Sports Hub
 
-> Atualizar esta tabela conforme as telas avançam. Última atualização: 15/10/2026.
+> Atualizar esta tabela conforme as telas avançam. Última atualização: 18/10/2026.
 
 ## Grupo essencial (backend + banco reais)
 
@@ -14,9 +14,9 @@
 | RF09 Popup inscrição no esporte | ✅ pronto (confirmação, validação de já-inscrito/vagas) | ❌ usa `mocks/inscricoes.js` |
 | RF10 Minhas inscrições | ✅ pronto (lista esporte+evento, status, estado vazio) | ❌ usa `mocks/inscricoes.js` |
 | RF17 Configurações | ✅ pronto (editar perfil, trocar senha, sair da conta) | ❌ usa `mocks/usuario.js` |
-| RF19 Gerência | ⬜ não iniciado — próxima da fila | ❌ |
-| RF20 Criar esporte | ⬜ não iniciado | ❌ |
-| RF23 Gerenciar inscrições | ⬜ não iniciado | ❌ |
+| RF19 Gerência | ✅ interface implementada, com links para funções administrativas | ❌ sem integração com backend |
+| RF20 Criar esporte | ✅ formulário implementado; upload real pendente | ❌ adiciona esporte ao mock em memória |
+| RF23 Gerenciar inscrições | ✅ lista de pendências, aprovação e rejeição implementadas | ❌ altera inscrições no mock em memória |
 
 ## Grupo "sempre fácil" (baixo custo, não cortar)
 
@@ -54,11 +54,15 @@
 | Navbar | ✅ avatar + nome do usuário, item ativo destacado |
 | Mocks compartilhados | ✅ `mocks/esportes.js`, `mocks/eventos.js`, `mocks/inscricoes.js`, `mocks/usuario.js` |
 | Backend (Node + Express) | ✅ rodando, porta 3000, só com rota de teste |
-| Banco de dados | ⬜ não escolhido, não criado |
-| Backend ↔ banco | ⬜ não conectado |
+| Banco de dados | ✅ MySQL 8.4 configurado via Docker Compose; banco local `unifor_hub` existente |
+| Prisma | ✅ versão 7.10.1, schema com oito tabelas e configuração por `DATABASE_URL` |
+| Histórico de migrations | ✅ `0_init` registrada como aplicada |
+| Correção da matrícula | 🟡 migration `20261018_corrige_matricula` criada; confirmar aplicação |
+| Backend ↔ banco | ⬜ Express ainda não utiliza o Prisma para consultar ou gravar dados |
 
 ## Resumo rápido
 
 - **Telas essenciais prontas (visual):** 8 de 11 — faltam RF19, RF20, RF23.
 - **"Sempre fácil" prontas:** 1 de 3 — faltam RF03, RF11.
 - **Total de telas visuais restantes antes de partir pro banco de dados: 5.**
+- **MySQL e Prisma estão configurados; a próxima etapa de integração é conectar o Express ao banco.**

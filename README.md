@@ -35,7 +35,8 @@ Toda a documentação técnica viva fica na pasta [`specs/`](./specs):
 |---|---|
 | Frontend | React 19 + Vite, React Router |
 | Backend | Node.js + Express |
-| Banco de dados | a definir (ver `specs/modelo-dados.md`) |
+| Banco de dados | MySQL 8.4 via Docker Compose |
+| ORM e migrations | Prisma 7.10.1 |
 
 ## Estrutura do repositório
 
@@ -49,6 +50,8 @@ unifor-sports-hub/
 ## Como rodar localmente
 
 Pré-requisitos: [Node.js](https://nodejs.org/) instalado.
+Docker Engine com Docker Compose v2, ou Docker Desktop.
+Docker em execução.
 
 **1. Clone o repositório e instale as dependências de cada parte:**
 
@@ -63,14 +66,99 @@ cd ../backend
 npm install
 ```
 
-**2. Rode o backend** (porta 3000):
+**2. Configurar as variáveis de ambiente**
+
+Na primeira configuração, copie o exemplo:
+
+```bash
+cp backend/.env.example backend/.env
+```
+
+Se backend/.env já existe, edite o arquivo existente.
+
+Preencha com suas senhas locais:
+
+```dotenv
+MYSQL_ROOT_PASSWORD=defina_uma_senha_para_root
+MYSQL_PASSWORD=defina_outra_senha_para_aplicacao
+DATABASE_URL="mysql://unifor_app:defina_outra_senha_para_aplicacao@127.0.0.1:3308/unifor_hub"
+```
+
+- MYSQL_ROOT_PASSWORD: senha administrativa do MySQL.
+- MYSQL_PASSWORD: senha do usuário unifor_app.
+- DATABASE_URL: conexão utilizada pelo Prisma.
+- A senha da URL deve corresponder a MYSQL_PASSWORD.
+
+Caracteres especiais da senha precisam ser codificados na URL.
+Por exemplo, @ vira %40 somente dentro de DATABASE_URL.
+
+O arquivo .env é local e não deve ser enviado ao Git.
+O .env.example contém apenas exemplos e deve ser versionado.
+
+**3. Baixar e iniciar o MySQL**
+
+Entre em backend:
+
+```bash
+cd backend
+
+docker compose config --quiet
+docker compose pull mysql
+docker compose up -d mysql
+docker compose logs --tail=50 mysql
+```
+
+Aguarde o MySQL informar que está pronto para conexões antes da próxima etapa.
+Se necessário, consulte os logs novamente.
+
+Configuração local:
+
+- Endereço: 127.0.0.1.
+- Porta na máquina: 3308.
+- Porta dentro do container: 3306.
+- Banco: unifor_hub.
+- Usuário da aplicação: unifor_app.
+
+Os dados ficam no volume Docker mysql_data.
+
+As variáveis de criação de usuários e senhas são utilizadas na primeira
+inicialização. Alterar o .env depois não troca automaticamente as senhas
+de um banco já existente.
+
+**4. Criar as tabelas e gerar o Prisma Client**
+
+Ainda dentro de backend:
+
+```bash
+npx prisma validate
+npx prisma migrate deploy
+npx prisma generate
+npx prisma migrate status
+```
+
+- validate verifica o schema.
+- migrate deploy executa as migrations pendentes.
+- generate gera o Prisma Client em backend/generated/prisma.
+- migrate status mostra a situação do histórico.
+
+
+Se você já possui tabelas criadas manualmente e ainda não tem histórico
+do Prisma, confira o procedimento de baseline antes de aplicar migrations.
+
+O arquivo migration.sql de uma migration já aplicada deve ser preservado.
+Correções posteriores entram em novas migrations.
+
+Referência: [migrations do Prisma 7](https://www.prisma.io/docs/orm/v7/prisma-migrate/workflows/development-and-production).
+
+
+**5. Rode o backend** (porta 3000):
 
 ```bash
 cd backend
 node server.js
 ```
 
-**3. Em outro terminal, rode o frontend** (porta 5173):
+**6. Em outro terminal, rode o frontend** (porta 5173):
 
 ```bash
 cd frontend
@@ -78,6 +166,38 @@ npm run dev
 ```
 
 Acesse [http://localhost:5173](http://localhost:5173) no navegador.
+
+**Atualizar versões das dependências intencionalmente**
+
+Para consultar versões disponíveis, execute dentro de frontend ou backend:
+
+```bash
+npm outdated
+```
+
+Para atualizar respeitando os intervalos definidos no package.json:
+
+```bash
+npm update
+```
+
+Revise as alterações no package-lock.json e verifique o funcionamento
+antes de fazer commit. Dependências com versão exata permanecem fixadas.
+
+Ao atualizar o Prisma, mantenha prisma, @prisma/client e
+@prisma/adapter-mariadb na mesma versão e gere o client novamente.
+
+**Parar o banco**
+
+Dentro de backend:
+
+```bash
+docker compose down
+```
+
+O volume mantém os dados entre as execuções.
+A opção -v também remove o volume e seus dados; não a utilize para
+apenas parar o ambiente.
 
 > O backend ainda não está conectado a um banco de dados — hoje só expõe uma rota de teste (`GET /api/teste`) para confirmar a comunicação entre frontend e backend.
 

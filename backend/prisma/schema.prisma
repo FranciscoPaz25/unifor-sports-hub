@@ -1,0 +1,138 @@
+generator client {
+  provider            = "prisma-client"
+  output              = "../generated/prisma"
+  importFileExtension = "ts"
+  moduleFormat        = "cjs"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model avaliar {
+  Usuario_idAluno                  Int
+  ModalidadeEsportiva_idModalidade Int
+  Comentario                       String?              @db.VarChar(255)
+  Status                           avaliar_Status       @default(em_analise)
+  Data                             DateTime             @default(now()) @db.DateTime(0)
+  Nota                             Int
+  usuario                          usuario              @relation(fields: [Usuario_idAluno], references: [idUsuario], onDelete: NoAction, onUpdate: NoAction, map: "fk_aluno_id")
+  modalidade_esportiva             modalidade_esportiva @relation(fields: [ModalidadeEsportiva_idModalidade], references: [idModalidade], onDelete: Cascade, onUpdate: NoAction, map: "fk_id_modalidade")
+
+  @@id([Usuario_idAluno, ModalidadeEsportiva_idModalidade])
+  @@index([ModalidadeEsportiva_idModalidade], map: "fk_id_modalidade_idx")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model evento {
+  idEvento         Int                @id @default(autoincrement())
+  DATA             DateTime           @db.DateTime(0)
+  Capacidade       Int
+  Ativo            Int                @default(1) @db.TinyInt
+  Nome             String             @db.VarChar(255)
+  Descricao        String             @db.Text
+  Local_idLocal    Int
+  Usuario_idAdmin  Int
+  usuario          usuario            @relation(fields: [Usuario_idAdmin], references: [idUsuario], onDelete: NoAction, onUpdate: NoAction, map: "fk_evento_admin")
+  local            local              @relation(fields: [Local_idLocal], references: [idLocal], onDelete: NoAction, onUpdate: NoAction, map: "fk_evento_local")
+  inscricao_evento inscricao_evento[]
+
+  @@index([Usuario_idAdmin], map: "fk_idAdmin_idx")
+  @@index([Local_idLocal], map: "fk_idLocal_idx")
+}
+
+model inscricao_evento {
+  Usuario_idAluno Int
+  Evento_idEvento Int
+  Data            DateTime @default(now()) @db.DateTime(0)
+  usuario         usuario  @relation(fields: [Usuario_idAluno], references: [idUsuario], onDelete: NoAction, onUpdate: NoAction, map: "fk_idAluno")
+  evento          evento   @relation(fields: [Evento_idEvento], references: [idEvento], onDelete: Cascade, onUpdate: NoAction, map: "fk_idEvento")
+
+  @@id([Usuario_idAluno, Evento_idEvento])
+  @@index([Evento_idEvento], map: "fk_idEvento_idx")
+}
+
+model inscricao_modalidade {
+  status                           inscricao_modalidade_status @default(em_analise)
+  data                             DateTime                    @default(now()) @db.DateTime(0)
+  ModalidadeEsportiva_idModalidade Int
+  Usuario_idUsuario                Int
+  usuario                          usuario                     @relation(fields: [Usuario_idUsuario], references: [idUsuario], onDelete: NoAction, onUpdate: NoAction, map: "fk_id_usuario")
+  modalidade_esportiva             modalidade_esportiva        @relation(fields: [ModalidadeEsportiva_idModalidade], references: [idModalidade], onDelete: Cascade, onUpdate: NoAction, map: "fk_inscricao_modalidade_modalidade")
+
+  @@id([ModalidadeEsportiva_idModalidade, Usuario_idUsuario])
+  @@index([Usuario_idUsuario], map: "fk_id_usuario_idx")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model local {
+  idLocal              Int                    @id @default(autoincrement())
+  Nome                 String                 @db.VarChar(255)
+  Capacidade           Int
+  evento               evento[]
+  modalidade_esportiva modalidade_esportiva[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model modalidade_dia {
+  ModalidadeEsportiva_idModalidade Int
+  DiaSemana                        Int                  @db.TinyInt
+  modalidade_esportiva             modalidade_esportiva @relation(fields: [ModalidadeEsportiva_idModalidade], references: [idModalidade], onDelete: Cascade, onUpdate: NoAction, map: "fk_modalidade_dia_modalidade")
+
+  @@id([ModalidadeEsportiva_idModalidade, DiaSemana])
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model modalidade_esportiva {
+  idModalidade         Int                    @id @default(autoincrement())
+  Nome                 String                 @db.VarChar(255)
+  Descricao            String                 @db.Text
+  Categoria            String                 @db.VarChar(255)
+  Capacidade           Int
+  Professor            String                 @db.VarChar(255)
+  HorarioFim           DateTime               @db.Time(0)
+  Usuario_idAdmin      Int
+  Local_idLocal        Int
+  HorarioInicio        DateTime               @db.Time(0)
+  avaliar              avaliar[]
+  inscricao_modalidade inscricao_modalidade[]
+  modalidade_dia       modalidade_dia[]
+  usuario              usuario                @relation(fields: [Usuario_idAdmin], references: [idUsuario], onDelete: NoAction, onUpdate: NoAction, map: "fk_modalidade_admin")
+  local                local                  @relation(fields: [Local_idLocal], references: [idLocal], onDelete: NoAction, onUpdate: NoAction, map: "fk_modalidade_local")
+
+  @@index([Usuario_idAdmin], map: "fk_idAdmin_idx")
+  @@index([Local_idLocal], map: "fk_idLocal_idx")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model usuario {
+  idUsuario            Int                    @id @default(autoincrement())
+  Matricula            String                 @unique(map: "matricula_UNIQUE") @db.VarChar(7)
+  Email                String                 @unique(map: "email_UNIQUE") @db.VarChar(255)
+  Senha                String                 @db.VarChar(255)
+  TipoUsuario          usuario_TipoUsuario
+  Nome                 String                 @db.VarChar(255)
+  avaliar              avaliar[]
+  evento               evento[]
+  inscricao_evento     inscricao_evento[]
+  inscricao_modalidade inscricao_modalidade[]
+  modalidade_esportiva modalidade_esportiva[]
+}
+
+enum inscricao_modalidade_status {
+  em_analise
+  confirmada
+  cancelada
+}
+
+enum avaliar_Status {
+  em_analise
+  confirmada
+  cancelada
+}
+
+enum usuario_TipoUsuario {
+  admin
+  aluno
+}

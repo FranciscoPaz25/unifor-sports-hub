@@ -1,0 +1,17 @@
+# Dependências instaladas
+node_modules/
+
+# Configurações locais e segredos
+.env
+.env.*
+!.env.example
+
+# Código gerado pelo Prisma
+/backend/generated/
+
+# Arquivos de build e testes
+dist/
+coverage/
+
+# Logs
+*.log
