@@ -2,6 +2,38 @@
 
 > Atualizar esta tabela conforme as telas avançam. Última atualização: 21/10/2026.
 
+## Onde fica cada tela
+
+Numeração igual à do documento do projeto (protótipo de baixa fidelidade). As telas ficam em `frontend/src/pages/`, agrupadas por perfil: `auth/` (sem navbar), `aluno/`, `admin/` e `compartilhadas/` (usadas pelos dois perfis). Popups ficam em `frontend/src/popups/`. Cada arquivo começa com o comentário `// Tela NN — Nome (RFNN)`.
+
+| Tela | Nome | Arquivo |
+|---|---|---|
+| 01 | Login | `pages/auth/Login/` |
+| 02 | Cadastro | `pages/auth/Cadastro/` |
+| 03 | Esqueceu a senha | `pages/auth/EsqueceuSenha/` |
+| 04 | Home | `pages/aluno/Home/` |
+| 05 | Esportes | `pages/aluno/Esportes/` |
+| 06 | Resultados de busca | — (vai em `pages/aluno/`) |
+| 07 | Popup de filtros de busca | — (vai em `popups/`) |
+| 08 | Detalhes do esporte | `pages/compartilhadas/DetalhesEsporte/` |
+| 09 | Popup de confirmar inscrição no esporte | `popups/PopupInscricaoEsporte/` |
+| 10 | Minhas inscrições | `pages/aluno/MinhasInscricoes/` |
+| 11 | Detalhes da inscrição | `pages/aluno/DetalhesInscricao/` |
+| 12 | Avaliações (resenhas) | — (vai em `pages/aluno/`) |
+| 13 | Popup de enviar resenha | — (vai em `popups/`) |
+| 14 | Eventos | — (vai em `pages/compartilhadas/`) |
+| 15 | Detalhes do evento | — (vai em `pages/compartilhadas/`) |
+| 16 | Popup de inscrição no evento | — (vai em `popups/`) |
+| 17 | Configurações | `pages/compartilhadas/Configuracoes/` |
+| 18 | Popup de sair da conta | `popups/PopupSairConta/` |
+| 19 | Gerência | `pages/admin/Gerencia/` |
+| 20 | Criar esporte | `pages/admin/CriarEsporte/` |
+| 21 | Aceitar resenhas | `pages/admin/AceitarResenhas/` |
+| 22 | Criar evento | `pages/admin/CriarEvento/` |
+| 23 | Gerenciar inscrições | `pages/admin/GerenciarInscricoes/` |
+
+`components/` guarda só peças reutilizáveis (Navbar, Layout, Card).
+
 ## Grupo essencial (backend + banco reais)
 
 | Tela | Visual (React) | Conectado ao backend/banco |
@@ -22,9 +54,10 @@
 
 | Tela | Visual (React) | Conectado ao backend/banco |
 |---|---|---|
-| RF03 Esqueceu a senha | ⬜ não iniciado | ❌ |
-| RF11 Detalhes da inscrição | ⬜ não iniciado | ❌ |
+| RF03 Esqueceu a senha | ✅ pronto (solicitação + confirmação "E-mail enviado!") | ➖ fora do MVP: não consulta o banco nem envia e-mail (RF03.8/RF03.9) |
+| RF11 Detalhes da inscrição | ✅ pronto (dados do esporte, data da inscrição, cancelar inscrição) | ❌ usa `mocks/inscricoes.js` e `mocks/esportes.js` |
 | RF18 Popup sair da conta | ✅ pronto, com estado de envio e mensagens de erro | ✅ `POST /api/auth/logout` invalida a sessão no servidor e remove o cookie |
+
 
 ## Grupo secundário (pode ficar mockado)
 
@@ -34,7 +67,7 @@
 | RF07 Popup de filtros | ⬜ não iniciado | — |
 | RF12 Resenhas | ⬜ não iniciado | — |
 | RF13 Popup resenha | ⬜ não iniciado | — |
-| RF21 Aceitar resenhas | ⬜ não iniciado | — |
+| RF21 Aceitar resenhas | ✅ pronto (aceitar/rejeitar resenhas pendentes) | ❌ usa `mocks/resenhas.js` |
 
 ## Grupo "se sobrar tempo" (pode ficar só visual)
 
@@ -43,7 +76,7 @@
 | RF14 Eventos | ⬜ não iniciado |
 | RF15 Detalhes do evento | ⬜ não iniciado |
 | RF16 Popup inscrição evento | ⬜ não iniciado |
-| RF22 Criar evento | ⬜ não iniciado |
+| RF22 Criar evento | ✅ pronto (formulário; adiciona evento ao mock em memória) |
 
 ## Infraestrutura
 
@@ -74,7 +107,6 @@
 - Auditoria da API de perfil executada com duas contas fictícias: atualização persistida, 400 para entradas inválidas, 401 sem sessão, 409 para e-mail de outra conta e preservação da conta B ao enviar seu ID no body da conta A.
 - Bateria de troca de senha em 21/10/2026: 15 verificações aprovadas, nenhuma falha. Inclui validação, senha atual incorreta, novo hash, cookie antigo rejeitado, login antigo rejeitado, login novo aceito, preservação de espaços e isolamento entre duas contas.
 - As contas e sessões temporárias da auditoria foram removidas; contas existentes não foram alteradas.
-- `npm run lint` do frontend passou. O build passou com saída temporária fora do repositório (`npm run build -- --outDir /tmp/unifor-build-audit-20261021 --configLoader runner`).
 - O usuário confirmou funcionamento no navegador. O registro detalhado de todos os cenários manuais da tela ainda deve ser completado.
 - Os scripts e relatórios de integração usados na auditoria ficaram em `/tmp`; a bateria ainda precisa ser adaptada e versionada. Os scripts em `backend/scripts` não equivalem a essa cobertura; `npm test` do backend ainda é o placeholder inicial.
 
@@ -84,4 +116,4 @@
 - Implementar autorização administrativa no backend e nas páginas. Ocultar links ou exibir o perfil na Navbar não substitui autorização.
 - Tratar 401 nas futuras operações da API; a proteção visual consulta o perfil ao montar, não continuamente.
 - Agendar `limparSessoesInativas`: a consulta já rejeita sessões expiradas, mas a remoção de sessões nunca mais consultadas ainda não é periódica.
-- Registrar o procedimento de recuperação da conexão MySQL após reinício; houve falha RSA/pool durante a auditoria, seguida de uma execução aprovada, sem correção de conexão versionada nesta entrega.
+

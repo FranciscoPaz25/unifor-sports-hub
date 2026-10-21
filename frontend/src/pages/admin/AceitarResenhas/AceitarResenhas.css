@@ -1,0 +1,118 @@
+.resenhas-container {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 28px 20px 60px;
+  text-align: left;
+}
+
+.resenhas-topo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.resenhas-voltar {
+  font-size: 20px;
+  text-decoration: none;
+  color: #003DA5;
+}
+
+.resenhas-topo h1 {
+  margin: 0;
+  font-size: 20px;
+  color: #003DA5;
+}
+
+.resenhas-vazio {
+  color: #666;
+  font-size: 14px;
+  text-align: center;
+  padding: 40px 0;
+}
+
+.resenhas-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.resenhas-card {
+  background: white;
+  border: 1px solid #e2e4e9;
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.resenhas-card-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.resenhas-autor {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.resenhas-autor strong {
+  font-size: 14.5px;
+  color: #222;
+}
+
+.resenhas-tag {
+  font-size: 11px;
+  font-weight: bold;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: #e6edf9;
+  color: #003DA5;
+  white-space: nowrap;
+}
+
+.resenhas-estrelas {
+  color: #ddd;
+  font-size: 15px;
+  white-space: nowrap;
+}
+
+.resenhas-estrela.cheia {
+  color: #f5a623;
+}
+
+.resenhas-comentario {
+  font-size: 13px;
+  color: #444;
+  line-height: 1.5;
+}
+
+.resenhas-botoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.resenhas-botao-aceitar,
+.resenhas-botao-rejeitar {
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  border: none;
+}
+
+.resenhas-botao-aceitar {
+  background-color: #003DA5;
+  color: white;
+}
+
+.resenhas-botao-rejeitar {
+  background: #fdecea;
+  color: #c0392b;
+}
