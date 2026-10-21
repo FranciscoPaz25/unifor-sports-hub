@@ -27,9 +27,22 @@
 - Cancelamento de inscrição (pelo aluno, em esporte ou evento confirmado) age imediatamente, sem popup de confirmação.
 - "Excluir" (ações do ADM em esporte/evento) age direto, sem popup de confirmação.
 
+## Autenticação e perfil — decisões de 21/10/2026
+
+- Login aceita e-mail ou matrícula como identificador; credenciais são verificadas no backend com Argon2.
+- Senhas são preservadas como digitadas, sem `trim`. O banco armazena somente o hash; ele não é retornado nas respostas públicas.
+- Sessões ficam em memória nesta etapa, sem tabela adicional. Há uma sessão por usuário; novo login invalida a anterior. Reiniciar o backend exige novo login.
+- Expiração após 15 minutos sem requisição autenticada válida. O backend calcula a última atividade; verifica a expiração antes de renovar. Cliques sem requisição não renovam a sessão.
+- O identificador de sessão usa 32 bytes aleatórios criptográficos, enviados em cookie `unifor_sid` com `HttpOnly`, `SameSite=Lax`, `Path=/` e `Secure` em produção. Não há persistência por `maxAge` fixo.
+- Logout invalida a sessão no servidor e limpa o cookie; responde 204 sem corpo mesmo quando a sessão não existe mais.
+- Operações de perfil usam `/api/usuarios/me` e a identidade da sessão. O PUT exige nome e e-mail juntos; matrícula e tipo de usuário não são editáveis por ele.
+- A troca usa `/api/usuarios/me/senha`, exige a senha atual e uma nova senha de 15 a 128 caracteres com confirmação. Sucesso invalida as sessões, limpa o cookie e exige novo login. A política nova não rejeita a senha atual apenas por ter menos de 15 caracteres.
+- A consulta de perfil alimenta o estado compartilhado no frontend; nome e perfil não vêm mais do mock em Navbar, Home e Configurações. Salvar o perfil atualiza esse estado.
+- Cadastro, recuperação de senha, autorização administrativa e alinhamento do domínio por perfil no backend permanecem pendentes. `SameSite` e CORS não são uma garantia completa de proteção contra CSRF; essa proteção e a limitação de tentativas ainda precisam ser concluídas antes de uso em produção.
+
 ## Textos de erro padronizados
 
-- Login inválido: **"E-mail/matrícula ou senha inválidos"**
+- Login inválido: **"Identificador ou senha inválidos."** — mesma mensagem para usuário inexistente ou senha incorreta, conforme o backend atual.
 - Cadastro, e-mail fora do domínio institucional: **"Use seu e-mail institucional (@edu.unifor.br)"**
 - Cadastro, senha e confirmação não batem: **"Erro ao confirmar senha. Verifique os padrões solicitados."**
 - Inscrição em esporte recusada (já inscrito ou vagas esgotadas): **"Erro, verifique se você já está inscrito no esporte ou se as vagas acabaram"**

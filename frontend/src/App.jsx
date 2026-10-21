@@ -10,7 +10,7 @@ import Configuracoes from './pages/Configuracoes/Configuracoes';
 import Gerencia from './pages/Gerencia/Gerencia';
 import CriarEsporte from './pages/CriarEsporte/CriarEsporte';
 import GerenciarInscricoes from './pages/GerenciarInscricoes/GerenciarInscricoes';
-import { usuario } from './mocks/usuario';
+import RotaProtegida from './components/RotaProtegida/RotaProtegida';
 
 // Placeholder pra rotas que o Navbar já referencia mas que ainda não foram
 // construídas nesta fase do MVP (ex.: Eventos, Home admin). Evita tela
@@ -30,26 +30,27 @@ function App() {
       <Route path="/" element={<Login />} />
       <Route path="/cadastro" element={<Cadastro />} />
 
-      <Route element={<Layout tipoUsuario="aluno" nomeUsuario={usuario.nome} />}>
-        <Route path="/home" element={<Home />} />
-        <Route path="/esportes" element={<Esportes />} />
-        <Route path="/esportes/:id" element={<DetalhesEsporte />} />
-        <Route path="/minhas-inscricoes" element={<MinhasInscricoes />} />
-        <Route path="/configuracoes" element={<Configuracoes />} />
-        <Route path="/eventos" element={<EmConstrucao />} />
-      </Route>
+      <Route element={<RotaProtegida />}>
+        <Route element={<Layout />}>
+          <Route path="/home" element={<Home />} />
+          <Route path="/esportes" element={<Esportes />} />
+          <Route path="/esportes/:id" element={<DetalhesEsporte />} />
+          <Route path="/minhas-inscricoes" element={<MinhasInscricoes />} />
+          <Route path="/configuracoes" element={<Configuracoes />} />
+          <Route path="/eventos" element={<EmConstrucao />} />
+        </Route>
 
-      <Route path="/admin" element={<Layout tipoUsuario="admin" nomeUsuario={usuario.nome} />}>
-        <Route path="home" element={<EmConstrucao />} />
-        <Route path="eventos" element={<EmConstrucao />} />
-        <Route path="gerencia" element={<Gerencia />} />
-        <Route path="gerencia/criar-esporte" element={<CriarEsporte />} />
-        <Route path="gerencia/inscricoes" element={<GerenciarInscricoes />} />
-        <Route path="gerencia/resenhas" element={<EmConstrucao />} />
-        <Route path="gerencia/criar-evento" element={<EmConstrucao />} />
-        <Route path="configuracoes" element={<Configuracoes />} />
+        <Route path="/admin" element={<Layout />}>
+          <Route path="home" element={<EmConstrucao />} />
+          <Route path="eventos" element={<EmConstrucao />} />
+          <Route path="gerencia" element={<Gerencia />} />
+          <Route path="gerencia/criar-esporte" element={<CriarEsporte />} />
+          <Route path="gerencia/inscricoes" element={<GerenciarInscricoes />} />
+          <Route path="gerencia/resenhas" element={<EmConstrucao />} />
+          <Route path="gerencia/criar-evento" element={<EmConstrucao />} />
+          <Route path="configuracoes" element={<Configuracoes />} />
+        </Route>
       </Route>
-
       {/* qualquer URL fora das rotas acima, ao invés de tela em branco */}
       <Route path="*" element={<EmConstrucao />} />
     </Routes>

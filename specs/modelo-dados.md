@@ -1,8 +1,8 @@
 # Modelo de dados — Unifor Sports Hub
 
-> Última atualização: 18/10/2026.
+> Última atualização: 21/10/2026.
 > Banco escolhido: MySQL 8.4. ORM: Prisma 7.10.1.
-> O banco local existe; a integração das rotas Express com o Prisma está pendente.
+> Express utiliza Prisma nas operações de autenticação, consulta do próprio perfil, edição de nome/e-mail e troca de senha. As demais integrações continuam pendentes.
 
 ## Arquivos de referência
 
@@ -10,6 +10,7 @@
 - `backend/prisma/migrations/`: SQL das migrations, incluindo constraints CHECK.
 - `backend/prisma.config.ts`: configuração do Prisma e leitura de DATABASE_URL.
 - `backend/compose.yaml`: configuração do MySQL local.
+- `backend/lib/prisma.cjs`: instância compartilhada do Prisma Client com adapter MariaDB para MySQL.
 
 Os nomes abaixo correspondem aos nomes físicos usados no banco.
 
@@ -40,7 +41,17 @@ As chaves simples listadas acima são inteiras e autoincrementais.
 - TipoUsuario: enum `admin` ou `aluno`.
 
 O administrador não se cadastra pela interface.
-A geração e verificação do hash ainda precisam ser implementadas no backend.
+A verificação da senha no login e a geração/verificação de hash na troca de senha estão implementadas com Argon2. O hash cabe no campo `Senha` atual; não foi necessário alterar o esquema para essa entrega.
+
+As consultas públicas de perfil selecionam explicitamente `idUsuario`, `Nome`, `Email`, `Matricula` e `TipoUsuario`, sem `Senha`. O hash é consultado internamente somente nas operações que verificam credenciais.
+
+O PUT de perfil atualiza apenas `Nome` e `Email`, identificando o registro pela sessão. A unicidade de `Email` no MySQL impede duplicação inclusive entre requisições concorrentes; o erro `P2002` é tratado como 409 nesse endpoint. O campo `TipoUsuario` não é editável nessa operação.
+
+### Sessões da aplicação
+
+As sessões não são uma tabela do MySQL nesta etapa. Um `Map` no processo do backend relaciona o identificador aleatório a `idUsuario` e `ultimaAtividade`. Cada usuário mantém uma sessão; o prazo é de 15 minutos de inatividade, verificado antes da renovação. Logout remove a sessão; trocar a senha invalida as sessões do usuário. Reiniciar o backend exige novo login.
+
+Esse armazenamento não é compartilhado entre processos ou réplicas. Persistência e compartilhamento de sessões ficam fora do escopo atual.
 
 ### local
 
@@ -126,8 +137,8 @@ As constraints CHECK estão documentadas no SQL das migrations.
 
 ## Pendências de integração
 
-- Conectar o Express ao Prisma Client.
-- Implementar geração e verificação de hash de senha.
+- Implementar cadastro e recuperação de senha; scripts locais de preparação de contas não substituem esses endpoints.
+- Alinhar a edição de e-mail por perfil: o banco aceita os dois domínios, mas o frontend restringe alunos a `@edu.unifor.br`. A regra no backend deve usar o perfil do banco, não o enviado pelo cliente.
 - Validar permissões: as FKs para usuario não garantem o perfil admin ou aluno.
 - Manter a validação de cadastro de aluno com domínio @edu.unifor.br.
 - Definir armazenamento de imagens; imagem_url ainda não existe no modelo.

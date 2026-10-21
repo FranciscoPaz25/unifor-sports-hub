@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { usuario } from '../../mocks/usuario';
 import PopupSairConta from '../../components/PopupSairConta/PopupSairConta';
 import './Configuracoes.css';
+import { useNavigate, useOutletContext } from 'react-router-dom';
+import { validarEmailInstitucional } from '../../utils/validacao';
 
 function IconeOlho({ visivel }) {
   return visivel ? (
@@ -19,8 +20,9 @@ function IconeOlho({ visivel }) {
 }
 
 function Configuracoes() {
-  const [nome, setNome] = useState(usuario.nome);
-  const [email, setEmail] = useState(usuario.email);
+  const { usuario, atualizarUsuario } = useOutletContext();
+  const [nome, setNome] = useState(usuario.Nome);
+  const [email, setEmail] = useState(usuario.Email);
   const [erroPerfil, setErroPerfil] = useState('');
   const [sucessoPerfil, setSucessoPerfil] = useState('');
 
@@ -31,11 +33,12 @@ function Configuracoes() {
   const [mostrarNovaSenha, setMostrarNovaSenha] = useState(false);
   const [mostrarConfirmarSenha, setMostrarConfirmarSenha] = useState(false);
   const [erroSenha, setErroSenha] = useState('');
-  const [sucessoSenha, setSucessoSenha] = useState('');
-
+  const [alterandoSenha, setAlterandoSenha] = useState(false);
   const [mostrarPopupSair, setMostrarPopupSair] = useState(false);
+  const navigate = useNavigate();
 
-  function handleSalvarPerfil(e) {
+
+  async function handleSalvarPerfil(e) {
     e.preventDefault();
     setSucessoPerfil('');
 
@@ -44,43 +47,117 @@ function Configuracoes() {
       setErroPerfil('Preencha nome completo e e-mail institucional.');
       return;
     }
-    setErroPerfil('');
 
-    // RF17.6 — TODO: substituir por PUT /usuarios/:id quando o backend existir
-    usuario.nome = nome;
-    usuario.email = email;
+    const erroEmail = validarEmailInstitucional(email, usuario.TipoUsuario)
+    if (erroEmail) {
+      setErroPerfil(erroEmail);
+      return
+    }
 
-    // RF17.8
-    setSucessoPerfil('Dados atualizados com sucesso.');
+    setErroPerfil('')
+
+
+    try {
+      const resposta = await fetch(
+        'http://192.168.15.7:3000/api/usuarios/me',
+        {
+          method: 'PUT',
+          credentials: 'include',
+          headers: { 'Content-type': 'application/json' },
+          body: JSON.stringify({ nome, email })
+        }
+      )
+
+      const dados = await resposta.json()
+
+      if (!resposta.ok) {
+        const mensagem = Array.isArray(dados.erros)
+          ? dados.erros.join(' ')
+          : dados.mensagem || 'Não foi possível atualizar o perfil';
+        setErroPerfil(mensagem)
+        return;
+      }
+
+      atualizarUsuario(dados.usuario)
+      setNome(dados.usuario.Nome);
+      setEmail(dados.usuario.Email);
+      setSucessoPerfil('Dados atualizados com sucesso.')
+
+    } catch {
+      setErroPerfil('Não foi possível concluir a atualização. Tente novamente.')
+    }
+
   }
 
-  function handleAtualizarSenha(e) {
+  async function handleAtualizarSenha(e) {
     e.preventDefault();
-    setSucessoSenha('');
 
-    // RF17.11
-    if (senhaAtual !== usuario.senha) {
-      setErroSenha('Senha atual incorreta.');
+    if (alterandoSenha) return;
+    setErroSenha('');
+
+    if (
+      senhaAtual.length === 0 ||
+      novaSenha.length === 0 ||
+      confirmarNovaSenha.length === 0
+    ) {
+      setErroSenha('Preencha todos os campos de senha.');
       return;
     }
 
-    // RF17.12
+    if (novaSenha.length < 15 || novaSenha.length > 128) {
+      setErroSenha('A nova senha deve ter entre 15 e 128 caracteres.');
+      return;
+    }
+
     if (novaSenha !== confirmarNovaSenha) {
       setErroSenha('As senhas não coincidem.');
       return;
     }
-    setErroSenha('');
 
-    // RF17.10 — TODO: substituir por PUT /usuarios/:id/senha quando o backend existir
-    usuario.senha = novaSenha;
+    setAlterandoSenha(true);
 
-    setSenhaAtual('');
-    setNovaSenha('');
-    setConfirmarNovaSenha('');
+    try {
+      const resposta = await fetch(
+        'http://192.168.15.7:3000/api/usuarios/me/senha',
+        {
+          method: 'PUT',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            senhaAtual,
+            novaSenha,
+            confirmarNovaSenha,
+          }),
+        }
+      );
 
-    // RF17.13
-    setSucessoSenha('Senha atualizada com sucesso.');
+      const dados = await resposta.json();
+
+      if (!resposta.ok) {
+        const mensagem = Array.isArray(dados.erros)
+          ? dados.erros.join(' ')
+          : dados.mensagem || 'Não foi possível alterar a senha.';
+
+        setErroSenha(mensagem);
+        return;
+      }
+
+      setSenhaAtual('');
+      setNovaSenha('');
+      setConfirmarNovaSenha('');
+
+      navigate('/', { replace: true });
+    } catch {
+      setErroSenha(
+        'Não foi possível confirmar a alteração. Tente entrar novamente para verificar.'
+      );
+    } finally {
+      setAlterandoSenha(false);
+    }
   }
+
 
   return (
     <div className="config-container">
@@ -101,7 +178,7 @@ function Configuracoes() {
 
         <label>
           Matrícula
-          <input type="text" value={usuario.matricula} readOnly className="config-input-readonly" />
+          <input type="text" value={usuario.Matricula} readOnly className="config-input-readonly" />
         </label>
 
         {erroPerfil && <p className="config-erro">{erroPerfil}</p>}
@@ -156,9 +233,14 @@ function Configuracoes() {
         </label>
 
         {erroSenha && <p className="config-erro">{erroSenha}</p>}
-        {sucessoSenha && <p className="config-sucesso">{sucessoSenha}</p>}
 
-        <button type="submit" className="config-botao">Atualizar senha</button>
+        <button
+          type="submit"
+          className="config-botao"
+          disabled={alterandoSenha}
+        >
+          {alterandoSenha ? 'Alterando…' : 'Atualizar senha'}
+        </button>
       </form>
 
       <hr className="config-divisoria" />
