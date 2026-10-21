@@ -116,4 +116,3 @@ Numeração igual à do documento do projeto (protótipo de baixa fidelidade). A
 - Implementar autorização administrativa no backend e nas páginas. Ocultar links ou exibir o perfil na Navbar não substitui autorização.
 - Tratar 401 nas futuras operações da API; a proteção visual consulta o perfil ao montar, não continuamente.
 - Agendar `limparSessoesInativas`: a consulta já rejeita sessões expiradas, mas a remoção de sessões nunca mais consultadas ainda não é periódica.
-
