@@ -1,3 +1,4 @@
+require('dotenv/config');
 const router = require('./modules/auth/auth.routes.cjs');
 const express = require('express');
 const cors = require('cors');
@@ -6,11 +7,14 @@ const tratarErros = require('./middlewares/tratar-erros.cjs');
 const cookieParser = require('cookie-parser');
 const usuarioRoutes = require('./modules/usuarios/usuario.routes.cjs')
 
-app.use(cors({
-  origin:['http://localhost:5173',
-    'http://192.168.15.7:5173'
-  ],
+// Origens do frontend liberadas no CORS, separadas por vírgula no .env
+const origensPermitidas = (process.env.CORS_ORIGINS || 'http://localhost:5173')
+  .split(',')
+  .map((origem) => origem.trim())
+  .filter(Boolean);
 
+app.use(cors({
+  origin: origensPermitidas,
   credentials: true,
 }));              // 2º: só agora pode usar
 app.use(express.json());    

@@ -4,6 +4,7 @@ import PopupSairConta from '../../../popups/PopupSairConta/PopupSairConta';
 import './Configuracoes.css';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import { validarEmailInstitucional } from '../../../utils/validacao';
+import { API_URL } from '../../../utils/api';
 
 function IconeOlho({ visivel }) {
   return visivel ? (
@@ -60,7 +61,7 @@ function Configuracoes() {
 
     try {
       const resposta = await fetch(
-        'http://192.168.15.7:3000/api/usuarios/me',
+        `${API_URL}/api/usuarios/me`,
         {
           method: 'PUT',
           credentials: 'include',
@@ -119,7 +120,7 @@ function Configuracoes() {
 
     try {
       const resposta = await fetch(
-        'http://192.168.15.7:3000/api/usuarios/me/senha',
+        `${API_URL}/api/usuarios/me/senha`,
         {
           method: 'PUT',
           credentials: 'include',

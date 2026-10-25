@@ -1,3 +1,4 @@
+// Tela 04 — Home (RF04)
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import Card from '../../../components/Card/Card';
 import { esportes } from '../../../mocks/esportes';
