@@ -1,7 +1,7 @@
 // Tela 08 — Detalhes do esporte (RF08) — aluno vê "Inscrever-se", ADM vê "Excluir"
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useOutletContext, useNavigate, Link } from 'react-router-dom';
-import { esportes } from '../../../mocks/esportes';
+import { chamarApi, mensagemDeErro } from '../../../utils/api';
 import PopupInscricaoEsporte from '../../../popups/PopupInscricaoEsporte/PopupInscricaoEsporte';
 import './DetalhesEsporte.css';
 
@@ -65,24 +65,60 @@ function DetalhesEsporte() {
   const { tipoUsuario } = useOutletContext();
   const navigate = useNavigate();
   const [mostrarPopup, setMostrarPopup] = useState(false);
+  const [esporte, setEsporte] = useState(null);
+  const [aviso, setAviso] = useState('Carregando…');
+  const [erroExcluir, setErroExcluir] = useState('');
+  const [excluindo, setExcluindo] = useState(false);
 
-  const esporte = esportes.find((e) => e.id === Number(id));
+  useEffect(() => {
+    async function carregar() {
+      setEsporte(null);
+      setAviso('Carregando…');
+      try {
+        const { ok, dados } = await chamarApi(`/api/esportes/${id}`);
+        if (ok) {
+          setEsporte(dados.esporte);
+          setAviso('');
+        } else {
+          setAviso(mensagemDeErro(dados, 'Não foi possível carregar o esporte.'));
+        }
+      } catch {
+        setAviso('Não foi possível carregar o esporte.');
+      }
+    }
+    carregar();
+  }, [id]);
 
   if (!esporte) {
     return (
       <div className="detalhes-container">
-        <p className="detalhes-nao-encontrado">Esporte não encontrado.</p>
+        <p className="detalhes-nao-encontrado">{aviso}</p>
         <Link to="/esportes" className="detalhes-ver-todas">Voltar para Esportes</Link>
       </div>
     );
   }
 
-  function handleExcluir() {
-    // RF08.17 — age direto, sem popup (decisoes.md). TODO: chamar DELETE /esportes/:id quando a rota real existir
-    const indice = esportes.findIndex((e) => e.id === esporte.id);
-    if (indice !== -1) esportes.splice(indice, 1);
-    navigate('/esportes');
+  async function handleExcluir() {
+    // RF08.17 — age direto, sem popup (decisoes.md)
+    if (excluindo) return;
+    setErroExcluir('');
+    setExcluindo(true);
+    try {
+      const { ok, dados } = await chamarApi(`/api/esportes/${esporte.id}`, { metodo: 'DELETE' });
+      if (!ok) {
+        setErroExcluir(mensagemDeErro(dados, 'Não foi possível excluir o esporte.'));
+        return;
+      }
+      navigate('/esportes');
+    } catch {
+      setErroExcluir('Não foi possível excluir o esporte.');
+    } finally {
+      setExcluindo(false);
+    }
   }
+
+  const temAvaliacoes = esporte.totalAvaliacoes > 0;
+  const notaTexto = temAvaliacoes ? esporte.notaMedia.toFixed(1) : '—';
 
   // RF08.8 a RF08.12
   const informacoes = [
@@ -118,7 +154,7 @@ function DetalhesEsporte() {
         {/* RF08.4 */}
         <div className="detalhes-nota">
           <span className="estrela cheia">★</span>
-          <strong>{esporte.notaMedia.toFixed(1)}</strong>
+          <strong>{notaTexto}</strong>
           <span>({esporte.totalAvaliacoes} avaliações)</span>
         </div>
         {/* RF08.5 */}
@@ -150,9 +186,17 @@ function DetalhesEsporte() {
 
       {/* RF08.13 / RF08.17 */}
       {tipoUsuario === 'admin' ? (
-        <button type="button" className="detalhes-botao detalhes-botao-excluir" onClick={handleExcluir}>
-          Excluir
-        </button>
+        <>
+          <button
+            type="button"
+            className="detalhes-botao detalhes-botao-excluir"
+            onClick={handleExcluir}
+            disabled={excluindo}
+          >
+            {excluindo ? 'Excluindo…' : 'Excluir'}
+          </button>
+          {erroExcluir && <p className="detalhes-erro">{erroExcluir}</p>}
+        </>
       ) : (
         <button type="button" className="detalhes-botao" onClick={() => setMostrarPopup(true)}>
           Inscrever-se
@@ -164,9 +208,9 @@ function DetalhesEsporte() {
 
         {/* RF08.14 */}
         <div className="detalhes-avaliacoes-resumo">
-          <strong>{esporte.notaMedia.toFixed(1)}</strong>
+          <strong>{notaTexto}</strong>
           <div>
-            <Estrelas nota={esporte.notaMedia} />
+            <Estrelas nota={esporte.notaMedia ?? 0} />
             <span>Baseado em {esporte.totalAvaliacoes} avaliações</span>
           </div>
         </div>

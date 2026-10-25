@@ -2,7 +2,21 @@
 
 > Registro do que entrou na `main`, quando e por quê, para quem chega agora ter o contexto. O estado atual tela a tela fica em `status.md`; as regras fixas, em `decisoes.md`. Entradas mais recentes primeiro.
 
-## 25/10/2026 — Cadastro de aluno (tela 02)
+## 25/10/2026 — Módulo de esportes (telas 04, 05, 08 e 20)
+
+**O que mudou**
+- Backend: `backend/modules/esportes/` com `GET /api/esportes`, `GET /api/esportes/:id`, `POST /api/esportes` e `DELETE /api/esportes/:id` (criar e excluir só para admin), e `GET /api/locais`.
+- Telas Home (esportes em destaque), Esportes, Detalhes do esporte e Criar esporte deixaram de usar `mocks/esportes.js`. O campo Local de Criar esporte virou uma lista com os locais do banco.
+- `frontend/src/utils/api.js` ganhou `chamarApi` e `mensagemDeErro`, para as telas chamarem a API sem repetir código.
+- `server.js` aceita `PORT` no `.env` (padrão 3000).
+
+**Decisões tomadas:** dias da semana 1 = Segunda … 7 = Domingo; vagas descontam só inscrições confirmadas; nota conta só avaliações aprovadas; a imagem do esporte ainda não é salva (não há coluna no banco).
+
+**Por quê:** segundo passo do fluxo central — o aluno precisa ver os esportes reais para se inscrever, e o admin precisa cadastrá-los.
+
+**Transição:** o popup de inscrição e as telas de inscrição ainda usam mocks. Até o módulo de inscrições, uma inscrição feita num esporte do banco pode não aparecer certa em Minhas inscrições.
+
+## 25/10/2026 — Cadastro de aluno (tela 02, PR #9)
 
 **O que mudou**
 - Nova rota `POST /api/auth/cadastro` (`backend/modules/auth/`): valida os dados, cria o usuário sempre como `aluno`, salva a senha só como hash Argon2 e recusa e-mail ou matrícula repetidos (409).

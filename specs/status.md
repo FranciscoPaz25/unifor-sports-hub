@@ -40,14 +40,14 @@ Numeração igual à do documento do projeto (protótipo de baixa fidelidade). A
 |---|---|---|
 | RF01 Login | ✅ pronto, com validação e mensagens de erro | ✅ `POST /api/auth/login`, senha verificada com Argon2 e sessão em cookie; redireciona aluno para `/home` e admin para `/admin/home` |
 | RF02 Cadastro | ✅ pronto (validação de e-mail institucional, matrícula de 7 dígitos, senha de 15 a 128 caracteres com indicador de força, confirmação) | ✅ `POST /api/auth/cadastro` cria o aluno no banco (hash Argon2); e-mail/matrícula repetidos → 409; leva ao login com "Conta criada. Faça login para continuar." |
-| RF04 Home | ✅ pronto (saudação, busca, destaque de esportes e eventos) | 🟡 usuário real por `GET /api/usuarios/me`; esportes e eventos continuam em mocks |
-| RF05 Esportes | ✅ pronto (catálogo completo, busca) | ❌ usa `mocks/esportes.js` |
-| RF08 Detalhes do esporte | ✅ pronto (nota, informações, avaliações, variação ADM "Excluir") | ❌ usa `mocks/esportes.js` |
-| RF09 Popup inscrição no esporte | ✅ pronto (confirmação, validação de já-inscrito/vagas) | ❌ usa `mocks/inscricoes.js` |
+| RF04 Home | ✅ pronto (saudação, busca, destaque de esportes e eventos) | 🟡 usuário real e 4 primeiros esportes de `GET /api/esportes`; eventos continuam em mock |
+| RF05 Esportes | ✅ pronto (catálogo completo, busca) | ✅ `GET /api/esportes` (ordem alfabética); busca e filtros ainda não funcionam (telas 06/07) |
+| RF08 Detalhes do esporte | ✅ pronto (nota, informações, avaliações, variação ADM "Excluir") | ✅ `GET /api/esportes/:id`; "Excluir" do admin usa `DELETE /api/esportes/:id`; nota e avaliações vêm de `avaliar` (só aprovadas) |
+| RF09 Popup inscrição no esporte | ✅ pronto (confirmação, validação de já-inscrito/vagas) | 🟡 mostra dados reais do esporte, mas a inscrição ainda vai para `mocks/inscricoes.js` (próximo módulo) |
 | RF10 Minhas inscrições | ✅ pronto (lista esporte+evento, status, estado vazio) | ❌ usa `mocks/inscricoes.js` |
 | RF17 Configurações | ✅ pronto (editar perfil, trocar senha, sair da conta) | ✅ perfil real, atualização de nome/e-mail e troca de senha conectados; regra de domínio por perfil no backend ainda pendente |
 | RF19 Gerência | ✅ interface implementada, com links para funções administrativas | ❌ sem integração com backend |
-| RF20 Criar esporte | ✅ formulário implementado; upload real pendente | ❌ adiciona esporte ao mock em memória |
+| RF20 Criar esporte | ✅ formulário implementado; campo Local virou lista dos locais do banco | ✅ `POST /api/esportes` (só admin) grava modalidade e dias; a imagem ainda não é salva (não há coluna no modelo) |
 | RF23 Gerenciar inscrições | ✅ lista de pendências, aprovação e rejeição implementadas | ❌ altera inscrições no mock em memória |
 
 ## Grupo "sempre fácil" (baixo custo, não cortar)
@@ -85,7 +85,8 @@ Numeração igual à do documento do projeto (protótipo de baixa fidelidade). A
 | Frontend (Vite + React) | ✅ rodando, porta 5173 |
 | React Router | ✅ instalado e configurado, com NavLink ativo na navbar |
 | Navbar | ✅ avatar e nome do usuário real; atualiza o nome após salvar o perfil |
-| Mocks compartilhados | 🟡 esportes, eventos e inscrições ainda usam mocks; login, Navbar, Home e Configurações usam o usuário real |
+| Mocks compartilhados | 🟡 Home, Esportes, Detalhes do esporte e Criar esporte usam o banco. `mocks/esportes.js` ainda é usado por Minhas inscrições, Detalhes da inscrição, Gerenciar inscrições e Aceitar resenhas (até o módulo de inscrições); eventos e inscrições continuam em mock |
+| Chamadas à API no frontend | ✅ `utils/api.js`: `chamarApi(caminho, { metodo, corpo })` envia o cookie e devolve `{ ok, status, dados }`; `mensagemDeErro(dados, padrao)` monta o texto de erro |
 | Backend (Node + Express) | ✅ porta 3000; rotas de cadastro, autenticação e perfil, middlewares de sessão, autorização de admin e tratamento de erros |
 | Banco de dados | ✅ MySQL 8.4 configurado via Docker Compose; banco local `unifor_hub` existente |
 | Prisma | ✅ versão 7.10.1, schema com oito tabelas e configuração por `DATABASE_URL` |
@@ -105,7 +106,9 @@ Numeração igual à do documento do projeto (protótipo de baixa fidelidade). A
 - **"Sempre fácil" com interface pronta:** 3 de 3; RF18 integrado, RF11 ainda em mocks, RF03 fora do MVP no backend.
 - **Extras já prontos (visual):** RF21 Aceitar resenhas e RF22 Criar evento.
 - **Módulo de autenticação completo no backend:** cadastro, login, sessão, logout, perfil próprio, troca de senha e autorização de admin. Recuperação de senha (RF03) fica fora do MVP.
-- **Próxima etapa:** esportes (`GET /api/esportes`, `GET /api/esportes/:id`, `POST /api/esportes`, exclusão) → inscrições → Home do admin.
+- **Módulo de esportes integrado:** listar, detalhar, criar e excluir (telas 04, 05, 08, 20).
+- **Próxima etapa:** inscrições (telas 09, 10, 11, 23) → Home do admin.
+- **Atenção na transição:** a inscrição feita pelo popup ainda vai para o mock, que usa os ids dos esportes de mentira. Por isso Minhas inscrições pode não mostrar um esporte do banco até o módulo de inscrições ficar pronto.
 - **Histórico do que foi feito e por quê:** ver `historico.md`.
 
 ## Verificação das entregas de 25/10/2026
@@ -116,6 +119,7 @@ Todas testadas em um MySQL 8.4 descartável (container Docker separado do banco 
 - Seed: executado duas vezes sem duplicar; login do admin criado pela API.
 - Autorização de admin: rota de teste com `autenticar` + `exigirAdmin` → 401 sem login, 403 aluno, 200 admin, 403 logo após rebaixar o admin no banco.
 - Redirecionamento por perfil: navegador com aluno e admin (cada um é devolvido à própria home ao abrir tela do outro perfil).
+- Esportes: API com 401 sem login, 403 para aluno criar/excluir, 400 com todos os erros de validação, local inexistente, 404 para id inexistente ou inválido; vagas descontando só inscrições confirmadas; nota contando só avaliações aprovadas; exclusão apagando dias, inscrições e avaliações em cascata. No navegador: admin cria "Natação Básica" (acentos preservados) → aparece em Esportes e na Home do aluno → detalhes com "Inscrever-se" (aluno) e "Excluir" (admin) → exclusão volta para a lista vazia.
 - Cadastro: API com campos vazios, domínio errado, matrícula inválida, senha curta, confirmação diferente, tentativa de enviar `TipoUsuario: admin` (ignorado), e-mail repetido em maiúsculas e matrícula repetida; no navegador, cadastro → mensagem no login → login → Home.
 
 ## Verificação da entrega de 21/10/2026

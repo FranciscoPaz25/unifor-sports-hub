@@ -1,16 +1,36 @@
 // Tela 04 — Home (RF04)
+import { useEffect, useState } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import Card from '../../../components/Card/Card';
-import { esportes } from '../../../mocks/esportes';
+import { chamarApi } from '../../../utils/api';
 import { eventos } from '../../../mocks/eventos';
 import './Home.css';
 
-const esportesDestaque = esportes.slice(0, 4);
+// Eventos ainda vêm do mock (módulo de eventos fora do MVP essencial)
 const proximosEventos = eventos;
 
 function Home() {
   const navigate = useNavigate();
   const { usuario } = useOutletContext();
+  const [esportesDestaque, setEsportesDestaque] = useState([]);
+  const [aviso, setAviso] = useState('Carregando esportes…');
+
+  useEffect(() => {
+    async function carregar() {
+      try {
+        const { ok, dados } = await chamarApi('/api/esportes');
+        if (!ok) {
+          setAviso('Não foi possível carregar os esportes.');
+          return;
+        }
+        setEsportesDestaque(dados.esportes.slice(0, 4));
+        setAviso(dados.esportes.length === 0 ? 'Nenhum esporte cadastrado ainda.' : '');
+      } catch {
+        setAviso('Não foi possível carregar os esportes.');
+      }
+    }
+    carregar();
+  }, []);
 
   function handleBuscar(e) {
     e.preventDefault();
@@ -40,6 +60,7 @@ function Home() {
 
       <section className="home-secao">
         <h2>Esportes em destaque</h2>
+        {aviso && <p className="home-aviso">{aviso}</p>}
         <div className="home-grid-esportes">
           {esportesDestaque.map((esporte) => (
             <Card

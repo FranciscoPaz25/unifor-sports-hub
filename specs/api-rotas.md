@@ -1,6 +1,6 @@
 # Rotas de API — Unifor Sports Hub
 
-> Atualizado em 25/10/2026. Cadastro, autenticação, perfil próprio e autorização de admin estão implementados. Esportes e inscrições continuam como planejamento. Todos os endereços usam o prefixo `/api`.
+> Atualizado em 25/10/2026. Cadastro, autenticação, perfil próprio, autorização de admin, esportes e locais estão implementados. Inscrições continuam como planejamento. Todos os endereços usam o prefixo `/api`.
 
 ## Autenticação implementada
 
@@ -50,13 +50,38 @@ O perfil público contém somente `idUsuario`, `Nome`, `Email`, `Matricula` e `T
 - Respostas: 401 se o usuário da sessão não existir; 403 `{ mensagem: "Acesso restrito ao administrador." }` para quem não é admin.
 - Toda rota marcada como "Administrador" abaixo deve usar esse middleware.
 
-## Esportes planejados
+## Esportes implementados
 
-| Método | Rota | O que faz | Status |
+Código em `backend/modules/esportes/`. Todas exigem sessão; criar e excluir exigem admin.
+
+| Método | Rota | Acesso | Comportamento e respostas |
 |---|---|---|---|
-| GET | `/api/esportes` | Lista os esportes do catálogo (RF05) | não implementada |
-| GET | `/api/esportes/:id` | Detalhes de um esporte (RF08) | não implementada |
-| POST | `/api/esportes` | Administrador cadastra um novo esporte (RF20) | não implementada |
+| GET | `/api/esportes` | Sessão válida | 200 `{ esportes: [...] }` em ordem alfabética (telas 04 e 05) |
+| GET | `/api/esportes/:id` | Sessão válida | 200 `{ esporte }` com `avaliacoes` (as 2 aprovadas mais recentes); 404 "Esporte não encontrado." para id inexistente ou inválido (tela 08) |
+| POST | `/api/esportes` | Admin | Recebe `nome`, `descricao`, `categoria`, `idLocal`, `dias` (números 1–7), `horarioInicio`, `horarioFim` (`HH:MM`), `responsavel`, `capacidadeMaxima`; 201 `{ mensagem, esporte }`; 400 `{ erros }` (inclui "Local não encontrado."); 403 para aluno (tela 20) |
+| DELETE | `/api/esportes/:id` | Admin | 204; 404 se não existir; 403 para aluno. Apaga dias, inscrições e avaliações em cascata (tela 08, sem confirmação) |
+
+Formato de cada esporte (mesmos nomes que os antigos mocks, para as telas mudarem pouco):
+
+```json
+{
+  "id": 2, "nome": "Natação Básica", "descricao": "...", "categoria": "Aquático",
+  "idLocal": 5, "local": "Piscina Olímpica",
+  "capacidadeMaxima": 12, "vagas": 12,
+  "dias": [2, 4], "diasSemana": "Terça e Quinta",
+  "horarioInicio": "07:00", "horarioFim": "08:30",
+  "responsavel": "Profª Luísa Araújo",
+  "notaMedia": null, "totalAvaliacoes": 0
+}
+```
+
+`vagas` = capacidade − inscrições confirmadas. `notaMedia` é `null` quando não há avaliação aprovada.
+
+## Locais implementados
+
+| Método | Rota | Acesso | Comportamento e respostas |
+|---|---|---|---|
+| GET | `/api/locais` | Sessão válida | 200 `{ locais: [{ id, nome, capacidade }] }` em ordem alfabética; alimenta o campo Local da tela 20 |
 
 ## Inscrições em esporte planejadas
 
