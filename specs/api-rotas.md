@@ -61,9 +61,9 @@ O perfil público contém somente `idUsuario`, `Nome`, `Email`, `Matricula` e `T
 | POST | `/api/inscricoes-esporte` | Aluno solicita inscrição, com status inicial `em_analise` (RF09) | não implementada |
 | GET | `/api/inscricoes-esporte` | Lista inscrições do usuário identificado pela sessão (RF10) | não implementada |
 | GET | `/api/inscricoes-esporte/pendentes` | Administrador consulta pendências (RF23) | não implementada |
-| PATCH | `/api/inscricoes-esporte/:id` | Administrador aceita ou rejeita inscrição (RF23.8) | não implementada; identificador a definir |
+| PATCH | `/api/inscricoes-esporte/:id` | Administrador aceita ou rejeita inscrição (RF23.8) | não implementada; `:id` = `inscricao_modalidade.id` |
 
-A tabela `inscricao_modalidade` usa chave composta por modalidade e usuário, sem ID isolado. Definir sua representação na API antes de implementar a alteração de inscrição. O usuário das operações pessoais deve vir da sessão; parâmetros do cliente não substituem autorização.
+A tabela `inscricao_modalidade` tem chave primária `id` (desde 25/10/2026), usada como identificador da inscrição na API; o par modalidade + usuário continua único. O usuário das operações pessoais deve vir da sessão; parâmetros do cliente não substituem autorização.
 
 ## Rotas de diagnóstico
 

@@ -1,6 +1,6 @@
 # Modelo de dados — Unifor Sports Hub
 
-> Última atualização: 21/10/2026.
+> Última atualização: 25/10/2026.
 > Banco escolhido: MySQL 8.4. ORM: Prisma 7.10.1.
 > Express utiliza Prisma nas operações de autenticação, consulta do próprio perfil, edição de nome/e-mail e troca de senha. As demais integrações continuam pendentes.
 
@@ -22,7 +22,7 @@ Os nomes abaixo correspondem aos nomes físicos usados no banco.
 | local | Locais das atividades | idLocal |
 | modalidade_esportiva | Modalidades oferecidas | idModalidade |
 | modalidade_dia | Dias da semana de cada modalidade | ModalidadeEsportiva_idModalidade + DiaSemana |
-| inscricao_modalidade | Inscrições em modalidades | ModalidadeEsportiva_idModalidade + Usuario_idUsuario |
+| inscricao_modalidade | Inscrições em modalidades | id (par modalidade + usuário é único) |
 | avaliar | Avaliações de modalidades | Usuario_idAluno + ModalidadeEsportiva_idModalidade |
 | evento | Eventos esportivos | idEvento |
 | inscricao_evento | Participantes dos eventos | Usuario_idAluno + Evento_idEvento |
@@ -61,6 +61,10 @@ Esse armazenamento não é compartilhado entre processos ou réplicas. Persistê
 
 Um local pode estar associado a várias modalidades e eventos.
 
+### Dados iniciais (seed)
+
+`backend/prisma/seed.cjs`, executado por `npm run seed` (`prisma db seed`), cria os seis locais usados nos mocks do frontend e um usuário `admin`. Os dados do admin vêm de `SEED_ADMIN_NOME`, `SEED_ADMIN_EMAIL`, `SEED_ADMIN_MATRICULA` e `SEED_ADMIN_SENHA` no `backend/.env`; a senha é obrigatória (15 a 128 caracteres) e gravada só como hash Argon2. O seed pode ser repetido: locais com o mesmo nome e usuário com o mesmo e-mail ou matrícula são mantidos sem alteração.
+
 ### modalidade_esportiva
 
 - idModalidade: identificador.
@@ -83,13 +87,14 @@ A correspondência dos números com os dias da semana precisa ser padronizada na
 
 ### inscricao_modalidade
 
+- id: identificador autoincremento, chave primária (migration `20261025_inscricao_modalidade_id`). É o `:id` das rotas de inscrição e o `inscricao.id` do frontend.
 - ModalidadeEsportiva_idModalidade: referência à modalidade.
 - Usuario_idUsuario: referência ao usuário.
 - status: enum `em_analise`, `confirmada` ou `cancelada`; padrão `em_analise`.
 - data: data de criação, preenchida por padrão com o horário atual.
 
-A chave composta permite apenas um registro por usuário e modalidade.
-Uma nova solicitação após cancelamento precisa ter seu comportamento definido.
+O índice único `inscricao_modalidade_UNIQUE` (modalidade + usuário) continua permitindo apenas um registro por usuário e modalidade.
+Uma nova solicitação após cancelamento precisa ter seu comportamento definido (por exemplo, reaproveitar o registro voltando para `em_analise`).
 
 ### avaliar
 
@@ -143,5 +148,4 @@ As constraints CHECK estão documentadas no SQL das migrations.
 - Manter a validação de cadastro de aluno com domínio @edu.unifor.br.
 - Definir armazenamento de imagens; imagem_url ainda não existe no modelo.
 - Definir o comportamento de cancelamento de inscrição em evento.
-- Definir a identificação das inscrições na API, pois usam chaves compostas.
 - Implementar controle de vagas no backend, considerando requisições simultâneas.
