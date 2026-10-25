@@ -38,7 +38,7 @@ Numeração igual à do documento do projeto (protótipo de baixa fidelidade). A
 
 | Tela | Visual (React) | Conectado ao backend/banco |
 |---|---|---|
-| RF01 Login | ✅ pronto, com validação e mensagens de erro | ✅ `POST /api/auth/login`, senha verificada com Argon2 e sessão em cookie; redireciona para `/home` |
+| RF01 Login | ✅ pronto, com validação e mensagens de erro | ✅ `POST /api/auth/login`, senha verificada com Argon2 e sessão em cookie; redireciona aluno para `/home` e admin para `/admin/home` |
 | RF02 Cadastro | ✅ pronto (validação de e-mail institucional, matrícula de 7 dígitos, força de senha, confirmação) | ❌ cadastro é `console.log`, aguardando `POST /api/auth/cadastro` |
 | RF04 Home | ✅ pronto (saudação, busca, destaque de esportes e eventos) | 🟡 usuário real por `GET /api/usuarios/me`; esportes e eventos continuam em mocks |
 | RF05 Esportes | ✅ pronto (catálogo completo, busca) | ❌ usa `mocks/esportes.js` |
@@ -96,14 +96,15 @@ Numeração igual à do documento do projeto (protótipo de baixa fidelidade). A
 | Endereços da API e CORS | ✅ frontend usa `VITE_API_URL` (`utils/api.js`); backend lê `CORS_ORIGINS` do `.env` — padrão `localhost` |
 | Backend ↔ banco | ✅ cliente Prisma compartilhado em `backend/lib/prisma.cjs`; consulta e atualização de usuários |
 | Sessões | ✅ em memória, uma por usuário, expiração após 15 minutos de inatividade; reinício exige novo login |
-| Proteção de páginas | 🟡 consulta perfil antes de renderizar; autorização administrativa ainda não implementada |
+| Proteção de páginas | ✅ `RotaProtegida` consulta o perfil; `ExigirPerfil` separa telas de aluno e de admin (quem não tem o perfil vai para a própria home); `/esportes` e `/esportes/:id` são compartilhadas |
+| Autorização de admin (backend) | ✅ middleware `exigir-admin.cjs` (usar depois de `autenticar`): lê `TipoUsuario` do banco; 403 para quem não é admin. Aplicar em toda rota administrativa nova |
 
 ## Resumo rápido
 
 - **Telas essenciais com interface implementada:** 11 de 11; integração de esportes, eventos, inscrições e administração ainda pendente.
 - **"Sempre fácil" com interface pronta:** 3 de 3; RF18 integrado, RF11 ainda em mocks, RF03 fora do MVP no backend.
 - **Extras já prontos (visual):** RF21 Aceitar resenhas e RF22 Criar evento.
-- **Próxima etapa:** autorização de admin e redirecionamento por perfil; depois cadastro → esportes → inscrições.
+- **Próxima etapa:** cadastro de aluno (`POST /api/auth/cadastro`); depois esportes → inscrições → Home do admin.
 - **Entrega atual:** autenticação por sessão, logout e gerenciamento do próprio perfil integrados ao MySQL.
 - **Cadastro e recuperação de senha:** não implementados no backend.
 
@@ -118,6 +119,5 @@ Numeração igual à do documento do projeto (protótipo de baixa fidelidade). A
 ## Pendências preservadas
 
 - Alinhar a edição do e-mail por perfil: frontend limita aluno a `@edu.unifor.br`, enquanto backend aceita os dois domínios institucionais para qualquer usuário.
-- Implementar autorização administrativa no backend e nas páginas. Ocultar links ou exibir o perfil na Navbar não substitui autorização.
 - Tratar 401 nas futuras operações da API; a proteção visual consulta o perfil ao montar, não continuamente.
 - Agendar `limparSessoesInativas`: a consulta já rejeita sessões expiradas, mas a remoção de sessões nunca mais consultadas ainda não é periódica.

@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { API_URL } from '../../../utils/api';
+import { homeDoPerfil } from '../../../utils/perfil';
 import './Login.css';
 
 function Login() {
@@ -43,7 +44,8 @@ function Login() {
         setErro(mensagem)
         return;
       }
-      navigate('/home', {replace: true})
+      // Admin vai para /admin/home, aluno para /home
+      navigate(homeDoPerfil(dados.usuario?.TipoUsuario), { replace: true })
 
     } catch {
       setErro('Não foi possível concluir o login. Tente novamente.')

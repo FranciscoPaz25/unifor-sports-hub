@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout/Layout';
 import RotaProtegida from './components/RotaProtegida/RotaProtegida';
+import ExigirPerfil from './components/ExigirPerfil/ExigirPerfil';
 
 import Login from './pages/auth/Login/Login';
 import Cadastro from './pages/auth/Cadastro/Cadastro';
@@ -38,30 +39,36 @@ function App() {
 
       <Route element={<RotaProtegida />}>
         <Route element={<Layout />}>
-          <Route path="/home" element={<Home />} />
+          {/* Compartilhadas: aluno e admin (o admin chega aqui pelo "Esportes" da navbar) */}
           <Route path="/esportes" element={<Esportes />} />
           <Route path="/esportes/:id" element={<DetalhesEsporte />} />
-          <Route path="/minhas-inscricoes" element={<MinhasInscricoes />} />
-          <Route
-            path="/minhas-inscricoes/:id"
-            element={<DetalhesInscricao />}
-          />
-          <Route path="/configuracoes" element={<Configuracoes />} />
-          <Route path="/eventos" element={<EmConstrucao />} />
-        </Route>
 
-        <Route path="/admin" element={<Layout />}>
-          <Route path="home" element={<EmConstrucao />} />
-          <Route path="eventos" element={<EmConstrucao />} />
-          <Route path="gerencia" element={<Gerencia />} />
-          <Route path="gerencia/criar-esporte" element={<CriarEsporte />} />
-          <Route
-            path="gerencia/inscricoes"
-            element={<GerenciarInscricoes />}
-          />
-          <Route path="gerencia/resenhas" element={<AceitarResenhas />} />
-          <Route path="gerencia/criar-evento" element={<CriarEvento />} />
-          <Route path="configuracoes" element={<Configuracoes />} />
+          {/* Só aluno */}
+          <Route element={<ExigirPerfil perfil="aluno" />}>
+            <Route path="/home" element={<Home />} />
+            <Route path="/minhas-inscricoes" element={<MinhasInscricoes />} />
+            <Route
+              path="/minhas-inscricoes/:id"
+              element={<DetalhesInscricao />}
+            />
+            <Route path="/configuracoes" element={<Configuracoes />} />
+            <Route path="/eventos" element={<EmConstrucao />} />
+          </Route>
+
+          {/* Só admin */}
+          <Route path="/admin" element={<ExigirPerfil perfil="admin" />}>
+            <Route path="home" element={<EmConstrucao />} />
+            <Route path="eventos" element={<EmConstrucao />} />
+            <Route path="gerencia" element={<Gerencia />} />
+            <Route path="gerencia/criar-esporte" element={<CriarEsporte />} />
+            <Route
+              path="gerencia/inscricoes"
+              element={<GerenciarInscricoes />}
+            />
+            <Route path="gerencia/resenhas" element={<AceitarResenhas />} />
+            <Route path="gerencia/criar-evento" element={<CriarEvento />} />
+            <Route path="configuracoes" element={<Configuracoes />} />
+          </Route>
         </Route>
       </Route>
 

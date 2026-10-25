@@ -38,7 +38,14 @@ O perfil público contém somente `idUsuario`, `Nome`, `Email`, `Matricula` e `T
 - Sessões em memória do backend, uma por usuário, com 15 minutos de inatividade. Novo login invalida a sessão anterior. Reiniciar o processo elimina as sessões.
 - O cookie usa `HttpOnly`, `SameSite=Lax`, `Path=/` e `Secure` quando `NODE_ENV=production`. Não há `maxAge` fixo; o backend controla o prazo por inatividade.
 - O frontend envia `credentials: 'include'`. CORS permite origens explícitas; os endereços do frontend e da API devem ser compatíveis com a política do cookie.
-- A proteção de páginas consulta `/api/usuarios/me`. Ainda falta autorização de administrador; uma sessão válida não comprova permissão administrativa.
+- A proteção de páginas consulta `/api/usuarios/me`. No frontend, `ExigirPerfil` só organiza a navegação; a permissão de fato é garantida no backend.
+
+## Autorização de administrador
+
+- Middleware `backend/middlewares/exigir-admin.cjs`, usado depois de `autenticar`: `router.post('/', autenticar, exigirAdmin, controller)`.
+- Lê `TipoUsuario` do banco a cada requisição (uma conta rebaixada perde o acesso na hora, sem novo login) e preenche `req.auth.tipoUsuario`.
+- Respostas: 401 se o usuário da sessão não existir; 403 `{ mensagem: "Acesso restrito ao administrador." }` para quem não é admin.
+- Toda rota marcada como "Administrador" abaixo deve usar esse middleware.
 
 ## Cadastro planejado
 
