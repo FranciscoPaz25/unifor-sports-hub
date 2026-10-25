@@ -31,7 +31,42 @@ async function autenticarUsuario(identificador, senha) {
     return { idUsuario, Nome, TipoUsuario }; // Retorna o usuário autenticado
 }
 
+// Cria uma conta de aluno. O tipo é sempre 'aluno': admin não se cadastra pela interface.
+// Retorna { status: 'email-em-uso' | 'matricula-em-uso' } se já existir conta com esses dados.
+async function cadastrarAluno(nome, email, matricula, senha) {
+    const emailLimpo = email.trim();
+    const matriculaLimpa = matricula.trim();
+
+    const existente = await prisma.usuario.findFirst({
+        where: { OR: [{ Email: emailLimpo }, { Matricula: matriculaLimpa }] },
+        select: { Email: true },
+    });
+    if (existente) {
+        const mesmoEmail = existente.Email.toLowerCase() === emailLimpo.toLowerCase();
+        return { status: mesmoEmail ? 'email-em-uso' : 'matricula-em-uso' };
+    }
+
+    const usuario = await prisma.usuario.create({
+        data: {
+            Nome: nome.trim(),
+            Email: emailLimpo,
+            Matricula: matriculaLimpa,
+            Senha: await argon2.hash(senha),
+            TipoUsuario: 'aluno',
+        },
+        select: {
+            idUsuario: true,
+            Nome: true,
+            Email: true,
+            Matricula: true,
+            TipoUsuario: true,
+        },
+    });
+    return { status: 'criado', usuario };
+}
+
 module.exports = {
     buscarUsuarioPorIdentificador,
-    autenticarUsuario
+    autenticarUsuario,
+    cadastrarAluno
 };

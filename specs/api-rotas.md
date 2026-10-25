@@ -1,14 +1,17 @@
 # Rotas de API — Unifor Sports Hub
 
-> Atualizado em 21/10/2026. Autenticação e perfil próprio estão implementados. As demais rotas abaixo continuam como planejamento. Todos os endereços usam o prefixo `/api`.
+> Atualizado em 25/10/2026. Cadastro, autenticação, perfil próprio e autorização de admin estão implementados. Esportes e inscrições continuam como planejamento. Todos os endereços usam o prefixo `/api`.
 
 ## Autenticação implementada
 
 | Método | Rota | Acesso | Comportamento e respostas |
 |---|---|---|---|
+| POST | `/api/auth/cadastro` | Público | Recebe `nome`, `email`, `matricula`, `senha` e `confirmarSenha`; cria sempre um **aluno** (campos extras como `TipoUsuario` são ignorados); 201 `{ mensagem, usuario }` sem abrir sessão; 400 `{ erros }` para entrada inválida; 409 para e-mail ou matrícula já cadastrados |
 | POST | `/api/auth/login` | Público | Recebe `identificador` (e-mail ou matrícula) e `senha`; 200 com dados públicos e cookie; 400 para entrada inválida; 401 para credenciais inválidas |
 | GET | `/api/auth/sessao` | Sessão válida | 200 com `{ usuario: { idUsuario } }`; 401 para sessão ausente ou expirada |
 | POST | `/api/auth/logout` | Não exige sessão válida | Invalida a sessão indicada e limpa o cookie; 204 sem corpo, inclusive se não houver sessão |
+
+Regras do cadastro: nome obrigatório (até 255 caracteres, salvo com `trim`); e-mail só `@edu.unifor.br`; matrícula `^[0-9]{2}[1-2][0-9]{4}$`; senha de 15 a 128 caracteres, sem `trim`, igual à confirmação, salva só como hash Argon2. A checagem de e-mail repetido não diferencia maiúsculas. Mensagens de 409: "Este e-mail já está em uso." ou "Esta matrícula já está cadastrada.".
 
 Login bem-sucedido retorna `{ mensagem, usuario }`, com `idUsuario`, `Nome` e `TipoUsuario`. O cookie `unifor_sid` contém um identificador opaco; a resposta não contém senha nem hash.
 
@@ -46,12 +49,6 @@ O perfil público contém somente `idUsuario`, `Nome`, `Email`, `Matricula` e `T
 - Lê `TipoUsuario` do banco a cada requisição (uma conta rebaixada perde o acesso na hora, sem novo login) e preenche `req.auth.tipoUsuario`.
 - Respostas: 401 se o usuário da sessão não existir; 403 `{ mensagem: "Acesso restrito ao administrador." }` para quem não é admin.
 - Toda rota marcada como "Administrador" abaixo deve usar esse middleware.
-
-## Cadastro planejado
-
-| Método | Rota | O que faz | Status |
-|---|---|---|---|
-| POST | `/api/auth/cadastro` | Cria aluno (RF02.12), validando e-mail institucional e campos obrigatórios | não implementada |
 
 ## Esportes planejados
 

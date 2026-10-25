@@ -38,7 +38,13 @@
 - Operações de perfil usam `/api/usuarios/me` e a identidade da sessão. O PUT exige nome e e-mail juntos; matrícula e tipo de usuário não são editáveis por ele.
 - A troca usa `/api/usuarios/me/senha`, exige a senha atual e uma nova senha de 15 a 128 caracteres com confirmação. Sucesso invalida as sessões, limpa o cookie e exige novo login. A política nova não rejeita a senha atual apenas por ter menos de 15 caracteres.
 - A consulta de perfil alimenta o estado compartilhado no frontend; nome e perfil não vêm mais do mock em Navbar, Home e Configurações. Salvar o perfil atualiza esse estado.
-- Cadastro, recuperação de senha e alinhamento do domínio por perfil no backend permanecem pendentes.
+- Recuperação de senha e alinhamento do domínio por perfil na edição de perfil (backend) permanecem pendentes.
+
+## Cadastro de aluno — decisões de 25/10/2026
+
+- O cadastro cria sempre `TipoUsuario = aluno`; o admin continua sendo criado só pelo seed ou direto no banco.
+- A senha do cadastro segue a mesma política da troca de senha: 15 a 128 caracteres, sem `trim`. A tela mostra "Mínimo de 15 caracteres." e mantém o indicador de força.
+- O cadastro não faz login automático: leva ao Login, que mostra "Conta criada. Faça login para continuar." (RF02.13).
 
 ## Autorização por perfil — decisões de 25/10/2026
 
@@ -53,6 +59,9 @@
 - Cadastro, e-mail fora do domínio institucional: **"Use seu e-mail institucional (@edu.unifor.br)"**
 - Cadastro, matrícula fora do padrão: **"Matrícula inválida. São 7 dígitos: ano (2), semestre (1 ou 2) e número (4). Ex.: 2312345"**
 - Cadastro, senha e confirmação não batem: **"Erro ao confirmar senha. Verifique os padrões solicitados."**
+- Cadastro e troca de senha, tamanho fora do padrão: **"A senha deve ter entre 15 e 128 caracteres."**
+- Cadastro, e-mail já usado: **"Este e-mail já está em uso."** · matrícula já usada: **"Esta matrícula já está cadastrada."**
+- Acesso de aluno a rota de admin na API: **"Acesso restrito ao administrador."**
 - Inscrição em esporte recusada (já inscrito ou vagas esgotadas): **"Erro, verifique se você já está inscrito no esporte ou se as vagas acabaram"**
 
 ## O que NÃO existe (já descartado em telas anteriores, não reintroduzir)

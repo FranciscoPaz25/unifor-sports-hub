@@ -1,6 +1,6 @@
 // Tela 01 — Login (RF01)
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { API_URL } from '../../../utils/api';
 import { homeDoPerfil } from '../../../utils/perfil';
 import './Login.css';
@@ -11,6 +11,8 @@ function Login() {
   const [mostrarSenha, setMostrarSenha] = useState(false);
   const [erro, setErro] = useState('');
   const navigate = useNavigate();
+  // Mensagem enviada por outra tela ao redirecionar para cá (ex.: "Conta criada" no Cadastro)
+  const mensagemSucesso = useLocation().state?.mensagem;
 
   const podeEnviar = email.trim() !== '' && senha.length > 0;
 
@@ -61,6 +63,7 @@ function Login() {
         <h1>Entrar</h1>
         <p className="login-subtitulo">Acesse com seu e-mail ou matrícula</p>
 
+        {mensagemSucesso && !erro && <p className="login-sucesso">{mensagemSucesso}</p>}
         {erro && <p className="login-erro">{erro}</p>}
 
         <label>

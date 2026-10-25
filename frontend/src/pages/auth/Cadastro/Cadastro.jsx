@@ -1,6 +1,8 @@
 // Tela 02 — Cadastro (RF02)
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { API_URL } from '../../../utils/api';
+import { validarEmailInstitucional } from '../../../utils/validacao';
 import './Cadastro.css';
 
 function calcularForcaSenha(senha) {
@@ -30,22 +32,28 @@ function Cadastro() {
   const [erroEmail, setErroEmail] = useState('');
   const [erroMatricula, setErroMatricula] = useState('');
   const [erroSenha, setErroSenha] = useState('');
+  const [erroGeral, setErroGeral] = useState('');
+  const [enviando, setEnviando] = useState(false);
 
   const forca = calcularForcaSenha(senha);
 
   const podeEnviar =
+    !enviando &&
     nome.trim() !== '' &&
     email.trim() !== '' &&
     matricula.trim() !== '' &&
-    senha.trim() !== '' &&
-    confirmarSenha.trim() !== '';
+    senha.length > 0 &&
+    confirmarSenha.length > 0;
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
+    if (enviando) return;
+    setErroGeral('');
 
     // RF02.5: domínio institucional
-    if (!email.endsWith('@edu.unifor.br')) {
-      setErroEmail('Use seu e-mail institucional (@edu.unifor.br)');
+    const erroDominio = validarEmailInstitucional(email, 'aluno');
+    if (erroDominio) {
+      setErroEmail(erroDominio);
       return;
     }
     setErroEmail('');
@@ -58,6 +66,12 @@ function Cadastro() {
     }
     setErroMatricula('');
 
+    // Mesma política de senha do backend: 15 a 128 caracteres, sem trim
+    if (senha.length < 15 || senha.length > 128) {
+      setErroSenha('A senha deve ter entre 15 e 128 caracteres.');
+      return;
+    }
+
     // RF02.10: senha e confirmação precisam bater
     if (senha !== confirmarSenha) {
       setErroSenha('Erro ao confirmar senha. Verifique os padrões solicitados.');
@@ -65,11 +79,31 @@ function Cadastro() {
     }
     setErroSenha('');
 
-    // TODO: substituir por chamada real ao backend (RF02.12) quando a API de cadastro existir
-    console.log('Novo cadastro:', { nome, email, matricula, senha });
+    // RF02.12: grava o aluno no banco
+    setEnviando(true);
+    try {
+      const resposta = await fetch(`${API_URL}/api/auth/cadastro`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome, email, matricula, senha, confirmarSenha }),
+      });
+      const dados = await resposta.json();
 
-    // RF02.13: redireciona para o login após o cadastro
-    navigate('/');
+      if (!resposta.ok) {
+        const mensagem = Array.isArray(dados.erros)
+          ? dados.erros.join(' ')
+          : dados.mensagem || 'Não foi possível criar a conta.';
+        setErroGeral(mensagem);
+        return;
+      }
+
+      // RF02.13: redireciona para o login, que mostra a confirmação
+      navigate('/', { replace: true, state: { mensagem: dados.mensagem } });
+    } catch {
+      setErroGeral('Não foi possível concluir o cadastro. Tente novamente.');
+    } finally {
+      setEnviando(false);
+    }
   }
 
   return (
@@ -79,6 +113,8 @@ function Cadastro() {
 
         <h1>Criar conta</h1>
         <p className="cadastro-subtitulo">Cadastre-se com seus dados de estudante</p>
+
+        {erroGeral && <p className="cadastro-erro">{erroGeral}</p>}
 
         <label>
           Nome completo
@@ -153,6 +189,7 @@ function Cadastro() {
               <span className="cadastro-forca-texto">{forca.label}</span>
             </>
           )}
+          <span className="cadastro-dica">Mínimo de 15 caracteres.</span>
         </label>
 
         <label>
@@ -186,7 +223,7 @@ function Cadastro() {
         </label>
 
         <button type="submit" className="cadastro-botao" disabled={!podeEnviar}>
-          Criar conta
+          {enviando ? 'Criando conta…' : 'Criar conta'}
         </button>
 
         <p className="cadastro-login-link">

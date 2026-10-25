@@ -94,6 +94,15 @@
   text-align: center;
 }
 
+.login-sucesso {
+  color: #1e7e34;
+  background: #e6f4ea;
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 13px;
+  text-align: center;
+}
+
 .login-cadastro-link {
   text-align: center;
   font-size: 13px;
