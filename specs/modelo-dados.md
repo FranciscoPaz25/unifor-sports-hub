@@ -98,11 +98,10 @@ Padrão adotado na API (25/10/2026): 1 = Segunda, 2 = Terça, 3 = Quarta, 4 = Qu
 - id: identificador autoincremento, chave primária (migration `20261025_inscricao_modalidade_id`). É o `:id` das rotas de inscrição e o `inscricao.id` do frontend.
 - ModalidadeEsportiva_idModalidade: referência à modalidade.
 - Usuario_idUsuario: referência ao usuário.
-- status: enum `em_analise`, `confirmada` ou `cancelada`; padrão `em_analise`.
-- data: data de criação, preenchida por padrão com o horário atual.
+- status: enum `em_analise`, `confirmada`, `cancelada` ou `rejeitada` (este último pela migration `20261025_inscricao_rejeitada`); padrão `em_analise`.
+- data: data do pedido (atualizada quando o aluno pede de novo).
 
-O índice único `inscricao_modalidade_UNIQUE` (modalidade + usuário) continua permitindo apenas um registro por usuário e modalidade.
-Uma nova solicitação após cancelamento precisa ter seu comportamento definido (por exemplo, reaproveitar o registro voltando para `em_analise`).
+O índice único `inscricao_modalidade_UNIQUE` (modalidade + usuário) continua permitindo apenas um registro por usuário e modalidade. Por isso, um novo pedido depois de `cancelada` ou `rejeitada` reaproveita o mesmo registro, que volta para `em_analise` (decisão de 25/10/2026).
 
 ### avaliar
 

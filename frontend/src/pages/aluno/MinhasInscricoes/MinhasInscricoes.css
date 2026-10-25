@@ -61,7 +61,8 @@
   color: #1f8a44;
 }
 
-.inscricao-status-cancelada {
+.inscricao-status-cancelada,
+.inscricao-status-rejeitada {
   background: #fdecea;
   color: #c0392b;
 }

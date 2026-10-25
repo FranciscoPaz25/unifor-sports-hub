@@ -1,6 +1,6 @@
 # Rotas de API — Unifor Sports Hub
 
-> Atualizado em 25/10/2026. Cadastro, autenticação, perfil próprio, autorização de admin, esportes e locais estão implementados. Inscrições continuam como planejamento. Todos os endereços usam o prefixo `/api`.
+> Atualizado em 25/10/2026. Cadastro, autenticação, perfil próprio, autorização de admin, esportes, locais e inscrições em esporte estão implementados. Todos os endereços usam o prefixo `/api`.
 
 ## Autenticação implementada
 
@@ -83,16 +83,40 @@ Formato de cada esporte (mesmos nomes que os antigos mocks, para as telas mudare
 |---|---|---|---|
 | GET | `/api/locais` | Sessão válida | 200 `{ locais: [{ id, nome, capacidade }] }` em ordem alfabética; alimenta o campo Local da tela 20 |
 
-## Inscrições em esporte planejadas
+## Inscrições em esporte implementadas
 
-| Método | Rota | O que faz | Status |
+Código em `backend/modules/inscricoes/`. `:id` = `inscricao_modalidade.id`. As rotas do aluno usam só a identidade da sessão: um aluno nunca vê nem altera inscrição de outro (recebe 404).
+
+| Método | Rota | Acesso | Comportamento e respostas |
 |---|---|---|---|
-| POST | `/api/inscricoes-esporte` | Aluno solicita inscrição, com status inicial `em_analise` (RF09) | não implementada |
-| GET | `/api/inscricoes-esporte` | Lista inscrições do usuário identificado pela sessão (RF10) | não implementada |
-| GET | `/api/inscricoes-esporte/pendentes` | Administrador consulta pendências (RF23) | não implementada |
-| PATCH | `/api/inscricoes-esporte/:id` | Administrador aceita ou rejeita inscrição (RF23.8) | não implementada; `:id` = `inscricao_modalidade.id` |
+| POST | `/api/inscricoes-esporte` | Aluno | Recebe `{ idEsporte }`; 201 `{ mensagem, inscricao }` com status `em_analise`; 400 sem esporte; 403 se for admin; 404 esporte inexistente; 409 "Erro, verifique se você já está inscrito no esporte ou se as vagas acabaram" se já houver inscrição em análise/confirmada ou se não houver vagas (tela 09) |
+| GET | `/api/inscricoes-esporte` | Sessão | 200 `{ inscricoes }` do aluno da sessão, mais recentes primeiro (tela 10) |
+| GET | `/api/inscricoes-esporte/:id` | Sessão | 200 `{ inscricao }` se for do aluno da sessão; 404 caso contrário (tela 11) |
+| PATCH | `/api/inscricoes-esporte/:id/cancelar` | Sessão | Cancela inscrição `em_analise` ou `confirmada` do próprio aluno; 200; 404; 409 "Esta inscrição não pode ser cancelada." (tela 11) |
+| GET | `/api/inscricoes-esporte/pendentes` | Admin | 200 `{ inscricoes }` em análise, mais antigas primeiro, com `aluno: { nome, matricula }` (tela 23) |
+| PATCH | `/api/inscricoes-esporte/:id` | Admin | Recebe `{ status: "confirmada" \| "rejeitada" }`; 200; 400 status inválido; 404; 409 "Esta inscrição já foi analisada." ou "Não há vagas disponíveis para confirmar esta inscrição." (tela 23) |
 
-A tabela `inscricao_modalidade` tem chave primária `id` (desde 25/10/2026), usada como identificador da inscrição na API; o par modalidade + usuário continua único. O usuário das operações pessoais deve vir da sessão; parâmetros do cliente não substituem autorização.
+Formato de cada inscrição:
+
+```json
+{
+  "id": 4, "status": "em_analise", "criadoEm": "2026-10-25T18:44:00.000Z",
+  "esporte": {
+    "id": 1, "nome": "Xadrez", "local": "Ginásio Poliesportivo",
+    "diasSemana": "Terça", "horarioInicio": "10:00", "horarioFim": "11:00",
+    "responsavel": "Prof X", "capacidadeMaxima": 1
+  },
+  "aluno": { "nome": "Aluno 1", "matricula": "2312341" }
+}
+```
+
+`aluno` só aparece nas rotas do admin.
+
+### Regras das inscrições (decisões de 25/10/2026)
+- Status: `em_analise` → `confirmada` ou `rejeitada` (admin); `em_analise`/`confirmada` → `cancelada` (aluno).
+- Sem vagas (confirmadas ≥ capacidade), o pedido é bloqueado e o admin não consegue confirmar.
+- Cancelada ou rejeitada não impede novo pedido: o mesmo registro volta para `em_analise` com a data atualizada (o par esporte + aluno é único).
+- Controle de vagas seguro contra requisições simultâneas: a transação trava a linha do esporte (`SELECT ... FOR UPDATE`) e usa isolamento `READ COMMITTED`. Testado com duas confirmações ao mesmo tempo para a última vaga: só uma passa.
 
 ## Rotas de diagnóstico
 

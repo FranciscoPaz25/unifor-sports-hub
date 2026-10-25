@@ -149,6 +149,8 @@ async function excluirEsporte(idModalidade) {
 }
 
 module.exports = {
+    formatarDias,
+    formatarHorario,
     listarEsportes,
     buscarEsporte,
     criarEsporte,

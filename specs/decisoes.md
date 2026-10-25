@@ -22,7 +22,10 @@
 ## Regras de negócio
 
 - **ADM não tem tela de cadastro** — o acesso dele é criado direto no banco de dados.
-- **Fluxo de inscrição em esporte:** aluno solicita → status `em_analise` (tag amarela) → administrador aceita ou rejeita pela tela de Gerenciar inscrições (RF23) → card some da lista do ADM e o status do aluno atualiza em Minhas Inscrições (RF10).
+- **Fluxo de inscrição em esporte:** aluno solicita → status `em_analise` (tag amarela) → administrador aceita (`confirmada`) ou rejeita (`rejeitada`) pela tela de Gerenciar inscrições (RF23) → card some da lista do ADM e o status do aluno atualiza em Minhas Inscrições (RF10).
+- Rejeição aparece para o aluno como **"Rejeitada"**, diferente de "Cancelada" (cancelamento feito pelo próprio aluno). Decisão de 25/10/2026.
+- Depois de cancelada ou rejeitada, o aluno pode pedir de novo; a inscrição volta para "Em análise". Decisão de 25/10/2026.
+- Sem vagas, o pedido de inscrição é bloqueado e o admin não consegue aceitar além da capacidade. Só inscrições confirmadas ocupam vaga. Decisão de 25/10/2026.
 - Não existe confirmação automática de inscrição em esporte — toda inscrição nasce `em_analise`.
 - Cancelamento de inscrição (pelo aluno, em esporte ou evento confirmado) age imediatamente, sem popup de confirmação.
 - "Excluir" (ações do ADM em esporte/evento) age direto, sem popup de confirmação.

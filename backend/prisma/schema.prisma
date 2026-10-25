@@ -125,6 +125,7 @@ enum inscricao_modalidade_status {
   em_analise
   confirmada
   cancelada
+  rejeitada
 }
 
 enum avaliar_Status {

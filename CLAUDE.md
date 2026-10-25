@@ -2,7 +2,7 @@
 
 Contexto para o Claude Code (e para qualquer pessoa do time) continuar o projeto. Leia antes de qualquer tarefa. Este arquivo resume e aponta para a documentação viva em `specs/` — em caso de conflito, **o código e `specs/` valem mais que este resumo**; corrija este arquivo quando notar divergência.
 
-> Atualizado em 25/10/2026, com o módulo de esportes.
+> Atualizado em 25/10/2026, com o módulo de inscrições.
 
 ## 1. O projeto
 
@@ -64,6 +64,7 @@ backend/
     usuarios/                  # /me, editar perfil, trocar senha
     esportes/                  # listar, detalhar, criar (admin), excluir (admin)
     locais/                    # GET /api/locais (opções do campo Local)
+    inscricoes/                # pedir, listar/ver/cancelar as próprias; pendentes e aceitar/rejeitar (admin)
   prisma/schema.prisma, prisma/migrations/, prisma/seed.cjs
   scripts/testar-sessao.cjs    # teste manual da lógica de sessão (assert)
 frontend/src/
@@ -71,7 +72,7 @@ frontend/src/
   components/                  # Navbar, Layout, Card, RotaProtegida, ExigirPerfil
   pages/auth|aluno|admin|compartilhadas/<Tela>/<Tela>.jsx + .css
   popups/<Popup>/
-  mocks/                       # esportes, eventos, inscricoes, resenhas, usuario (ainda usados)
+  mocks/                       # só o que não tem backend: eventos, inscrições em evento, resenhas (e esportes usados por Aceitar resenhas)
   utils/api.js                 # API_URL, chamarApi(caminho, { metodo, corpo }), mensagemDeErro
   utils/perfil.js              # homeDoPerfil(tipo)
   utils/validacao.js           # e-mail institucional por perfil
@@ -113,7 +114,8 @@ Ao terminar qualquer entrega: atualize `status.md`, registre em `historico.md` e
 
 (Lista completa em `specs/decisoes.md`.)
 
-- Toda inscrição em esporte nasce `em_analise`; só o admin confirma ou rejeita (tela 23).
+- Toda inscrição em esporte nasce `em_analise`; só o admin confirma (`confirmada`) ou rejeita (`rejeitada`) na tela 23. O aluno cancela (`cancelada`). Após cancelada/rejeitada, pode pedir de novo (o registro volta para `em_analise`).
+- Vagas = capacidade − inscrições confirmadas. Sem vaga, o pedido é bloqueado e o admin não confirma. Qualquer código que mexa em vagas deve usar a mesma transação com trava (`inscricao.service.cjs`).
 - Cancelar inscrição (aluno) e Excluir esporte/evento (admin) agem direto, **sem** popup. Sair da conta tem popup (tela 18).
 - Detalhes do esporte (tela 08) é compartilhada: aluno vê "Inscrever-se", admin vê "Excluir".
 - Tag de vagas sempre "**[n] vagas disponíveis**".
@@ -125,28 +127,25 @@ Ao terminar qualquer entrega: atualize `status.md`, registre em `historico.md` e
 
 ## 9. Estado atual (25/10/2026)
 
-**Integrado ao banco:** Cadastro (02), Login (01), Home (04: usuário e esportes), Esportes (05), Detalhes do esporte (08, inclusive Excluir), Configurações (17), Sair da conta (18), Criar esporte (20, sem salvar imagem), autorização por perfil (frontend e backend).
+**Integrado ao banco:** Cadastro (02), Login (01), Home (04: usuário e esportes), Esportes (05), Detalhes do esporte (08, inclusive Excluir), Popup inscrição (09), Minhas inscrições (10: esportes), Detalhes da inscrição (11), Configurações (17), Sair da conta (18), Criar esporte (20, sem salvar imagem), Gerenciar inscrições (23), autorização por perfil (frontend e backend). O fluxo central do MVP funciona de ponta a ponta.
 
-**Visual pronto, ainda em mocks:** Home (04: eventos), Popup inscrição (09: mostra o esporte real, mas grava no mock), Minhas inscrições (10), Detalhes da inscrição (11), Gerência (19), Aceitar resenhas (21), Criar evento (22), Gerenciar inscrições (23). Esqueceu a senha (03) é só visual (fora do MVP no backend). Essas telas ainda importam `mocks/esportes.js` — remova o mock quando o módulo de inscrições estiver pronto.
+**Visual pronto, ainda em mocks:** Home (04: eventos), Minhas inscrições (10: eventos), Gerência (19, é só um menu), Aceitar resenhas (21), Criar evento (22). Esqueceu a senha (03) é só visual (fora do MVP no backend).
 
 **Não iniciadas:** Resultados de busca (06), Popup de filtros (07), Resenhas (12), Popup de resenha (13), Eventos (14), Detalhes do evento (15), Popup inscrição em evento (16), Home do admin (`/admin/home` mostra "Em construção").
 
 ## 10. Pendências conhecidas
 
-1. Rotas de inscrições (planejadas em `api-rotas.md`).
-2. Controle de vagas no backend seguro contra requisições simultâneas.
-3. Home do admin.
-4. Alinhar domínio de e-mail por perfil na edição de perfil (backend aceita `@unifor.br` para aluno).
-5. CSRF e limite de tentativas de login (antes de qualquer uso real).
-6. Agendar `limparSessoesInativas`.
-7. Testes automatizados: `npm test` do backend é placeholder.
-8. Armazenamento de imagens (não existe `imagem_url`; Criar esporte não faz upload real).
-9. Questões em aberto em `specs/historico.md` (nova inscrição após cancelamento, status "rejeitada", "Esportes" na navbar do admin, status de resenhas) — **pergunte ao usuário antes de implementar algo que dependa delas.**
+1. Home do admin (última tela essencial).
+2. Alinhar domínio de e-mail por perfil na edição de perfil (backend aceita `@unifor.br` para aluno).
+3. CSRF e limite de tentativas de login (antes de qualquer uso real).
+4. Agendar `limparSessoesInativas`.
+5. Testes automatizados: `npm test` do backend é placeholder.
+6. Armazenamento de imagens (não existe `imagem_url`; Criar esporte não faz upload real).
+7. Questões em aberto em `specs/historico.md` ("Esportes" na navbar do admin, status de resenhas) — **pergunte ao usuário antes de implementar algo que dependa delas.**
 
 ## 11. Próximos passos
 
 Ordem do time (autenticação → esportes → inscrições → configurações), considerando o que já foi feito:
 
-1. Inscrições: `POST`, `GET` (do usuário), cancelar, `GET /pendentes`, `PATCH /:id` → ligar telas 09, 10, 11, 23, com checagem de vagas em transação. Use `chamarApi` nas telas e `autenticar, exigirAdmin` nas rotas do admin.
-2. Home do admin.
-3. Depois, conforme o tempo: resenhas (12, 13, 21), busca/filtros (06, 07), eventos (14, 15, 16, 22).
+1. Home do admin (`/admin/home`, hoje "Em construção").
+2. Depois, conforme o tempo: resenhas (12, 13, 21), busca/filtros (06, 07), eventos (14, 15, 16, 22).
