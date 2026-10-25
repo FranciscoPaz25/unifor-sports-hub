@@ -294,3 +294,12 @@
 .detalhes-ver-todas:hover {
   text-decoration: underline;
 }
+
+.detalhes-erro {
+  color: #c0392b;
+  background: #fdecea;
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 13px;
+  text-align: center;
+}

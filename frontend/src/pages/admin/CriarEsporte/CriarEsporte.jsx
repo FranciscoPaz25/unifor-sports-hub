@@ -1,32 +1,28 @@
 // Tela 20 — Criar esporte (RF20)
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { esportes } from '../../../mocks/esportes';
+import { chamarApi, mensagemDeErro } from '../../../utils/api';
 import './CriarEsporte.css';
 
 const categorias = ['Coletivo', 'Individual', 'Luta', 'Aquático', 'Atletismo'];
+// numero = DiaSemana no banco (1 = Segunda ... 7 = Domingo)
 const diasDaSemana = [
-  { curto: 'Seg', nome: 'Segunda' },
-  { curto: 'Ter', nome: 'Terça' },
-  { curto: 'Qua', nome: 'Quarta' },
-  { curto: 'Qui', nome: 'Quinta' },
-  { curto: 'Sex', nome: 'Sexta' },
-  { curto: 'Sáb', nome: 'Sábado' },
-  { curto: 'Dom', nome: 'Domingo' },
+  { curto: 'Seg', nome: 'Segunda', numero: 1 },
+  { curto: 'Ter', nome: 'Terça', numero: 2 },
+  { curto: 'Qua', nome: 'Quarta', numero: 3 },
+  { curto: 'Qui', nome: 'Quinta', numero: 4 },
+  { curto: 'Sex', nome: 'Sexta', numero: 5 },
+  { curto: 'Sáb', nome: 'Sábado', numero: 6 },
+  { curto: 'Dom', nome: 'Domingo', numero: 7 },
 ];
 
 const TIPOS_ACEITOS = ['image/png', 'image/jpeg', 'image/webp'];
 const TAMANHO_MAXIMO = 5 * 1024 * 1024; // 5MB
 
-// ['Segunda', 'Quarta', 'Sexta'] -> "Segunda, Quarta e Sexta", na ordem da semana
-function formatarDias(selecionados) {
-  const ordenados = diasDaSemana.map((d) => d.nome).filter((nome) => selecionados.includes(nome));
-  if (ordenados.length <= 1) return ordenados.join('');
-  return `${ordenados.slice(0, -1).join(', ')} e ${ordenados[ordenados.length - 1]}`;
-}
-
 function CriarEsporte() {
   const navigate = useNavigate();
+  const [locais, setLocais] = useState([]);
+  const [enviando, setEnviando] = useState(false);
 
   const [imagem, setImagem] = useState(null);
   const [nome, setNome] = useState('');
@@ -41,6 +37,20 @@ function CriarEsporte() {
 
   const [erro, setErro] = useState('');
   const [sucesso, setSucesso] = useState('');
+
+  // Opções do campo Local vêm do banco (GET /api/locais)
+  useEffect(() => {
+    async function carregarLocais() {
+      try {
+        const { ok, dados } = await chamarApi('/api/locais');
+        if (ok) setLocais(dados.locais);
+        else setErro(mensagemDeErro(dados, 'Não foi possível carregar os locais.'));
+      } catch {
+        setErro('Não foi possível carregar os locais.');
+      }
+    }
+    carregarLocais();
+  }, []);
 
   function toggleDia(dia) {
     setDiasSelecionados((atual) =>
@@ -73,15 +83,16 @@ function CriarEsporte() {
     nome.trim() !== '' &&
     descricao.trim() !== '' &&
     categoria !== '' &&
-    local.trim() !== '' &&
+    local !== '' &&
     diasSelecionados.length > 0 &&
     horarioInicio !== '' &&
     horarioFim !== '' &&
     responsavel.trim() !== '' &&
     capacidadeMaxima !== '';
 
-  function handleCadastrar(e) {
+  async function handleCadastrar(e) {
     e.preventDefault();
+    if (enviando) return;
     setSucesso('');
 
     // RF20.10
@@ -95,24 +106,33 @@ function CriarEsporte() {
     }
     setErro('');
 
-    // RF20.15 — TODO: substituir por POST /esportes quando o backend existir
-    esportes.push({
-      id: Math.max(0, ...esportes.map((esp) => esp.id)) + 1,
-      nome: nome.trim(),
-      categoria,
-      local: local.trim(),
-      vagas: Number(capacidadeMaxima),
-      capacidadeMaxima: Number(capacidadeMaxima),
-      diasSemana: formatarDias(diasSelecionados),
-      horarioInicio,
-      horarioFim,
-      responsavel: responsavel.trim(),
-      descricao: descricao.trim(),
-      imagem: imagem ? imagem.url : null,
-      notaMedia: 0,
-      totalAvaliacoes: 0,
-      avaliacoes: [],
-    });
+    // RF20.15 — grava no banco. A imagem ainda não é enviada: o modelo não tem onde guardá-la.
+    setEnviando(true);
+    try {
+      const { ok, dados } = await chamarApi('/api/esportes', {
+        metodo: 'POST',
+        corpo: {
+          nome,
+          descricao,
+          categoria,
+          idLocal: Number(local),
+          dias: diasDaSemana.filter((d) => diasSelecionados.includes(d.nome)).map((d) => d.numero),
+          horarioInicio,
+          horarioFim,
+          responsavel,
+          capacidadeMaxima: Number(capacidadeMaxima),
+        },
+      });
+      if (!ok) {
+        setErro(mensagemDeErro(dados, 'Não foi possível cadastrar o esporte.'));
+        return;
+      }
+    } catch {
+      setErro('Não foi possível cadastrar o esporte.');
+      return;
+    } finally {
+      setEnviando(false);
+    }
 
     // RF20.16
     setSucesso('Esporte cadastrado com sucesso.');
@@ -156,7 +176,7 @@ function CriarEsporte() {
                   </svg>
                 </span>
                 <strong>Adicionar imagem</strong>
-                <span className="criar-esporte-hint">PNG, JPG ou WEBP até 5MB (recomendado 1200x675)</span>
+                <span className="criar-esporte-hint">PNG, JPG ou WEBP até 5MB (recomendado 1200x675) · por enquanto a imagem não é salva</span>
               </>
             )}
           </label>
@@ -193,12 +213,12 @@ function CriarEsporte() {
 
           <label>
             Local
-            <input
-              type="text"
-              value={local}
-              onChange={(e) => setLocal(e.target.value)}
-              placeholder="Ex: Ginásio Poliesportivo - Quadra 2"
-            />
+            <select value={local} onChange={(e) => setLocal(e.target.value)}>
+              <option value="">Selecione um local</option>
+              {locais.map((l) => (
+                <option key={l.id} value={l.id}>{l.nome}</option>
+              ))}
+            </select>
           </label>
 
           <div className="criar-esporte-campo">
@@ -258,8 +278,8 @@ function CriarEsporte() {
             <button type="button" className="criar-esporte-cancelar" onClick={() => navigate('/admin/gerencia')}>
               Cancelar
             </button>
-            <button type="submit" className="criar-esporte-confirmar" disabled={!camposObrigatoriosPreenchidos}>
-              Cadastrar esporte
+            <button type="submit" className="criar-esporte-confirmar" disabled={!camposObrigatoriosPreenchidos || enviando}>
+              {enviando ? 'Cadastrando…' : 'Cadastrar esporte'}
             </button>
           </div>
         </form>

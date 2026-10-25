@@ -77,13 +77,21 @@ Um local pode estar associado a várias modalidades e eventos.
 Os dias são armazenados em modalidade_dia.
 O modelo atual usa o mesmo intervalo de horários para todos os dias da modalidade.
 
+Regras usadas pela API de esportes (25/10/2026):
+- `Usuario_idAdmin` recebe o admin da sessão que criou o esporte.
+- Vagas disponíveis = `Capacidade` − inscrições com status `confirmada` (inscrições `em_analise` não ocupam vaga).
+- Nota média e total de avaliações consideram só `avaliar.Status = confirmada` (resenhas aprovadas).
+- Horários trafegam como texto `HH:MM`; no banco são TIME, gravados como UTC para não sofrer fuso.
+- Excluir uma modalidade apaga em cascata `modalidade_dia`, `inscricao_modalidade` e `avaliar` (FKs `ON DELETE CASCADE`).
+- Não há coluna de imagem: Criar esporte mostra a pré-visualização, mas a imagem não é salva.
+
 ### modalidade_dia
 
 - ModalidadeEsportiva_idModalidade: referência à modalidade.
 - DiaSemana: inteiro entre 1 e 7.
 
 A chave composta impede repetir o mesmo dia para uma modalidade.
-A correspondência dos números com os dias da semana precisa ser padronizada na API.
+Padrão adotado na API (25/10/2026): 1 = Segunda, 2 = Terça, 3 = Quarta, 4 = Quinta, 5 = Sexta, 6 = Sábado, 7 = Domingo. A API devolve `dias` (números) e `diasSemana` (texto, ex.: "Segunda, Quarta e Sexta").
 
 ### inscricao_modalidade
 
