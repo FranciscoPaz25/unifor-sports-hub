@@ -1,6 +1,7 @@
 // Tela 01 — Login (RF01)
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { API_URL } from '../../../utils/api';
 import './Login.css';
 
 function Login() {
@@ -26,7 +27,7 @@ function Login() {
     }
 
     try {
-      const resposta = await fetch('http://192.168.15.7:3000/api/auth/login', {
+      const resposta = await fetch(`${API_URL}/api/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -82,12 +82,19 @@ Preencha com suas senhas locais:
 MYSQL_ROOT_PASSWORD=defina_uma_senha_para_root
 MYSQL_PASSWORD=defina_outra_senha_para_aplicacao
 DATABASE_URL="mysql://unifor_app:defina_outra_senha_para_aplicacao@127.0.0.1:3308/unifor_hub"
+CORS_ORIGINS=http://localhost:5173
 ```
 
 - MYSQL_ROOT_PASSWORD: senha administrativa do MySQL.
 - MYSQL_PASSWORD: senha do usuário unifor_app.
 - DATABASE_URL: conexão utilizada pelo Prisma.
 - A senha da URL deve corresponder a MYSQL_PASSWORD.
+- CORS_ORIGINS: endereços do frontend aceitos pelo backend, separados por vírgula.
+
+O frontend lê o endereço do backend de `VITE_API_URL` (padrão `http://localhost:3000`).
+Para mudar, copie `frontend/.env.example` para `frontend/.env`.
+Para acessar pela rede local, use o IP da máquina em `VITE_API_URL` e inclua
+`http://<SEU_IP>:5173` em `CORS_ORIGINS`.
 
 Caracteres especiais da senha precisam ser codificados na URL.
 Por exemplo, @ vira %40 somente dentro de DATABASE_URL.
@@ -155,8 +162,10 @@ Referência: [migrations do Prisma 7](https://www.prisma.io/docs/orm/v7/prisma-m
 
 ```bash
 cd backend
-node server.js
+npm run dev
 ```
+
+O backend importa o Prisma Client gerado em TypeScript, por isso roda com `tsx` (`npm run dev`), e não com `node server.js`.
 
 **6. Em outro terminal, rode o frontend** (porta 5173):
 

@@ -1,6 +1,6 @@
 # Status atual — Unifor Sports Hub
 
-> Atualizar esta tabela conforme as telas avançam. Última atualização: 21/10/2026.
+> Atualizar esta tabela conforme as telas avançam. Última atualização: 25/10/2026.
 
 ## Onde fica cada tela
 
@@ -32,14 +32,14 @@ Numeração igual à do documento do projeto (protótipo de baixa fidelidade). A
 | 22 | Criar evento | `pages/admin/CriarEvento/` |
 | 23 | Gerenciar inscrições | `pages/admin/GerenciarInscricoes/` |
 
-`components/` guarda só peças reutilizáveis (Navbar, Layout, Card).
+`components/` guarda só peças reutilizáveis (Navbar, Layout, Card, RotaProtegida).
 
 ## Grupo essencial (backend + banco reais)
 
 | Tela | Visual (React) | Conectado ao backend/banco |
 |---|---|---|
 | RF01 Login | ✅ pronto, com validação e mensagens de erro | ✅ `POST /api/auth/login`, senha verificada com Argon2 e sessão em cookie; redireciona para `/home` |
-| RF02 Cadastro | ✅ pronto (validação de e-mail institucional, força de senha, confirmação) | ❌ cadastro é `console.log`, aguardando `POST /auth/cadastro` |
+| RF02 Cadastro | ✅ pronto (validação de e-mail institucional, matrícula de 7 dígitos, força de senha, confirmação) | ❌ cadastro é `console.log`, aguardando `POST /api/auth/cadastro` |
 | RF04 Home | ✅ pronto (saudação, busca, destaque de esportes e eventos) | 🟡 usuário real por `GET /api/usuarios/me`; esportes e eventos continuam em mocks |
 | RF05 Esportes | ✅ pronto (catálogo completo, busca) | ❌ usa `mocks/esportes.js` |
 | RF08 Detalhes do esporte | ✅ pronto (nota, informações, avaliações, variação ADM "Excluir") | ❌ usa `mocks/esportes.js` |
@@ -91,6 +91,9 @@ Numeração igual à do documento do projeto (protótipo de baixa fidelidade). A
 | Prisma | ✅ versão 7.10.1, schema com oito tabelas e configuração por `DATABASE_URL` |
 | Histórico de migrations | ✅ `0_init` registrada como aplicada |
 | Correção da matrícula | 🟡 migration `20261018_corrige_matricula` criada; confirmar aplicação |
+| `id` em `inscricao_modalidade` | ⬜ decidido adicionar coluna `id` autoincremento (o frontend já usa `inscricao.id`); migration ainda não criada |
+| Seed (dados iniciais) | ⬜ falta script com locais e um usuário admin — sem eles não dá pra criar esporte |
+| Endereços da API e CORS | ✅ frontend usa `VITE_API_URL` (`utils/api.js`); backend lê `CORS_ORIGINS` do `.env` — padrão `localhost` |
 | Backend ↔ banco | ✅ cliente Prisma compartilhado em `backend/lib/prisma.cjs`; consulta e atualização de usuários |
 | Sessões | ✅ em memória, uma por usuário, expiração após 15 minutos de inatividade; reinício exige novo login |
 | Proteção de páginas | 🟡 consulta perfil antes de renderizar; autorização administrativa ainda não implementada |
@@ -98,7 +101,9 @@ Numeração igual à do documento do projeto (protótipo de baixa fidelidade). A
 ## Resumo rápido
 
 - **Telas essenciais com interface implementada:** 11 de 11; integração de esportes, eventos, inscrições e administração ainda pendente.
-- **"Sempre fácil" prontas:** 1 de 3 — faltam RF03 e RF11.
+- **"Sempre fácil" com interface pronta:** 3 de 3; RF18 integrado, RF11 ainda em mocks, RF03 fora do MVP no backend.
+- **Extras já prontos (visual):** RF21 Aceitar resenhas e RF22 Criar evento.
+- **Próxima etapa:** migration do `id` em `inscricao_modalidade` e seed; depois cadastro → esportes → inscrições.
 - **Entrega atual:** autenticação por sessão, logout e gerenciamento do próprio perfil integrados ao MySQL.
 - **Cadastro e recuperação de senha:** não implementados no backend.
 

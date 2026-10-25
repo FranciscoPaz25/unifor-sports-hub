@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
+import { API_URL } from '../../utils/api';
 
 function RotaProtegida() {
     const [status, setStatus] = useState('verificando');
@@ -11,7 +12,7 @@ function RotaProtegida() {
         async function verificarSessao() {
             try {
                 const resposta = await fetch(
-                    'http://192.168.15.7:3000/api/usuarios/me',
+                    `${API_URL}/api/usuarios/me`,
                     {
                         credentials: 'include',
                         signal: controller.signal,

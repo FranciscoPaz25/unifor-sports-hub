@@ -2,6 +2,7 @@
 import { useNavigate } from 'react-router-dom';
 import './PopupSairConta.css';
 import { useState } from 'react';
+import { API_URL } from '../../utils/api';
 
 function PopupSairConta({ onClose }) {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ function PopupSairConta({ onClose }) {
 
     try {
       const resposta = await fetch(
-        'http://192.168.15.7:3000/api/auth/logout',
+        `${API_URL}/api/auth/logout`,
         {
           method: 'POST',
           credentials: 'include',
