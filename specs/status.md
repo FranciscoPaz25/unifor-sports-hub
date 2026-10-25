@@ -91,8 +91,8 @@ Numeração igual à do documento do projeto (protótipo de baixa fidelidade). A
 | Prisma | ✅ versão 7.10.1, schema com oito tabelas e configuração por `DATABASE_URL` |
 | Histórico de migrations | ✅ `0_init` registrada como aplicada |
 | Correção da matrícula | 🟡 migration `20261018_corrige_matricula` criada; confirmar aplicação |
-| `id` em `inscricao_modalidade` | ⬜ decidido adicionar coluna `id` autoincremento (o frontend já usa `inscricao.id`); migration ainda não criada |
-| Seed (dados iniciais) | ⬜ falta script com locais e um usuário admin — sem eles não dá pra criar esporte |
+| `id` em `inscricao_modalidade` | ✅ migration `20261025_inscricao_modalidade_id`: `id` autoincremento como chave primária; par modalidade + usuário continua único |
+| Seed (dados iniciais) | ✅ `npm run seed`: seis locais e um admin (dados em `SEED_ADMIN_*` no `.env`); pode ser repetido sem duplicar |
 | Endereços da API e CORS | ✅ frontend usa `VITE_API_URL` (`utils/api.js`); backend lê `CORS_ORIGINS` do `.env` — padrão `localhost` |
 | Backend ↔ banco | ✅ cliente Prisma compartilhado em `backend/lib/prisma.cjs`; consulta e atualização de usuários |
 | Sessões | ✅ em memória, uma por usuário, expiração após 15 minutos de inatividade; reinício exige novo login |
@@ -103,7 +103,7 @@ Numeração igual à do documento do projeto (protótipo de baixa fidelidade). A
 - **Telas essenciais com interface implementada:** 11 de 11; integração de esportes, eventos, inscrições e administração ainda pendente.
 - **"Sempre fácil" com interface pronta:** 3 de 3; RF18 integrado, RF11 ainda em mocks, RF03 fora do MVP no backend.
 - **Extras já prontos (visual):** RF21 Aceitar resenhas e RF22 Criar evento.
-- **Próxima etapa:** migration do `id` em `inscricao_modalidade` e seed; depois cadastro → esportes → inscrições.
+- **Próxima etapa:** autorização de admin e redirecionamento por perfil; depois cadastro → esportes → inscrições.
 - **Entrega atual:** autenticação por sessão, logout e gerenciamento do próprio perfil integrados ao MySQL.
 - **Cadastro e recuperação de senha:** não implementados no backend.
 

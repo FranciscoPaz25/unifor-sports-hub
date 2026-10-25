@@ -54,14 +54,15 @@ model inscricao_evento {
 }
 
 model inscricao_modalidade {
-  status                           inscricao_modalidade_status @default(em_analise)
+  id                               Int                         @id @default(autoincrement())
+  status                          inscricao_modalidade_status @default(em_analise)
   data                             DateTime                    @default(now()) @db.DateTime(0)
   ModalidadeEsportiva_idModalidade Int
   Usuario_idUsuario                Int
   usuario                          usuario                     @relation(fields: [Usuario_idUsuario], references: [idUsuario], onDelete: NoAction, onUpdate: NoAction, map: "fk_id_usuario")
   modalidade_esportiva             modalidade_esportiva        @relation(fields: [ModalidadeEsportiva_idModalidade], references: [idModalidade], onDelete: Cascade, onUpdate: NoAction, map: "fk_inscricao_modalidade_modalidade")
 
-  @@id([ModalidadeEsportiva_idModalidade, Usuario_idUsuario])
+  @@unique([ModalidadeEsportiva_idModalidade, Usuario_idUsuario], map: "inscricao_modalidade_UNIQUE")
   @@index([Usuario_idUsuario], map: "fk_id_usuario_idx")
 }
 

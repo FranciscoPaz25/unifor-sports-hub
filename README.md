@@ -148,6 +148,18 @@ npx prisma migrate status
 - generate gera o Prisma Client em backend/generated/prisma.
 - migrate status mostra a situação do histórico.
 
+Depois, crie os dados iniciais (locais e o usuário administrador):
+
+```bash
+npm run seed
+```
+
+Antes, defina no backend/.env as variáveis `SEED_ADMIN_*` (ver .env.example).
+A senha do admin (`SEED_ADMIN_SENHA`) é obrigatória e precisa ter de 15 a
+128 caracteres. Para entrar como admin, use `SEED_ADMIN_EMAIL` ou
+`SEED_ADMIN_MATRICULA` com essa senha. O seed pode ser executado de novo
+sem duplicar dados.
+
 
 Se você já possui tabelas criadas manualmente e ainda não tem histórico
 do Prisma, confira o procedimento de baseline antes de aplicar migrations.
