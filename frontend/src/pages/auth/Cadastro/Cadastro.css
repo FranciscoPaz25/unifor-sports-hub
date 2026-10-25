@@ -63,6 +63,22 @@
   cursor: pointer;
 }
 
+.cadastro-erro {
+  color: #c0392b;
+  background: #fdecea;
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 13px;
+  text-align: center;
+}
+
+.cadastro-dica {
+  color: #666;
+  font-size: 12px;
+  font-weight: normal;
+  margin-top: 2px;
+}
+
 .cadastro-campo-erro {
   color: #c0392b;
   font-size: 12px;
