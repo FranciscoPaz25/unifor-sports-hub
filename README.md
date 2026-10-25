@@ -28,6 +28,8 @@ Toda a documentação técnica viva fica na pasta [`specs/`](./specs):
 | [`specs/api-rotas.md`](./specs/api-rotas.md) | Rotas de API, planejadas e implementadas |
 | [`specs/status.md`](./specs/status.md) | O que já está pronto, por tela — **comece por aqui** |
 | [`specs/decisoes.md`](./specs/decisoes.md) | Regras fixas de UI e de negócio que valem para o projeto todo |
+| [`specs/historico.md`](./specs/historico.md) | O que entrou na `main`, quando e por quê; questões em aberto |
+| [`CLAUDE.md`](./CLAUDE.md) | Resumo do projeto e convenções para quem usa o Claude Code (também serve como visão geral rápida) |
 
 ## Stack
 
@@ -220,13 +222,58 @@ O volume mantém os dados entre as execuções.
 A opção -v também remove o volume e seus dados; não a utilize para
 apenas parar o ambiente.
 
-> O backend ainda não está conectado a um banco de dados — hoje só expõe uma rota de teste (`GET /api/teste`) para confirmar a comunicação entre frontend e backend.
+**Depois de atualizar a sua branch com a `main` (git pull / merge)**
+
+Quando chegam mudanças de outra pessoa, rode dentro de `backend`:
+
+```bash
+npm install
+npx prisma migrate deploy
+npx prisma generate
+```
+
+- `npm install` instala bibliotecas novas (ex.: o `argon2` entrou em 21/10).
+- `migrate deploy` aplica no seu banco as mudanças de tabela que ainda não rodaram.
+- `generate` atualiza o Prisma Client para o schema novo.
+
+Confira também se o seu `backend/.env` tem todas as variáveis do `.env.example`
+(ex.: `CORS_ORIGINS` e `SEED_ADMIN_*` foram adicionadas em 25/10). Se o banco
+ainda não tiver os locais e o admin, rode `npm run seed`. No frontend, rode
+`npm install` dentro de `frontend` quando o `package.json` dele mudar.
+
+**Contas para testar**
+
+- Admin: o criado pelo seed (`SEED_ADMIN_EMAIL` ou `SEED_ADMIN_MATRICULA` com `SEED_ADMIN_SENHA`).
+- Aluno: crie pela tela de Cadastro (`/cadastro`), com e-mail `@edu.unifor.br`.
 
 ## Fluxo de trabalho no Git
 
 - `main` — branch estável, integrada pelo time.
 - Cada integrante trabalha na própria branch (ex.: `francisco-dev`), dá push e integra via PR/merge.
+- Antes de começar algo novo, atualize sua branch com a `main` e rode os comandos da seção acima.
+- Ao terminar uma entrega, atualize `specs/status.md` e registre em `specs/historico.md` o que mudou e por quê.
 
 ## Status atual
 
-Veja [`specs/status.md`](./specs/status.md) para o progresso tela a tela. Resumo rápido: Login e Cadastro têm o visual pronto, ainda sem integração com o backend; as demais telas essenciais estão em desenvolvimento.
+Veja [`specs/status.md`](./specs/status.md) para o progresso tela a tela e [`specs/historico.md`](./specs/historico.md) para o que foi feito em cada entrega.
+
+Resumo (25/10/2026): todas as telas essenciais têm o visual pronto. Estão ligadas ao banco de verdade: Cadastro, Login, Sair da conta, Configurações e o nome do usuário na Navbar e na Home. Esportes e inscrições ainda usam dados de mentira (mocks) e são a próxima etapa.
+
+## Glossário rápido (para quem está começando no backend)
+
+| Termo | O que é |
+|---|---|
+| Frontend | As telas (pasta `frontend`, React). |
+| Backend | O servidor que recebe os pedidos das telas, aplica as regras e fala com o banco (pasta `backend`, Express). |
+| API / rota | Um endereço do backend que a tela chama, ex.: `POST /api/auth/login`. |
+| Banco de dados | Onde os dados ficam guardados de verdade (MySQL, rodando no Docker). |
+| Mock | Dado de mentira escrito no código para a tela funcionar antes do backend existir (`frontend/src/mocks`). |
+| Migration | Arquivo com uma mudança na estrutura do banco (criar tabela, adicionar coluna). Cada pessoa aplica no próprio banco com `npx prisma migrate deploy`. |
+| Seed | Script que coloca dados iniciais no banco (locais e admin): `npm run seed`. |
+| Prisma | Biblioteca que o backend usa para ler e gravar no banco. |
+| Hash (Argon2) | Forma embaralhada de guardar a senha: o banco nunca guarda a senha original. |
+| Sessão / cookie | Como o backend lembra quem está logado entre um pedido e outro. |
+| CORS | Lista de endereços de frontend que o backend aceita. |
+| `.env` | Arquivo local com senhas e configurações da sua máquina; nunca vai para o GitHub (o `.env.example` mostra o formato). |
+| Middleware | Função que roda antes da rota, ex.: `autenticar` (exige login) e `exigirAdmin` (exige perfil admin). |
+| PR (pull request) | Pedido no GitHub para juntar as mudanças de uma branch na `main`. |

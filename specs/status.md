@@ -39,7 +39,7 @@ Numeração igual à do documento do projeto (protótipo de baixa fidelidade). A
 | Tela | Visual (React) | Conectado ao backend/banco |
 |---|---|---|
 | RF01 Login | ✅ pronto, com validação e mensagens de erro | ✅ `POST /api/auth/login`, senha verificada com Argon2 e sessão em cookie; redireciona aluno para `/home` e admin para `/admin/home` |
-| RF02 Cadastro | ✅ pronto (validação de e-mail institucional, matrícula de 7 dígitos, força de senha, confirmação) | ❌ cadastro é `console.log`, aguardando `POST /api/auth/cadastro` |
+| RF02 Cadastro | ✅ pronto (validação de e-mail institucional, matrícula de 7 dígitos, senha de 15 a 128 caracteres com indicador de força, confirmação) | ✅ `POST /api/auth/cadastro` cria o aluno no banco (hash Argon2); e-mail/matrícula repetidos → 409; leva ao login com "Conta criada. Faça login para continuar." |
 | RF04 Home | ✅ pronto (saudação, busca, destaque de esportes e eventos) | 🟡 usuário real por `GET /api/usuarios/me`; esportes e eventos continuam em mocks |
 | RF05 Esportes | ✅ pronto (catálogo completo, busca) | ❌ usa `mocks/esportes.js` |
 | RF08 Detalhes do esporte | ✅ pronto (nota, informações, avaliações, variação ADM "Excluir") | ❌ usa `mocks/esportes.js` |
@@ -86,7 +86,7 @@ Numeração igual à do documento do projeto (protótipo de baixa fidelidade). A
 | React Router | ✅ instalado e configurado, com NavLink ativo na navbar |
 | Navbar | ✅ avatar e nome do usuário real; atualiza o nome após salvar o perfil |
 | Mocks compartilhados | 🟡 esportes, eventos e inscrições ainda usam mocks; login, Navbar, Home e Configurações usam o usuário real |
-| Backend (Node + Express) | ✅ porta 3000; rotas de autenticação e perfil, middlewares de sessão e tratamento de erros |
+| Backend (Node + Express) | ✅ porta 3000; rotas de cadastro, autenticação e perfil, middlewares de sessão, autorização de admin e tratamento de erros |
 | Banco de dados | ✅ MySQL 8.4 configurado via Docker Compose; banco local `unifor_hub` existente |
 | Prisma | ✅ versão 7.10.1, schema com oito tabelas e configuração por `DATABASE_URL` |
 | Histórico de migrations | ✅ `0_init` registrada como aplicada |
@@ -104,11 +104,21 @@ Numeração igual à do documento do projeto (protótipo de baixa fidelidade). A
 - **Telas essenciais com interface implementada:** 11 de 11; integração de esportes, eventos, inscrições e administração ainda pendente.
 - **"Sempre fácil" com interface pronta:** 3 de 3; RF18 integrado, RF11 ainda em mocks, RF03 fora do MVP no backend.
 - **Extras já prontos (visual):** RF21 Aceitar resenhas e RF22 Criar evento.
-- **Próxima etapa:** cadastro de aluno (`POST /api/auth/cadastro`); depois esportes → inscrições → Home do admin.
-- **Entrega atual:** autenticação por sessão, logout e gerenciamento do próprio perfil integrados ao MySQL.
-- **Cadastro e recuperação de senha:** não implementados no backend.
+- **Módulo de autenticação completo no backend:** cadastro, login, sessão, logout, perfil próprio, troca de senha e autorização de admin. Recuperação de senha (RF03) fica fora do MVP.
+- **Próxima etapa:** esportes (`GET /api/esportes`, `GET /api/esportes/:id`, `POST /api/esportes`, exclusão) → inscrições → Home do admin.
+- **Histórico do que foi feito e por quê:** ver `historico.md`.
 
-## Verificação desta entrega
+## Verificação das entregas de 25/10/2026
+
+Todas testadas em um MySQL 8.4 descartável (container Docker separado do banco de cada integrante, removido depois):
+
+- Migration do `id`: aplicada sobre inscrições existentes (ids atribuídos, duplicata recusada, cascade preservado) e em banco vazio (`prisma migrate diff` sem diferenças).
+- Seed: executado duas vezes sem duplicar; login do admin criado pela API.
+- Autorização de admin: rota de teste com `autenticar` + `exigirAdmin` → 401 sem login, 403 aluno, 200 admin, 403 logo após rebaixar o admin no banco.
+- Redirecionamento por perfil: navegador com aluno e admin (cada um é devolvido à própria home ao abrir tela do outro perfil).
+- Cadastro: API com campos vazios, domínio errado, matrícula inválida, senha curta, confirmação diferente, tentativa de enviar `TipoUsuario: admin` (ignorado), e-mail repetido em maiúsculas e matrícula repetida; no navegador, cadastro → mensagem no login → login → Home.
+
+## Verificação da entrega de 21/10/2026
 
 - Auditoria da API de perfil executada com duas contas fictícias: atualização persistida, 400 para entradas inválidas, 401 sem sessão, 409 para e-mail de outra conta e preservação da conta B ao enviar seu ID no body da conta A.
 - Bateria de troca de senha em 21/10/2026: 15 verificações aprovadas, nenhuma falha. Inclui validação, senha atual incorreta, novo hash, cookie antigo rejeitado, login antigo rejeitado, login novo aceito, preservação de espaços e isolamento entre duas contas.
