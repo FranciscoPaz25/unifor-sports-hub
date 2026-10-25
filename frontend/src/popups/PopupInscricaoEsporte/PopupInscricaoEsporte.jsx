@@ -1,21 +1,42 @@
 // Tela 09 — Popup de confirmar inscrição no esporte (RF09)
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { jaInscritoEsporte, registrarInscricaoEsporte } from '../../mocks/inscricoes';
+import { chamarApi, mensagemDeErro } from '../../utils/api';
 import './PopupInscricaoEsporte.css';
+
+// Texto padronizado em specs/decisoes.md
+const ERRO_INSCRICAO = 'Erro, verifique se você já está inscrito no esporte ou se as vagas acabaram';
 
 function PopupInscricaoEsporte({ esporte, onClose }) {
   const navigate = useNavigate();
   const [erro, setErro] = useState('');
+  const [enviando, setEnviando] = useState(false);
 
-  function handleConfirmar() {
-    if (jaInscritoEsporte(esporte.id) || esporte.vagas === 0) {
-      setErro('Erro, verifique se você já está inscrito no esporte ou se as vagas acabaram');
+  async function handleConfirmar() {
+    if (enviando) return;
+    if (esporte.vagas === 0) {
+      setErro(ERRO_INSCRICAO);
       return;
     }
 
-    registrarInscricaoEsporte(esporte.id);
-    navigate('/minhas-inscricoes');
+    // A inscrição nasce "em análise"; o admin aceita ou rejeita na tela 23
+    setErro('');
+    setEnviando(true);
+    try {
+      const { ok, dados } = await chamarApi('/api/inscricoes-esporte', {
+        metodo: 'POST',
+        corpo: { idEsporte: esporte.id },
+      });
+      if (!ok) {
+        setErro(mensagemDeErro(dados, ERRO_INSCRICAO));
+        return;
+      }
+      navigate('/minhas-inscricoes');
+    } catch {
+      setErro('Não foi possível enviar a inscrição. Tente novamente.');
+    } finally {
+      setEnviando(false);
+    }
   }
 
   return (
@@ -45,8 +66,8 @@ function PopupInscricaoEsporte({ esporte, onClose }) {
           <button type="button" className="popup-botao-cancelar" onClick={onClose}>
             Cancelar
           </button>
-          <button type="button" className="popup-botao-confirmar" onClick={handleConfirmar}>
-            Confirmar inscrição
+          <button type="button" className="popup-botao-confirmar" onClick={handleConfirmar} disabled={enviando}>
+            {enviando ? 'Enviando…' : 'Confirmar inscrição'}
           </button>
         </div>
       </div>

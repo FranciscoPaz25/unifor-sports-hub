@@ -1,15 +1,19 @@
 // Tela 11 — Detalhes da inscrição (RF11)
 // Aberta pelo "Ver detalhes" de uma inscrição em esporte na tela Minhas inscrições (RF10.9).
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { esportes } from '../../../mocks/esportes';
-import { minhasInscricoes, cancelarInscricaoMock } from '../../../mocks/inscricoes';
+import { chamarApi, mensagemDeErro } from '../../../utils/api';
 import './DetalhesInscricao.css';
 
 const statusLabel = {
   em_analise: 'Em análise',
   confirmada: 'Confirmada',
   cancelada: 'Cancelada',
+  rejeitada: 'Rejeitada',
 };
+
+// Só inscrições ainda válidas podem ser canceladas pelo aluno
+const PODE_CANCELAR = ['em_analise', 'confirmada'];
 
 const icones = {
   local: (
@@ -56,24 +60,52 @@ function formatarDataHora(iso) {
 function DetalhesInscricao() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [inscricao, setInscricao] = useState(null);
+  const [aviso, setAviso] = useState('Carregando…');
+  const [erroCancelar, setErroCancelar] = useState('');
+  const [cancelando, setCancelando] = useState(false);
 
-  const inscricao = minhasInscricoes.find((i) => i.id === Number(id) && i.tipo === 'esporte');
-  const esporte = inscricao && esportes.find((e) => e.id === inscricao.refId);
+  useEffect(() => {
+    async function carregar() {
+      try {
+        const { ok, dados } = await chamarApi(`/api/inscricoes-esporte/${id}`);
+        if (ok) setInscricao(dados.inscricao);
+        else setAviso(mensagemDeErro(dados, 'Não foi possível carregar a inscrição.'));
+      } catch {
+        setAviso('Não foi possível carregar a inscrição.');
+      }
+    }
+    carregar();
+  }, [id]);
 
-  if (!inscricao || !esporte) {
+  if (!inscricao) {
     return (
       <div className="det-inscricao-container">
-        <p className="det-inscricao-nao-encontrada">Inscrição não encontrada.</p>
+        <p className="det-inscricao-nao-encontrada">{aviso}</p>
         <Link to="/minhas-inscricoes" className="det-inscricao-link">Voltar para Minhas inscrições</Link>
       </div>
     );
   }
 
-  function handleCancelar() {
-    // Age direto, sem popup de confirmação (decisoes.md).
-    // TODO: substituir por PATCH /inscricoes/:id (status cancelada) quando o backend existir
-    cancelarInscricaoMock(inscricao.id);
-    navigate('/minhas-inscricoes');
+  const esporte = inscricao.esporte;
+
+  async function handleCancelar() {
+    // Age direto, sem popup de confirmação (decisoes.md)
+    if (cancelando) return;
+    setErroCancelar('');
+    setCancelando(true);
+    try {
+      const { ok, dados } = await chamarApi(`/api/inscricoes-esporte/${inscricao.id}/cancelar`, { metodo: 'PATCH' });
+      if (!ok) {
+        setErroCancelar(mensagemDeErro(dados, 'Não foi possível cancelar a inscrição.'));
+        return;
+      }
+      navigate('/minhas-inscricoes');
+    } catch {
+      setErroCancelar('Não foi possível cancelar a inscrição.');
+    } finally {
+      setCancelando(false);
+    }
   }
 
   const informacoes = [
@@ -123,15 +155,16 @@ function DetalhesInscricao() {
         </ul>
       </section>
 
-      {inscricao.status !== 'cancelada' && (
-        <button type="button" className="det-inscricao-cancelar" onClick={handleCancelar}>
+      {PODE_CANCELAR.includes(inscricao.status) && (
+        <button type="button" className="det-inscricao-cancelar" onClick={handleCancelar} disabled={cancelando}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <circle cx="12" cy="12" r="9" />
             <path d="M9 9l6 6M15 9l-6 6" strokeLinecap="round" />
           </svg>
-          Cancelar inscrição
+          {cancelando ? 'Cancelando…' : 'Cancelar inscrição'}
         </button>
       )}
+      {erroCancelar && <p className="det-inscricao-erro">{erroCancelar}</p>}
     </div>
   );
 }

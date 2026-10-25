@@ -43,19 +43,19 @@ Numeração igual à do documento do projeto (protótipo de baixa fidelidade). A
 | RF04 Home | ✅ pronto (saudação, busca, destaque de esportes e eventos) | 🟡 usuário real e 4 primeiros esportes de `GET /api/esportes`; eventos continuam em mock |
 | RF05 Esportes | ✅ pronto (catálogo completo, busca) | ✅ `GET /api/esportes` (ordem alfabética); busca e filtros ainda não funcionam (telas 06/07) |
 | RF08 Detalhes do esporte | ✅ pronto (nota, informações, avaliações, variação ADM "Excluir") | ✅ `GET /api/esportes/:id`; "Excluir" do admin usa `DELETE /api/esportes/:id`; nota e avaliações vêm de `avaliar` (só aprovadas) |
-| RF09 Popup inscrição no esporte | ✅ pronto (confirmação, validação de já-inscrito/vagas) | 🟡 mostra dados reais do esporte, mas a inscrição ainda vai para `mocks/inscricoes.js` (próximo módulo) |
-| RF10 Minhas inscrições | ✅ pronto (lista esporte+evento, status, estado vazio) | ❌ usa `mocks/inscricoes.js` |
+| RF09 Popup inscrição no esporte | ✅ pronto (confirmação, validação de já-inscrito/vagas) | ✅ `POST /api/inscricoes-esporte`; bloqueia sem vagas ou se já inscrito |
+| RF10 Minhas inscrições | ✅ pronto (lista esporte+evento, status, estado vazio) | ✅ inscrições em esporte de `GET /api/inscricoes-esporte` (inclui "Rejeitada"); inscrições em evento continuam em mock |
 | RF17 Configurações | ✅ pronto (editar perfil, trocar senha, sair da conta) | ✅ perfil real, atualização de nome/e-mail e troca de senha conectados; regra de domínio por perfil no backend ainda pendente |
 | RF19 Gerência | ✅ interface implementada, com links para funções administrativas | ❌ sem integração com backend |
 | RF20 Criar esporte | ✅ formulário implementado; campo Local virou lista dos locais do banco | ✅ `POST /api/esportes` (só admin) grava modalidade e dias; a imagem ainda não é salva (não há coluna no modelo) |
-| RF23 Gerenciar inscrições | ✅ lista de pendências, aprovação e rejeição implementadas | ❌ altera inscrições no mock em memória |
+| RF23 Gerenciar inscrições | ✅ lista de pendências, aprovação e rejeição implementadas | ✅ `GET /api/inscricoes-esporte/pendentes` e `PATCH /api/inscricoes-esporte/:id`; não confirma além da capacidade |
 
 ## Grupo "sempre fácil" (baixo custo, não cortar)
 
 | Tela | Visual (React) | Conectado ao backend/banco |
 |---|---|---|
 | RF03 Esqueceu a senha | ✅ pronto (solicitação + confirmação "E-mail enviado!") | ➖ fora do MVP: não consulta o banco nem envia e-mail (RF03.8/RF03.9) |
-| RF11 Detalhes da inscrição | ✅ pronto (dados do esporte, data da inscrição, cancelar inscrição) | ❌ usa `mocks/inscricoes.js` e `mocks/esportes.js` |
+| RF11 Detalhes da inscrição | ✅ pronto (dados do esporte, data da inscrição, cancelar inscrição) | ✅ `GET /api/inscricoes-esporte/:id` e `PATCH .../:id/cancelar`; botão Cancelar só para em análise ou confirmada |
 | RF18 Popup sair da conta | ✅ pronto, com estado de envio e mensagens de erro | ✅ `POST /api/auth/logout` invalida a sessão no servidor e remove o cookie |
 
 
@@ -85,7 +85,8 @@ Numeração igual à do documento do projeto (protótipo de baixa fidelidade). A
 | Frontend (Vite + React) | ✅ rodando, porta 5173 |
 | React Router | ✅ instalado e configurado, com NavLink ativo na navbar |
 | Navbar | ✅ avatar e nome do usuário real; atualiza o nome após salvar o perfil |
-| Mocks compartilhados | 🟡 Home, Esportes, Detalhes do esporte e Criar esporte usam o banco. `mocks/esportes.js` ainda é usado por Minhas inscrições, Detalhes da inscrição, Gerenciar inscrições e Aceitar resenhas (até o módulo de inscrições); eventos e inscrições continuam em mock |
+| Mocks compartilhados | 🟡 Esportes e inscrições em esporte usam o banco. Continuam em mock: eventos (`mocks/eventos.js`, `mocks/inscricoes.js` só com inscrições em evento) e resenhas (`mocks/resenhas.js` e `mocks/esportes.js`, usados por Aceitar resenhas) |
+| Controle de vagas | ✅ transação com `SELECT ... FOR UPDATE` no esporte e isolamento `READ COMMITTED`; duas confirmações simultâneas para a última vaga → só uma passa |
 | Chamadas à API no frontend | ✅ `utils/api.js`: `chamarApi(caminho, { metodo, corpo })` envia o cookie e devolve `{ ok, status, dados }`; `mensagemDeErro(dados, padrao)` monta o texto de erro |
 | Backend (Node + Express) | ✅ porta 3000; rotas de cadastro, autenticação e perfil, middlewares de sessão, autorização de admin e tratamento de erros |
 | Banco de dados | ✅ MySQL 8.4 configurado via Docker Compose; banco local `unifor_hub` existente |
@@ -107,8 +108,8 @@ Numeração igual à do documento do projeto (protótipo de baixa fidelidade). A
 - **Extras já prontos (visual):** RF21 Aceitar resenhas e RF22 Criar evento.
 - **Módulo de autenticação completo no backend:** cadastro, login, sessão, logout, perfil próprio, troca de senha e autorização de admin. Recuperação de senha (RF03) fica fora do MVP.
 - **Módulo de esportes integrado:** listar, detalhar, criar e excluir (telas 04, 05, 08, 20).
-- **Próxima etapa:** inscrições (telas 09, 10, 11, 23) → Home do admin.
-- **Atenção na transição:** a inscrição feita pelo popup ainda vai para o mock, que usa os ids dos esportes de mentira. Por isso Minhas inscrições pode não mostrar um esporte do banco até o módulo de inscrições ficar pronto.
+- **Módulo de inscrições integrado:** pedir, acompanhar, cancelar, aceitar e rejeitar (telas 09, 10, 11, 23). O fluxo central do MVP funciona de ponta a ponta com o banco.
+- **Próxima etapa:** Home do admin (`/admin/home`). Depois disso, o MVP essencial está completo; o resto (resenhas, eventos, busca) é secundário.
 - **Histórico do que foi feito e por quê:** ver `historico.md`.
 
 ## Verificação das entregas de 25/10/2026
@@ -119,6 +120,7 @@ Todas testadas em um MySQL 8.4 descartável (container Docker separado do banco 
 - Seed: executado duas vezes sem duplicar; login do admin criado pela API.
 - Autorização de admin: rota de teste com `autenticar` + `exigirAdmin` → 401 sem login, 403 aluno, 200 admin, 403 logo após rebaixar o admin no banco.
 - Redirecionamento por perfil: navegador com aluno e admin (cada um é devolvido à própria home ao abrir tela do outro perfil).
+- Inscrições: API com admin tentando se inscrever (403), esporte inválido/inexistente, pedido repetido (409), pendentes só para admin, status inválido (400), confirmação sem vaga (409), decisão repetida (409), aluno vendo inscrição de outro (404), cancelar rejeitada (409), cancelar confirmada libera a vaga, novo pedido após rejeição reaproveita o registro; duas confirmações simultâneas em 5 rodadas → sempre só uma. Migration `rejeitada` sem diferença entre schema e banco. No navegador: aluno pede → "Em análise" → admin aceita um, recebe "Não há vagas…" no segundo e rejeita → aluno vê "Confirmada" → cancela → "Cancelada"; o outro aluno vê "Rejeitada".
 - Esportes: API com 401 sem login, 403 para aluno criar/excluir, 400 com todos os erros de validação, local inexistente, 404 para id inexistente ou inválido; vagas descontando só inscrições confirmadas; nota contando só avaliações aprovadas; exclusão apagando dias, inscrições e avaliações em cascata. No navegador: admin cria "Natação Básica" (acentos preservados) → aparece em Esportes e na Home do aluno → detalhes com "Inscrever-se" (aluno) e "Excluir" (admin) → exclusão volta para a lista vazia.
 - Cadastro: API com campos vazios, domínio errado, matrícula inválida, senha curta, confirmação diferente, tentativa de enviar `TipoUsuario: admin` (ignorado), e-mail repetido em maiúsculas e matrícula repetida; no navegador, cadastro → mensagem no login → login → Home.
 

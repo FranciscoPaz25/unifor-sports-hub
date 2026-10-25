@@ -1,23 +1,51 @@
 // Tela 23 — Gerenciar inscrições (RF23)
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { esportes } from '../../../mocks/esportes';
-import { minhasInscricoes } from '../../../mocks/inscricoes';
+import { chamarApi, mensagemDeErro } from '../../../utils/api';
 import './GerenciarInscricoes.css';
 
-function pendentesAtuais() {
-  return minhasInscricoes.filter((i) => i.tipo === 'esporte' && i.status === 'em_analise');
-}
-
 function GerenciarInscricoes() {
-  const [pendentes, setPendentes] = useState(pendentesAtuais);
+  const [pendentes, setPendentes] = useState([]);
+  const [carregando, setCarregando] = useState(true);
+  const [erro, setErro] = useState('');
+  const [decidindo, setDecidindo] = useState(null);
 
-  function decidir(inscricao, novoStatus) {
-    // RF23.6 / RF23.7 — TODO: substituir por PATCH /inscricoes-esporte/:id quando o backend existir
-    inscricao.status = novoStatus;
+  useEffect(() => {
+    async function carregar() {
+      try {
+        const { ok, dados } = await chamarApi('/api/inscricoes-esporte/pendentes');
+        if (ok) setPendentes(dados.inscricoes);
+        else setErro(mensagemDeErro(dados, 'Não foi possível carregar as inscrições.'));
+      } catch {
+        setErro('Não foi possível carregar as inscrições.');
+      } finally {
+        setCarregando(false);
+      }
+    }
+    carregar();
+  }, []);
 
-    // RF23.8
-    setPendentes((atual) => atual.filter((i) => i.id !== inscricao.id));
+  // RF23.6 / RF23.7 — novoStatus: 'confirmada' (Aceitar) ou 'rejeitada' (Rejeitar)
+  async function decidir(inscricao, novoStatus) {
+    if (decidindo) return;
+    setErro('');
+    setDecidindo(inscricao.id);
+    try {
+      const { ok, dados } = await chamarApi(`/api/inscricoes-esporte/${inscricao.id}`, {
+        metodo: 'PATCH',
+        corpo: { status: novoStatus },
+      });
+      if (!ok) {
+        setErro(mensagemDeErro(dados, 'Não foi possível atualizar a inscrição.'));
+        return;
+      }
+      // RF23.8 — o card sai da lista
+      setPendentes((atual) => atual.filter((i) => i.id !== inscricao.id));
+    } catch {
+      setErro('Não foi possível atualizar a inscrição.');
+    } finally {
+      setDecidindo(null);
+    }
   }
 
   return (
@@ -29,23 +57,26 @@ function GerenciarInscricoes() {
         <h1>Gerenciar inscrições</h1>
       </div>
 
-      {pendentes.length === 0 ? (
+      {erro && <p className="gerenciar-erro">{erro}</p>}
+
+      {carregando ? (
+        <p className="gerenciar-vazio">Carregando inscrições…</p>
+      ) : pendentes.length === 0 ? (
         // RF23.9
         <p className="gerenciar-vazio">Não há inscrições pendentes de análise.</p>
       ) : (
         <div className="gerenciar-lista">
           {pendentes.map((inscricao) => {
-            const esporte = esportes.find((e) => e.id === inscricao.refId);
-            if (!esporte) return null;
+            const esporte = inscricao.esporte;
 
             return (
               <div key={inscricao.id} className="gerenciar-card">
                 <div className="gerenciar-card-info">
                   <div className="gerenciar-aluno">
-                    <strong>{inscricao.alunoNome}</strong>
+                    <strong>{inscricao.aluno.nome}</strong>
                     <span className="gerenciar-tag">Em análise</span>
                   </div>
-                  <span className="gerenciar-matricula">Matrícula: {inscricao.alunoMatricula}</span>
+                  <span className="gerenciar-matricula">Matrícula: {inscricao.aluno.matricula}</span>
                   <span className="gerenciar-modalidade">{esporte.nome}</span>
                   <span className="gerenciar-horario">
                     {esporte.diasSemana} • {esporte.horarioInicio} às {esporte.horarioFim}
@@ -56,7 +87,8 @@ function GerenciarInscricoes() {
                   <button
                     type="button"
                     className="gerenciar-botao-rejeitar"
-                    onClick={() => decidir(inscricao, 'cancelada')}
+                    onClick={() => decidir(inscricao, 'rejeitada')}
+                    disabled={decidindo === inscricao.id}
                   >
                     Rejeitar
                   </button>
@@ -64,6 +96,7 @@ function GerenciarInscricoes() {
                     type="button"
                     className="gerenciar-botao-aceitar"
                     onClick={() => decidir(inscricao, 'confirmada')}
+                    disabled={decidindo === inscricao.id}
                   >
                     Aceitar
                   </button>

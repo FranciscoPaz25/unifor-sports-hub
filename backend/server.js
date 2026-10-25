@@ -8,6 +8,7 @@ const cookieParser = require('cookie-parser');
 const usuarioRoutes = require('./modules/usuarios/usuario.routes.cjs')
 const esporteRoutes = require('./modules/esportes/esporte.routes.cjs');
 const localRoutes = require('./modules/locais/local.routes.cjs');
+const inscricaoRoutes = require('./modules/inscricoes/inscricao.routes.cjs');
 
 // Origens do frontend liberadas no CORS, separadas por vírgula no .env
 const origensPermitidas = (process.env.CORS_ORIGINS || 'http://localhost:5173')
@@ -25,6 +26,7 @@ app.use('/api/auth', router); // 3º: registra o router
 app.use('/api/usuarios', usuarioRoutes);
 app.use('/api/esportes', esporteRoutes);
 app.use('/api/locais', localRoutes);
+app.use('/api/inscricoes-esporte', inscricaoRoutes);
 const PORT = Number(process.env.PORT) || 3000;
 
 app.get('/', (req, res) => {
