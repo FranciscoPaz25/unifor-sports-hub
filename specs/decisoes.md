@@ -38,7 +38,14 @@
 - Operações de perfil usam `/api/usuarios/me` e a identidade da sessão. O PUT exige nome e e-mail juntos; matrícula e tipo de usuário não são editáveis por ele.
 - A troca usa `/api/usuarios/me/senha`, exige a senha atual e uma nova senha de 15 a 128 caracteres com confirmação. Sucesso invalida as sessões, limpa o cookie e exige novo login. A política nova não rejeita a senha atual apenas por ter menos de 15 caracteres.
 - A consulta de perfil alimenta o estado compartilhado no frontend; nome e perfil não vêm mais do mock em Navbar, Home e Configurações. Salvar o perfil atualiza esse estado.
-- Cadastro, recuperação de senha, autorização administrativa e alinhamento do domínio por perfil no backend permanecem pendentes. `SameSite` e CORS não são uma garantia completa de proteção contra CSRF; essa proteção e a limitação de tentativas ainda precisam ser concluídas antes de uso em produção.
+- Cadastro, recuperação de senha e alinhamento do domínio por perfil no backend permanecem pendentes.
+
+## Autorização por perfil — decisões de 25/10/2026
+
+- Após o login, o aluno vai para `/home` e o admin para `/admin/home`.
+- Telas de aluno (`/home`, `/minhas-inscricoes`, `/configuracoes`, `/eventos`) e de admin (`/admin/*`) são separadas; quem abre uma tela do outro perfil é levado à própria home, sem mensagem de erro.
+- `/esportes` e `/esportes/:id` são compartilhadas (o admin chega por "Esportes" na navbar e vê "Excluir" nos detalhes).
+- Rotas administrativas da API usam o middleware `exigirAdmin`, que lê o perfil do banco. Esconder telas no frontend não substitui essa checagem. `SameSite` e CORS não são uma garantia completa de proteção contra CSRF; essa proteção e a limitação de tentativas ainda precisam ser concluídas antes de uso em produção.
 
 ## Textos de erro padronizados
 
