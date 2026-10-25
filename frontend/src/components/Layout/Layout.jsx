@@ -1,11 +1,21 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, useOutletContext } from 'react-router-dom';
 import Navbar from '../Navbar/Navbar';
 
-function Layout({ tipoUsuario, nomeUsuario }) {
+function Layout() {
+  const { usuario, atualizarUsuario} = useOutletContext()
+
+  const nomeUsuario = usuario.Nome;
+  const tipoUsuario = usuario.TipoUsuario;
+
   return (
     <>
       <Navbar tipoUsuario={tipoUsuario} nomeUsuario={nomeUsuario} />
-      <Outlet context={{ tipoUsuario, nomeUsuario }} />
+      <Outlet context={{
+         usuario,
+         tipoUsuario,
+         nomeUsuario,
+         atualizarUsuario 
+        }} />
     </>
   );
 }

@@ -1,6 +1,6 @@
 // Tela 01 — Login (RF01)
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './Login.css';
 
 function Login() {
@@ -8,14 +8,46 @@ function Login() {
   const [senha, setSenha] = useState('');
   const [mostrarSenha, setMostrarSenha] = useState(false);
   const [erro, setErro] = useState('');
+  const navigate = useNavigate();
 
-  const podeEnviar = email.trim() !== '' && senha.trim() !== '';
+  const podeEnviar = email.trim() !== '' && senha.length > 0;
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    // TODO: substituir por chamada real ao backend (RF01.9/RF01.10) quando a API de login existir
-    console.log('Tentativa de login:', { email, senha });
-    setErro('E-mail/matrícula ou senha inválidos'); // placeholder, só pra testar o visual do erro
+    setErro('');
+    const identificador = email.trim();
+
+    const pareceEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identificador);
+    const pareceMatricula = /^[0-9]{2}[1-2][0-9]{4}$/.test(identificador);
+
+    if (!pareceEmail && !pareceMatricula) {
+      setErro('Informe um e-mail válido ou uma matrícula no formato correto.')
+      return;
+    }
+
+    try {
+      const resposta = await fetch('http://192.168.15.7:3000/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ identificador, senha })
+      })
+      const dados = await resposta.json();
+      if (!resposta.ok) {
+        const mensagem = Array.isArray(dados.erros)
+          ? dados.erros.join(' ')
+          : dados.mensagem || 'Não foi possível entrar.'
+        setErro(mensagem)
+        return;
+      }
+      navigate('/home', {replace: true})
+
+    } catch {
+      setErro('Não foi possível concluir o login. Tente novamente.')
+    }
+
   }
 
   return (

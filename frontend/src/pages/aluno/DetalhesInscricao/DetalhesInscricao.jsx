@@ -2,7 +2,7 @@
 // Aberta pelo "Ver detalhes" de uma inscrição em esporte na tela Minhas inscrições (RF10.9).
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { esportes } from '../../../mocks/esportes';
-import { minhasInscricoes } from '../../../mocks/inscricoes';
+import { minhasInscricoes, cancelarInscricaoMock } from '../../../mocks/inscricoes';
 import './DetalhesInscricao.css';
 
 const statusLabel = {
@@ -72,7 +72,7 @@ function DetalhesInscricao() {
   function handleCancelar() {
     // Age direto, sem popup de confirmação (decisoes.md).
     // TODO: substituir por PATCH /inscricoes/:id (status cancelada) quando o backend existir
-    inscricao.status = 'cancelada';
+    cancelarInscricaoMock(inscricao.id);
     navigate('/minhas-inscricoes');
   }
 

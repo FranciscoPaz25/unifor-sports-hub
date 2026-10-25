@@ -60,3 +60,18 @@ export function registrarInscricaoEsporte(esporteId) {
     alunoMatricula: usuario.matricula,
   });
 }
+
+export function cancelarInscricaoMock(id) {
+    const indice = minhasInscricoes.findIndex(
+        (inscricao) => inscricao.id === id
+    );
+
+    if (indice === -1) return false;
+
+    minhasInscricoes[indice] = {
+        ...minhasInscricoes[indice],
+        status: 'cancelada',
+    };
+
+    return true;
+}

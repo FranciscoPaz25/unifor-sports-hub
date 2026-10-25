@@ -1,9 +1,7 @@
-// Tela 04 — Home (RF04)
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import Card from '../../../components/Card/Card';
 import { esportes } from '../../../mocks/esportes';
 import { eventos } from '../../../mocks/eventos';
-import { usuario } from '../../../mocks/usuario';
 import './Home.css';
 
 const esportesDestaque = esportes.slice(0, 4);
@@ -11,6 +9,7 @@ const proximosEventos = eventos;
 
 function Home() {
   const navigate = useNavigate();
+  const { usuario } = useOutletContext();
 
   function handleBuscar(e) {
     e.preventDefault();
@@ -20,7 +19,7 @@ function Home() {
   return (
     <div className="home-container">
       <section className="home-saudacao">
-        <h1>Olá, {usuario.nome.split(' ')[0]}!</h1>
+        <h1>Olá, {usuario.Nome.split(' ')[0]}!</h1>
         <p>Encontre modalidades, reserve horários e participe de eventos esportivos da Unifor.</p>
       </section>
 
