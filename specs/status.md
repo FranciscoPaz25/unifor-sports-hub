@@ -1,6 +1,6 @@
 # Status atual — Unifor Sports Hub
 
-> Atualizar esta tabela conforme as telas avançam. Última atualização: 25/10/2026.
+> Atualizar esta tabela conforme as telas avançam. Última atualização: 02/11/2026.
 
 ## Onde fica cada tela
 
@@ -31,8 +31,9 @@ Numeração igual à do documento do projeto (protótipo de baixa fidelidade). A
 | 21 | Aceitar resenhas | `pages/admin/AceitarResenhas/` |
 | 22 | Criar evento | `pages/admin/CriarEvento/` |
 | 23 | Gerenciar inscrições | `pages/admin/GerenciarInscricoes/` |
+| — | Home do admin (sem número próprio) | `pages/admin/HomeAdmin/` |
 
-`components/` guarda só peças reutilizáveis (Navbar, Layout, Card, RotaProtegida).
+`components/` guarda só peças reutilizáveis (Navbar, Layout, Card, RotaProtegida, ExigirPerfil).
 
 ## Grupo essencial (backend + banco reais)
 
@@ -103,14 +104,18 @@ Numeração igual à do documento do projeto (protótipo de baixa fidelidade). A
 
 ## Resumo rápido
 
-- **Telas essenciais com interface implementada:** 11 de 11; integração de esportes, eventos, inscrições e administração ainda pendente.
+- **Telas essenciais:** todas com interface e ligadas ao banco, incluindo a Home do admin (`/admin/home`), que mostra inscrições pendentes, esportes cadastrados e atalhos.
 - **"Sempre fácil" com interface pronta:** 3 de 3; RF18 integrado, RF11 ainda em mocks, RF03 fora do MVP no backend.
 - **Extras já prontos (visual):** RF21 Aceitar resenhas e RF22 Criar evento.
 - **Módulo de autenticação completo no backend:** cadastro, login, sessão, logout, perfil próprio, troca de senha e autorização de admin. Recuperação de senha (RF03) fica fora do MVP.
 - **Módulo de esportes integrado:** listar, detalhar, criar e excluir (telas 04, 05, 08, 20).
 - **Módulo de inscrições integrado:** pedir, acompanhar, cancelar, aceitar e rejeitar (telas 09, 10, 11, 23). O fluxo central do MVP funciona de ponta a ponta com o banco.
-- **Próxima etapa:** Home do admin (`/admin/home`). Depois disso, o MVP essencial está completo; o resto (resenhas, eventos, busca) é secundário.
+- **Próxima etapa:** testar o sistema no banco local de cada integrante (telas e operações de dados). Resenhas, eventos e busca são secundários e ainda não têm backend. Não existe edição de esporte (a tela 20 só cria).
 - **Histórico do que foi feito e por quê:** ver `historico.md`.
+
+## Verificação da entrega de 02/11/2026
+
+- Home do admin, em MySQL 8.4 descartável: com 2 esportes e 1 pedido pendente, a tela mostra 1 e 2; o indicador de pendentes leva a Gerenciar inscrições, com o pedido listado; console sem erros; indicadores e atalhos em uma coluna a 375 px. A mensagem de erro do resumo não foi exercitada no navegador. Lint e build sem erros.
 
 ## Verificação das entregas de 25/10/2026
 
@@ -135,5 +140,6 @@ Todas testadas em um MySQL 8.4 descartável (container Docker separado do banco 
 ## Pendências preservadas
 
 - Alinhar a edição do e-mail por perfil: frontend limita aluno a `@edu.unifor.br`, enquanto backend aceita os dois domínios institucionais para qualquer usuário.
+- Navbar não se adapta ao celular: a 375 px ela ocupa cerca de 595 px e cria rolagem lateral em todas as telas internas (visto em 02/11/2026).
 - Tratar 401 nas futuras operações da API; a proteção visual consulta o perfil ao montar, não continuamente.
 - Agendar `limparSessoesInativas`: a consulta já rejeita sessões expiradas, mas a remoção de sessões nunca mais consultadas ainda não é periódica.

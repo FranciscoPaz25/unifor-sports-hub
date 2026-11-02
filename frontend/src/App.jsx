@@ -15,6 +15,7 @@ import DetalhesInscricao from './pages/aluno/DetalhesInscricao/DetalhesInscricao
 import DetalhesEsporte from './pages/compartilhadas/DetalhesEsporte/DetalhesEsporte';
 import Configuracoes from './pages/compartilhadas/Configuracoes/Configuracoes';
 
+import HomeAdmin from './pages/admin/HomeAdmin/HomeAdmin';
 import Gerencia from './pages/admin/Gerencia/Gerencia';
 import CriarEsporte from './pages/admin/CriarEsporte/CriarEsporte';
 import AceitarResenhas from './pages/admin/AceitarResenhas/AceitarResenhas';
@@ -57,7 +58,7 @@ function App() {
 
           {/* Só admin */}
           <Route path="/admin" element={<ExigirPerfil perfil="admin" />}>
-            <Route path="home" element={<EmConstrucao />} />
+            <Route path="home" element={<HomeAdmin />} />
             <Route path="eventos" element={<EmConstrucao />} />
             <Route path="gerencia" element={<Gerencia />} />
             <Route path="gerencia/criar-esporte" element={<CriarEsporte />} />
