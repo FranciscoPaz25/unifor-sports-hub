@@ -2,7 +2,15 @@
 
 > Registro do que entrou na `main`, quando e por quê, para quem chega agora ter o contexto. O estado atual tela a tela fica em `status.md`; as regras fixas, em `decisoes.md`. Entradas mais recentes primeiro.
 
-## 25/10/2026 — Módulo de inscrições (telas 09, 10, 11 e 23)
+## 02/11/2026 — Home do admin
+
+**O que mudou**
+- Nova tela `frontend/src/pages/admin/HomeAdmin/` em `/admin/home`, no lugar de "Em construção": saudação, número de inscrições pendentes, número de esportes cadastrados e atalhos para Gerenciar inscrições, Criar esporte e Ver esportes.
+- Usa as rotas já existentes (`GET /api/inscricoes-esporte/pendentes` e `GET /api/esportes`); o backend não mudou.
+
+**Por quê:** era a última tela essencial do MVP; o admin caía em "Em construção" logo depois do login.
+
+## 25/10/2026 — Módulo de inscrições (telas 09, 10, 11 e 23, PR #11)
 
 **O que mudou**
 - Migration `20261025_inscricao_rejeitada`: novo status `rejeitada` em `inscricao_modalidade`.
