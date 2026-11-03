@@ -2,6 +2,20 @@
 
 > Registro do que entrou na `main`, quando e por quê, para quem chega agora ter o contexto. O estado atual tela a tela fica em `status.md`; as regras fixas, em `decisoes.md`. Entradas mais recentes primeiro.
 
+## 03/11/2026 — Ajustes da rodada de testes manuais
+
+O sistema foi testado tela a tela no banco local (13 passos: cadastro, login, permissões, Home do admin, criar/ver/excluir esporte, inscrição, gerenciar inscrições com limite de vagas, minhas inscrições, configurações e conferência no banco). Tudo passou; os ajustes abaixo saíram dos comentários feitos durante os testes.
+
+**O que mudou**
+- Cadastro mostra todos os erros de uma vez (e-mail, matrícula e senha), em vez de parar no primeiro.
+- Cadastro já faz login: `POST /api/auth/cadastro` abre a sessão e a tela leva direto à Home. A mensagem "Conta criada. Faça login para continuar." do Login deixou de existir.
+- Cards de esporte (Home e Esportes) mostram "Ver detalhes" para aluno e admin; as ações continuam na tela 08 ("Inscrever-se" para aluno, "Excluir" para admin). Antes o card dizia "Inscrever-se" também para o admin.
+- Minhas inscrições mostra só as inscrições reais em esportes. Saiu a inscrição de mentira no "Torneio de Vôlei Intercursos" (`mocks/inscricoes.js`, apagado), que aparecia para todo aluno como "Confirmada" e levava a uma tela inexistente.
+
+**Decidido e mantido:** inscrição rejeitada continua sem botão de cancelar — não ocupa vaga, o aluno já pode pedir de novo, e cancelar apagaria a decisão do admin.
+
+**Por quê:** corrigir o que apareceu ao usar o sistema de verdade, antes de seguir para as próximas telas.
+
 ## 02/11/2026 — Home do admin
 
 **O que mudou**

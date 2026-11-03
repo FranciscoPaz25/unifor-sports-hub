@@ -40,12 +40,12 @@ Numeração igual à do documento do projeto (protótipo de baixa fidelidade). A
 | Tela | Visual (React) | Conectado ao backend/banco |
 |---|---|---|
 | RF01 Login | ✅ pronto, com validação e mensagens de erro | ✅ `POST /api/auth/login`, senha verificada com Argon2 e sessão em cookie; redireciona aluno para `/home` e admin para `/admin/home` |
-| RF02 Cadastro | ✅ pronto (validação de e-mail institucional, matrícula de 7 dígitos, senha de 15 a 128 caracteres com indicador de força, confirmação) | ✅ `POST /api/auth/cadastro` cria o aluno no banco (hash Argon2); e-mail/matrícula repetidos → 409; leva ao login com "Conta criada. Faça login para continuar." |
+| RF02 Cadastro | ✅ pronto (validação de e-mail institucional, matrícula de 7 dígitos, senha de 15 a 128 caracteres com indicador de força, confirmação) | ✅ `POST /api/auth/cadastro` cria o aluno no banco (hash Argon2); e-mail/matrícula repetidos → 409; abre a sessão e leva direto à Home |
 | RF04 Home | ✅ pronto (saudação, busca, destaque de esportes e eventos) | 🟡 usuário real e 4 primeiros esportes de `GET /api/esportes`; eventos continuam em mock |
 | RF05 Esportes | ✅ pronto (catálogo completo, busca) | ✅ `GET /api/esportes` (ordem alfabética); busca e filtros ainda não funcionam (telas 06/07) |
 | RF08 Detalhes do esporte | ✅ pronto (nota, informações, avaliações, variação ADM "Excluir") | ✅ `GET /api/esportes/:id`; "Excluir" do admin usa `DELETE /api/esportes/:id`; nota e avaliações vêm de `avaliar` (só aprovadas) |
 | RF09 Popup inscrição no esporte | ✅ pronto (confirmação, validação de já-inscrito/vagas) | ✅ `POST /api/inscricoes-esporte`; bloqueia sem vagas ou se já inscrito |
-| RF10 Minhas inscrições | ✅ pronto (lista esporte+evento, status, estado vazio) | ✅ inscrições em esporte de `GET /api/inscricoes-esporte` (inclui "Rejeitada"); inscrições em evento continuam em mock |
+| RF10 Minhas inscrições | ✅ pronto (lista, status, estado vazio) | ✅ inscrições em esporte de `GET /api/inscricoes-esporte` (inclui "Rejeitada"); inscrições em evento só entram quando o módulo de eventos existir |
 | RF17 Configurações | ✅ pronto (editar perfil, trocar senha, sair da conta) | ✅ perfil real, atualização de nome/e-mail e troca de senha conectados; regra de domínio por perfil no backend ainda pendente |
 | RF19 Gerência | ✅ interface implementada, com links para funções administrativas | ❌ sem integração com backend |
 | RF20 Criar esporte | ✅ formulário implementado; campo Local virou lista dos locais do banco | ✅ `POST /api/esportes` (só admin) grava modalidade e dias; a imagem ainda não é salva (não há coluna no modelo) |
@@ -86,7 +86,7 @@ Numeração igual à do documento do projeto (protótipo de baixa fidelidade). A
 | Frontend (Vite + React) | ✅ rodando, porta 5173 |
 | React Router | ✅ instalado e configurado, com NavLink ativo na navbar |
 | Navbar | ✅ avatar e nome do usuário real; atualiza o nome após salvar o perfil |
-| Mocks compartilhados | 🟡 Esportes e inscrições em esporte usam o banco. Continuam em mock: eventos (`mocks/eventos.js`, `mocks/inscricoes.js` só com inscrições em evento) e resenhas (`mocks/resenhas.js` e `mocks/esportes.js`, usados por Aceitar resenhas) |
+| Mocks compartilhados | 🟡 Esportes e inscrições em esporte usam o banco. Continuam em mock: eventos (`mocks/eventos.js`) e resenhas (`mocks/resenhas.js` e `mocks/esportes.js`, usados por Aceitar resenhas) |
 | Controle de vagas | ✅ transação com `SELECT ... FOR UPDATE` no esporte e isolamento `READ COMMITTED`; duas confirmações simultâneas para a última vaga → só uma passa |
 | Chamadas à API no frontend | ✅ `utils/api.js`: `chamarApi(caminho, { metodo, corpo })` envia o cookie e devolve `{ ok, status, dados }`; `mensagemDeErro(dados, padrao)` monta o texto de erro |
 | Backend (Node + Express) | ✅ porta 3000; rotas de cadastro, autenticação e perfil, middlewares de sessão, autorização de admin e tratamento de erros |

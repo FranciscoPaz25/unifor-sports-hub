@@ -4,6 +4,17 @@ const { autenticarUsuario, cadastrarAluno } = require('./auth.service.cjs');
 const {criarSessao, invalidarSessao} = require('../../modules/auth/auth.sessao.cjs');
 
 
+function abrirSessao(res, idUsuario) {
+    const idSessao = criarSessao(idUsuario);
+
+    res.cookie('unifor_sid', idSessao, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production', // Use HTTPS em produção
+        sameSite: 'lax', // Proteção contra CSRF
+        path: '/',
+    });
+}
+
 async function login(req, res) {
     const {identificador, senha} = req.body ?? {};
     const erros = validarEntradaLogin(identificador, senha);
@@ -16,16 +27,8 @@ async function login(req, res) {
     if (!usuario) {
         return res.status(401).json({ mensagem: 'Identificador ou senha inválidos.' });
     }
-    const idSessao = criarSessao(usuario.idUsuario);
+    abrirSessao(res, usuario.idUsuario);
 
-    res.cookie('unifor_sid', idSessao, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production', // Use HTTPS em produção
-        sameSite: 'lax', // Proteção contra CSRF
-        path: '/',
-    });
-    
-    
     res.status(200).json({ mensagem: 'Credenciais verificadas', usuario });
     
 }
@@ -44,7 +47,7 @@ function logout(req, res){
     return res.status(204).end();
 }
 
-// Tela 02 — cadastro de aluno. Não abre sessão: o aluno é levado ao login (RF02.13).
+// Tela 02 — cadastro de aluno. Já abre a sessão: o aluno é levado direto à Home.
 async function cadastro(req, res, next) {
     const { nome, email, matricula, senha, confirmarSenha } = req.body ?? {};
     const erros = validarCadastro(nome, email, matricula, senha, confirmarSenha);
@@ -63,8 +66,10 @@ async function cadastro(req, res, next) {
             return res.status(409).json({ mensagem: 'Esta matrícula já está cadastrada.' });
         }
 
+        abrirSessao(res, resultado.usuario.idUsuario);
+
         return res.status(201).json({
-            mensagem: 'Conta criada. Faça login para continuar.',
+            mensagem: 'Conta criada.',
             usuario: resultado.usuario,
         });
     } catch (err) {

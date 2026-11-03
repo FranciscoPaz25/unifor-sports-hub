@@ -6,7 +6,7 @@
 
 | Método | Rota | Acesso | Comportamento e respostas |
 |---|---|---|---|
-| POST | `/api/auth/cadastro` | Público | Recebe `nome`, `email`, `matricula`, `senha` e `confirmarSenha`; cria sempre um **aluno** (campos extras como `TipoUsuario` são ignorados); 201 `{ mensagem, usuario }` sem abrir sessão; 400 `{ erros }` para entrada inválida; 409 para e-mail ou matrícula já cadastrados |
+| POST | `/api/auth/cadastro` | Público | Recebe `nome`, `email`, `matricula`, `senha` e `confirmarSenha`; cria sempre um **aluno** (campos extras como `TipoUsuario` são ignorados); 201 `{ mensagem, usuario }` já com a sessão aberta (cookie `unifor_sid`); 400 `{ erros }` para entrada inválida; 409 para e-mail ou matrícula já cadastrados |
 | POST | `/api/auth/login` | Público | Recebe `identificador` (e-mail ou matrícula) e `senha`; 200 com dados públicos e cookie; 400 para entrada inválida; 401 para credenciais inválidas |
 | GET | `/api/auth/sessao` | Sessão válida | 200 com `{ usuario: { idUsuario } }`; 401 para sessão ausente ou expirada |
 | POST | `/api/auth/logout` | Não exige sessão válida | Invalida a sessão indicada e limpa o cookie; 204 sem corpo, inclusive se não houver sessão |

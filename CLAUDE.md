@@ -2,7 +2,7 @@
 
 Contexto para o Claude Code (e para qualquer pessoa do time) continuar o projeto. Leia antes de qualquer tarefa. Este arquivo resume e aponta para a documentação viva em `specs/` — em caso de conflito, **o código e `specs/` valem mais que este resumo**; corrija este arquivo quando notar divergência.
 
-> Atualizado em 02/11/2026, com a Home do admin.
+> Atualizado em 03/11/2026, depois da rodada de testes manuais.
 
 ## 1. O projeto
 
@@ -72,7 +72,7 @@ frontend/src/
   components/                  # Navbar, Layout, Card, RotaProtegida, ExigirPerfil
   pages/auth|aluno|admin|compartilhadas/<Tela>/<Tela>.jsx + .css
   popups/<Popup>/
-  mocks/                       # só o que não tem backend: eventos, inscrições em evento, resenhas (e esportes usados por Aceitar resenhas)
+  mocks/                       # só o que não tem backend: eventos, resenhas (e esportes usados por Aceitar resenhas)
   utils/api.js                 # API_URL, chamarApi(caminho, { metodo, corpo }), mensagemDeErro
   utils/perfil.js              # homeDoPerfil(tipo)
   utils/validacao.js           # e-mail institucional por perfil
@@ -117,19 +117,20 @@ Ao terminar qualquer entrega: atualize `status.md`, registre em `historico.md` e
 - Toda inscrição em esporte nasce `em_analise`; só o admin confirma (`confirmada`) ou rejeita (`rejeitada`) na tela 23. O aluno cancela (`cancelada`). Após cancelada/rejeitada, pode pedir de novo (o registro volta para `em_analise`).
 - Vagas = capacidade − inscrições confirmadas. Sem vaga, o pedido é bloqueado e o admin não confirma. Qualquer código que mexa em vagas deve usar a mesma transação com trava (`inscricao.service.cjs`).
 - Cancelar inscrição (aluno) e Excluir esporte/evento (admin) agem direto, **sem** popup. Sair da conta tem popup (tela 18).
-- Detalhes do esporte (tela 08) é compartilhada: aluno vê "Inscrever-se", admin vê "Excluir".
+- Detalhes do esporte (tela 08) é compartilhada: aluno vê "Inscrever-se", admin vê "Excluir". Os cards de esporte mostram "Ver detalhes" para os dois.
 - Tag de vagas sempre "**[n] vagas disponíveis**".
 - E-mail de aluno: só `@edu.unifor.br`. Matrícula: 7 dígitos, `^[0-9]{2}[1-2][0-9]{4}$`.
 - Senha (cadastro e troca): 15 a 128 caracteres, sem `trim`; armazenada só como hash Argon2.
 - Sessão: em memória, uma por usuário, expira com 15 min de inatividade, cookie `unifor_sid` HttpOnly/SameSite=Lax. Reiniciar o backend desloga todos.
+- O cadastro já abre a sessão e leva o aluno à Home.
 - Após o login: aluno → `/home`, admin → `/admin/home`. Telas de um perfil redirecionam o outro para a própria home; `/esportes` e `/esportes/:id` são compartilhadas.
 - Não reintroduzir o que já foi descartado (lista no fim de `decisoes.md`).
 
-## 9. Estado atual (02/11/2026)
+## 9. Estado atual (03/11/2026)
 
-**Integrado ao banco:** Cadastro (02), Login (01), Home (04: usuário e esportes), Esportes (05), Detalhes do esporte (08, inclusive Excluir), Popup inscrição (09), Minhas inscrições (10: esportes), Detalhes da inscrição (11), Configurações (17), Sair da conta (18), Criar esporte (20, sem salvar imagem), Gerenciar inscrições (23), Home do admin, autorização por perfil (frontend e backend). O fluxo central do MVP funciona de ponta a ponta.
+**Integrado ao banco:** Cadastro (02), Login (01), Home (04: usuário e esportes), Esportes (05), Detalhes do esporte (08, inclusive Excluir), Popup inscrição (09), Minhas inscrições (10, só esportes por enquanto), Detalhes da inscrição (11), Configurações (17), Sair da conta (18), Criar esporte (20, sem salvar imagem), Gerenciar inscrições (23), Home do admin, autorização por perfil (frontend e backend). O fluxo central do MVP funciona de ponta a ponta.
 
-**Visual pronto, ainda em mocks:** Home (04: eventos), Minhas inscrições (10: eventos), Gerência (19, é só um menu), Aceitar resenhas (21), Criar evento (22). Esqueceu a senha (03) é só visual (fora do MVP no backend).
+**Visual pronto, ainda em mocks:** Home (04: eventos), Gerência (19, é só um menu), Aceitar resenhas (21), Criar evento (22). Esqueceu a senha (03) é só visual (fora do MVP no backend).
 
 **Não iniciadas:** Resultados de busca (06), Popup de filtros (07), Resenhas (12), Popup de resenha (13), Eventos (14), Detalhes do evento (15), Popup inscrição em evento (16).
 
@@ -148,5 +149,10 @@ Ao terminar qualquer entrega: atualize `status.md`, registre em `historico.md` e
 
 Ordem do time (autenticação → esportes → inscrições → configurações), considerando o que já foi feito:
 
-1. Testar o sistema no banco local de cada integrante (telas e operações de dados).
-2. Depois, conforme o tempo: resenhas (12, 13, 21), busca/filtros (06, 07), eventos (14, 15, 16, 22).
+Os testes manuais tela a tela no banco local foram feitos em 03/11/2026 (ver `specs/historico.md`). Planejado pelo time, nesta ordem:
+
+1. Backend de duas telas que ainda usam mocks (a definir com o time).
+2. Melhorar o design do frontend.
+3. Imagens nos esportes (exige coluna nova no banco e armazenamento — pendência 5).
+4. Deploy.
+5. Depois, conforme o tempo: resenhas (12, 13, 21), busca/filtros (06, 07), eventos (14, 15, 16, 22).
