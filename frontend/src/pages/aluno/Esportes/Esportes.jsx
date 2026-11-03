@@ -62,7 +62,7 @@ function Esportes() {
             nome={esporte.nome}
             local={esporte.local}
             vagas={esporte.vagas}
-            onInscrever={() => navigate(`/esportes/${esporte.id}`)}
+            onVerDetalhes={() => navigate(`/esportes/${esporte.id}`)}
           />
         ))}
       </div>

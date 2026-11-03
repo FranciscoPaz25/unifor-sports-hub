@@ -1,6 +1,6 @@
 import './Card.css';
 
-function Card({ nome, local, vagas, onInscrever }) {
+function Card({ nome, local, vagas, onVerDetalhes }) {
   return (
     <div className="card-esporte">
       <div className="card-esporte-imagem" aria-hidden="true">
@@ -13,8 +13,8 @@ function Card({ nome, local, vagas, onInscrever }) {
         <h3 className="card-esporte-nome">{nome}</h3>
         <p className="card-esporte-local">{local}</p>
         <span className="card-esporte-vagas">{vagas} vagas disponíveis</span>
-        <button type="button" className="card-esporte-botao" onClick={onInscrever}>
-          Inscrever-se
+        <button type="button" className="card-esporte-botao" onClick={onVerDetalhes}>
+          Ver detalhes
         </button>
       </div>
     </div>

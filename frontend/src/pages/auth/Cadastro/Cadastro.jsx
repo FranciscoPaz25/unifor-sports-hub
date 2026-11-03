@@ -50,34 +50,32 @@ function Cadastro() {
     if (enviando) return;
     setErroGeral('');
 
+    // Confere todos os campos de uma vez: cada um mostra o próprio erro ao mesmo tempo.
     // RF02.5: domínio institucional
-    const erroDominio = validarEmailInstitucional(email, 'aluno');
-    if (erroDominio) {
-      setErroEmail(erroDominio);
-      return;
-    }
-    setErroEmail('');
+    const novoErroEmail = validarEmailInstitucional(email, 'aluno');
 
     // Matrícula Unifor: 7 dígitos (ano com 2 dígitos + semestre 1 ou 2 + 4 dígitos).
     // Mesmo padrão do CHECK chk_matricula_unifor no banco.
-    if (!/^[0-9]{2}[1-2][0-9]{4}$/.test(matricula.trim())) {
-      setErroMatricula('Matrícula inválida. São 7 dígitos: ano (2), semestre (1 ou 2) e número (4). Ex.: 2312345');
-      return;
-    }
-    setErroMatricula('');
+    const novoErroMatricula = /^[0-9]{2}[1-2][0-9]{4}$/.test(matricula.trim())
+      ? ''
+      : 'Matrícula inválida. São 7 dígitos: ano (2), semestre (1 ou 2) e número (4). Ex.: 2312345';
 
-    // Mesma política de senha do backend: 15 a 128 caracteres, sem trim
-    if (senha.length < 15 || senha.length > 128) {
-      setErroSenha('A senha deve ter entre 15 e 128 caracteres.');
-      return;
-    }
-
+    // Mesma política de senha do backend: 15 a 128 caracteres, sem trim.
     // RF02.10: senha e confirmação precisam bater
-    if (senha !== confirmarSenha) {
-      setErroSenha('Erro ao confirmar senha. Verifique os padrões solicitados.');
+    let novoErroSenha = '';
+    if (senha.length < 15 || senha.length > 128) {
+      novoErroSenha = 'A senha deve ter entre 15 e 128 caracteres.';
+    } else if (senha !== confirmarSenha) {
+      novoErroSenha = 'Erro ao confirmar senha. Verifique os padrões solicitados.';
+    }
+
+    setErroEmail(novoErroEmail);
+    setErroMatricula(novoErroMatricula);
+    setErroSenha(novoErroSenha);
+
+    if (novoErroEmail || novoErroMatricula || novoErroSenha) {
       return;
     }
-    setErroSenha('');
 
     // RF02.12: grava o aluno no banco
     setEnviando(true);
@@ -86,6 +84,7 @@ function Cadastro() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ nome, email, matricula, senha, confirmarSenha }),
+        credentials: 'include',
       });
       const dados = await resposta.json();
 
@@ -97,8 +96,8 @@ function Cadastro() {
         return;
       }
 
-      // RF02.13: redireciona para o login, que mostra a confirmação
-      navigate('/', { replace: true, state: { mensagem: dados.mensagem } });
+      // O backend já abriu a sessão: o aluno entra direto na Home
+      navigate('/home', { replace: true });
     } catch {
       setErroGeral('Não foi possível concluir o cadastro. Tente novamente.');
     } finally {

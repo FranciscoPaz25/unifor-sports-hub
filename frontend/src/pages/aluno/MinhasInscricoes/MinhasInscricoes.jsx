@@ -2,8 +2,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { chamarApi, mensagemDeErro } from '../../../utils/api';
-import { eventos } from '../../../mocks/eventos';
-import { inscricoesEventos } from '../../../mocks/inscricoes';
 import './MinhasInscricoes.css';
 
 const statusLabel = {
@@ -12,23 +10,6 @@ const statusLabel = {
   cancelada: 'Cancelada',
   rejeitada: 'Rejeitada',
 };
-
-// Eventos ainda vêm do mock (módulo de eventos fora do MVP essencial)
-const itensEventos = inscricoesEventos
-  .map((inscricao) => {
-    const evento = eventos.find((e) => e.id === inscricao.refId);
-    if (!evento) return null;
-    return {
-      chave: `evento-${inscricao.id}`,
-      nome: evento.nome,
-      status: inscricao.status,
-      criadoEm: inscricao.criadoEm,
-      local: evento.local,
-      horario: `${evento.data} · ${evento.horario}`,
-      destino: `/eventos/${evento.id}`, // RF15 — ainda não existe
-    };
-  })
-  .filter(Boolean);
 
 function MinhasInscricoes() {
   const navigate = useNavigate();
@@ -63,7 +44,7 @@ function MinhasInscricoes() {
   }, []);
 
   // RF10.4: ordenadas da mais recente para a mais antiga
-  const itensOrdenados = [...itensEsportes, ...itensEventos].sort(
+  const itensOrdenados = [...itensEsportes].sort(
     (a, b) => new Date(b.criadoEm) - new Date(a.criadoEm)
   );
 

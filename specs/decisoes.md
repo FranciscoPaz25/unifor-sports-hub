@@ -14,7 +14,7 @@
 - Barra de busca padrão: campo de busca + botão "Filtros" + botão "Buscar" (aparece em Home, Esportes, Resultados de busca).
 - Imagens dos cards são sempre genéricas (nunca fotos reais).
 - Tag de vagas padronizada como **"[n] vagas disponíveis"** — nunca "restantes" nem "últimas vagas".
-- Cards de esporte: imagem genérica, nome, local, vagas e botão "Inscrever-se". Na tela de resultados de busca também mostram dias/horário e nota em estrelas.
+- Cards de esporte: imagem genérica, nome, local, vagas e botão "Ver detalhes", para aluno e admin. As ações ficam na tela de Detalhes do esporte: aluno vê "Inscrever-se", admin vê "Excluir". Na tela de resultados de busca também mostram dias/horário e nota em estrelas.
 - Cards de evento: apenas data, nome, local e horário (sem categoria, descrição, status ou botão na lista da Home).
 - Cor primária: azul institucional Unifor `#003DA5` (ver manual de marca em unifor.br/central-de-marca para confirmar o hex oficial).
 - Fundo branco/cinza claro, cantos arredondados, sombras leves, tipografia sans-serif moderna.
@@ -47,7 +47,7 @@
 
 - O cadastro cria sempre `TipoUsuario = aluno`; o admin continua sendo criado só pelo seed ou direto no banco.
 - A senha do cadastro segue a mesma política da troca de senha: 15 a 128 caracteres, sem `trim`. A tela mostra "Mínimo de 15 caracteres." e mantém o indicador de força.
-- O cadastro não faz login automático: leva ao Login, que mostra "Conta criada. Faça login para continuar." (RF02.13).
+- O cadastro já faz login: abre a sessão e leva o aluno direto à Home (decisão de 02/11/2026; antes levava ao Login).
 
 ## Autorização por perfil — decisões de 25/10/2026
 
