@@ -11,7 +11,8 @@
   background: white;
   border-radius: 16px;
   padding: 40px;
-  width: 360px;
+  width: 440px;
+  max-width: calc(100% - 32px);
   display: flex;
   flex-direction: column;
   gap: 12px;

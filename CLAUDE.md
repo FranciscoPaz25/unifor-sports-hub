@@ -2,7 +2,7 @@
 
 Contexto para o Claude Code (e para qualquer pessoa do time) continuar o projeto. Leia antes de qualquer tarefa. Este arquivo resume e aponta para a documentação viva em `specs/` — em caso de conflito, **o código e `specs/` valem mais que este resumo**; corrija este arquivo quando notar divergência.
 
-> Atualizado em 03/11/2026, depois da rodada de testes manuais.
+> Atualizado em 04/11/2026, com busca, filtros, resenhas e ícones dos esportes.
 
 ## 1. O projeto
 
@@ -62,20 +62,23 @@ backend/
   modules/<modulo>/            # padrão: <m>.routes / .controller / .service / .validacao (.cjs)
     auth/                      # cadastro, login, logout, sessão (Map em memória)
     usuarios/                  # /me, editar perfil, trocar senha
-    esportes/                  # listar, detalhar, criar (admin), excluir (admin)
+    esportes/                  # listar (com ?busca= e ?categoria=), detalhar, criar (admin), excluir (admin)
     locais/                    # GET /api/locais (opções do campo Local)
     inscricoes/                # pedir, listar/ver/cancelar as próprias; pendentes e aceitar/rejeitar (admin)
+    avaliacoes/                # resenhas: ver as do esporte, enviar a própria; pendentes e aprovar/rejeitar (admin)
   prisma/schema.prisma, prisma/migrations/, prisma/seed.cjs
   scripts/testar-sessao.cjs    # teste manual da lógica de sessão (assert)
 frontend/src/
   App.jsx                      # rotas: públicas → RotaProtegida → Layout → (compartilhadas | ExigirPerfil aluno | ExigirPerfil admin)
-  components/                  # Navbar, Layout, Card, RotaProtegida, ExigirPerfil
+  components/                  # Navbar, Layout, Card, RotaProtegida, ExigirPerfil, BarraBusca, Estrelas, IconeEsporte
   pages/auth|aluno|admin|compartilhadas/<Tela>/<Tela>.jsx + .css
   popups/<Popup>/
-  mocks/                       # só o que não tem backend: eventos, resenhas (e esportes usados por Aceitar resenhas)
+  mocks/                       # só o que não tem backend: eventos
   utils/api.js                 # API_URL, chamarApi(caminho, { metodo, corpo }), mensagemDeErro
   utils/perfil.js              # homeDoPerfil(tipo)
   utils/validacao.js           # e-mail institucional por perfil
+  utils/esportes.js            # CATEGORIAS, ICONES_ESPORTE (mesmos nomes do backend), formatarData
+  index.css                    # estilo base (cores, fundo, fontes); cada tela tem o próprio .css
 specs/                         # documentação viva (seção 7)
 ```
 
@@ -88,7 +91,7 @@ Convenções:
 - Erros de validação: `{ erros: [...] }`; demais erros: `{ mensagem: "..." }`. Textos padronizados em `specs/decisoes.md`.
 - Colunas do banco seguem o modelo físico (`idUsuario`, `Nome`, `TipoUsuario`, `ModalidadeEsportiva_idModalidade`…). Não renomeie.
 - Migration já aplicada não se edita; correções vão em migration nova.
-- Cor primária `#003DA5`.
+- Cor primária `#003DA5`. Larguras das telas: até 1160 px (listas/grades), 880 px (detalhes e listas de cards), 780 px (formulários), 640 px (Configurações).
 
 ## 6. ⚠️ Numeração: "RFnn" no código ≠ "RFnn" do documento acadêmico
 
@@ -119,20 +122,22 @@ Ao terminar qualquer entrega: atualize `status.md`, registre em `historico.md` e
 - Cancelar inscrição (aluno) e Excluir esporte/evento (admin) agem direto, **sem** popup. Sair da conta tem popup (tela 18).
 - Detalhes do esporte (tela 08) é compartilhada: aluno vê "Inscrever-se", admin vê "Excluir". Os cards de esporte mostram "Ver detalhes" para os dois.
 - Tag de vagas sempre "**[n] vagas disponíveis**".
+- Avaliações: só quem tem inscrição confirmada avalia; só estrelas (sem comentário) entra `aprovada` direto; com comentário nasce "Em análise" e o admin aprova (`aprovada`) ou rejeita (`rejeitada`) na tela 21; só as aprovadas aparecem e contam na nota; editar segue a mesma regra.
+- Imagem do esporte = ícone padrão azul escolhido numa lista (`Icone` no banco); nunca foto.
 - E-mail de aluno: só `@edu.unifor.br`. Matrícula: 7 dígitos, `^[0-9]{2}[1-2][0-9]{4}$`.
 - Senha (cadastro e troca): 15 a 128 caracteres, sem `trim`; armazenada só como hash Argon2.
 - Sessão: em memória, uma por usuário, expira com 15 min de inatividade, cookie `unifor_sid` HttpOnly/SameSite=Lax. Reiniciar o backend desloga todos.
 - O cadastro já abre a sessão e leva o aluno à Home.
-- Após o login: aluno → `/home`, admin → `/admin/home`. Telas de um perfil redirecionam o outro para a própria home; `/esportes` e `/esportes/:id` são compartilhadas.
+- Após o login: aluno → `/home`, admin → `/admin/home`. Telas de um perfil redirecionam o outro para a própria home; `/esportes`, `/esportes/busca`, `/esportes/:id` e `/esportes/:id/resenhas` são compartilhadas.
 - Não reintroduzir o que já foi descartado (lista no fim de `decisoes.md`).
 
-## 9. Estado atual (03/11/2026)
+## 9. Estado atual (04/11/2026)
 
-**Integrado ao banco:** Cadastro (02), Login (01), Home (04: usuário e esportes), Esportes (05), Detalhes do esporte (08, inclusive Excluir), Popup inscrição (09), Minhas inscrições (10, só esportes por enquanto), Detalhes da inscrição (11), Configurações (17), Sair da conta (18), Criar esporte (20, sem salvar imagem), Gerenciar inscrições (23), Home do admin, autorização por perfil (frontend e backend). O fluxo central do MVP funciona de ponta a ponta.
+**Integrado ao banco:** Cadastro (02), Login (01), Home (04: usuário e esportes), Esportes (05), Detalhes do esporte (08, inclusive Excluir), Popup inscrição (09), Minhas inscrições (10, só esportes por enquanto), Detalhes da inscrição (11), Configurações (17), Sair da conta (18), Criar esporte (20, com ícone padrão), Gerenciar inscrições (23), Home do admin, Resultados de busca (06), Popup de filtros (07), Avaliações (12), Popup de resenha (13), Aceitar resenhas (21), autorização por perfil (frontend e backend). O fluxo central do MVP funciona de ponta a ponta.
 
-**Visual pronto, ainda em mocks:** Home (04: eventos), Gerência (19, é só um menu), Aceitar resenhas (21), Criar evento (22). Esqueceu a senha (03) é só visual (fora do MVP no backend).
+**Visual pronto, ainda em mocks:** Home (04: eventos), Gerência (19, é só um menu), Criar evento (22). Esqueceu a senha (03) é só visual (fora do MVP no backend).
 
-**Não iniciadas:** Resultados de busca (06), Popup de filtros (07), Resenhas (12), Popup de resenha (13), Eventos (14), Detalhes do evento (15), Popup inscrição em evento (16).
+**Não iniciadas:** Eventos (14), Detalhes do evento (15), Popup inscrição em evento (16).
 
 ## 10. Pendências conhecidas
 
@@ -140,19 +145,17 @@ Ao terminar qualquer entrega: atualize `status.md`, registre em `historico.md` e
 2. CSRF e limite de tentativas de login (antes de qualquer uso real).
 3. Agendar `limparSessoesInativas`.
 4. Testes automatizados: `npm test` do backend é placeholder.
-5. Armazenamento de imagens (não existe `imagem_url`; Criar esporte não faz upload real).
+5. A busca procura só esportes (eventos ainda não têm backend).
 6. Navbar não se adapta ao celular (rolagem lateral a 375 px em todas as telas internas).
 7. Não existe edição de esporte (a tela 20 só cria).
-8. Questões em aberto em `specs/historico.md` ("Esportes" na navbar do admin, status de resenhas) — **pergunte ao usuário antes de implementar algo que dependa delas.**
+8. Questão em aberto em `specs/historico.md` ("Esportes" na navbar do admin) — **pergunte ao usuário antes de implementar algo que dependa dela.**
 
 ## 11. Próximos passos
 
 Ordem do time (autenticação → esportes → inscrições → configurações), considerando o que já foi feito:
 
-Os testes manuais tela a tela no banco local foram feitos em 03/11/2026 (ver `specs/historico.md`). Planejado pelo time, nesta ordem:
+Testes manuais tela a tela feitos em 03/11/2026; busca, filtros, resenhas, ícones e o visual mais largo entraram em 04/11/2026 (ver `specs/historico.md`). Próximos passos:
 
-1. Backend de duas telas que ainda usam mocks (a definir com o time).
-2. Melhorar o design do frontend.
-3. Imagens nos esportes (exige coluna nova no banco e armazenamento — pendência 5).
-4. Deploy.
-5. Depois, conforme o tempo: resenhas (12, 13, 21), busca/filtros (06, 07), eventos (14, 15, 16, 22).
+1. Testar no navegador as telas de 04/11 (06, 07, 12, 13, 21, Criar esporte com ícone).
+2. Deploy (a combinar com o time).
+3. Depois, conforme o tempo: eventos (14, 15, 16, 22) e navbar no celular.

@@ -257,7 +257,7 @@ ainda não tiver os locais e o admin, rode `npm run seed`. No frontend, rode
 
 Veja [`specs/status.md`](./specs/status.md) para o progresso tela a tela e [`specs/historico.md`](./specs/historico.md) para o que foi feito em cada entrega.
 
-Resumo (02/11/2026): o fluxo central do MVP funciona com o banco de verdade — cadastro → login → ver esportes → pedir inscrição → admin aceita ou rejeita → aluno vê o resultado e pode cancelar. Também estão ligadas Configurações, Criar/Excluir esporte e a Home do admin. Resenhas e eventos ainda usam dados de mentira (mocks) e são secundários.
+Resumo (04/11/2026): o fluxo central do MVP funciona com o banco de verdade — cadastro → login → ver esportes → pedir inscrição → admin aceita ou rejeita → aluno vê o resultado e pode cancelar. Também estão ligadas Configurações, Criar/Excluir esporte (com ícone padrão), a Home do admin, a busca com filtro por categoria e as resenhas (aluno avalia, admin aprova). Só os eventos ainda usam dados de mentira (mocks).
 
 ## Glossário rápido (para quem está começando no backend)
 

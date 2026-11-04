@@ -1,11 +1,11 @@
 const { listarEsportes, buscarEsporte, criarEsporte, excluirEsporte } = require('./esporte.service.cjs');
-const { lerIdEsporte, validarCriacaoEsporte } = require('./esporte.validacao.cjs');
+const { lerFiltrosBusca, lerIdEsporte, validarCriacaoEsporte } = require('./esporte.validacao.cjs');
 
 const NAO_ENCONTRADO = { mensagem: 'Esporte não encontrado.' };
 
-// Telas 04 e 05
+// Telas 04 e 05; com ?busca= e ?categoria=, tela 06 (Resultados de busca)
 async function listar(req, res) {
-    const esportes = await listarEsportes();
+    const esportes = await listarEsportes(lerFiltrosBusca(req.query));
     return res.status(200).json({ esportes });
 }
 

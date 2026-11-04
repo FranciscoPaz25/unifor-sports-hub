@@ -1,6 +1,6 @@
 # Rotas de API — Unifor Sports Hub
 
-> Atualizado em 25/10/2026. Cadastro, autenticação, perfil próprio, autorização de admin, esportes, locais e inscrições em esporte estão implementados. Todos os endereços usam o prefixo `/api`.
+> Atualizado em 04/11/2026. Cadastro, autenticação, perfil próprio, autorização de admin, esportes (com busca e filtro), locais, inscrições em esporte e avaliações estão implementados. Todos os endereços usam o prefixo `/api`.
 
 ## Autenticação implementada
 
@@ -56,16 +56,16 @@ Código em `backend/modules/esportes/`. Todas exigem sessão; criar e excluir ex
 
 | Método | Rota | Acesso | Comportamento e respostas |
 |---|---|---|---|
-| GET | `/api/esportes` | Sessão válida | 200 `{ esportes: [...] }` em ordem alfabética (telas 04 e 05) |
+| GET | `/api/esportes` | Sessão válida | 200 `{ esportes: [...] }` em ordem alfabética (telas 04 e 05). Filtros opcionais na query (tela 06): `busca` (parte do nome; ignora maiúsculas e acentos; `%` e `_` contam como texto) e `categoria` (igual). Sem resultado → lista vazia |
 | GET | `/api/esportes/:id` | Sessão válida | 200 `{ esporte }` com `avaliacoes` (as 2 aprovadas mais recentes); 404 "Esporte não encontrado." para id inexistente ou inválido (tela 08) |
-| POST | `/api/esportes` | Admin | Recebe `nome`, `descricao`, `categoria`, `idLocal`, `dias` (números 1–7), `horarioInicio`, `horarioFim` (`HH:MM`), `responsavel`, `capacidadeMaxima`; 201 `{ mensagem, esporte }`; 400 `{ erros }` (inclui "Local não encontrado."); 403 para aluno (tela 20) |
+| POST | `/api/esportes` | Admin | Recebe `nome`, `descricao`, `categoria`, `idLocal`, `dias` (números 1–7), `horarioInicio`, `horarioFim` (`HH:MM`), `responsavel`, `capacidadeMaxima` e, opcional, `icone` (um de `geral`, `futebol`, `volei`, `basquete`, `natacao`, `tenis`, `atletismo`, `luta`, `ciclismo`, `academia`; sem ele fica `geral`); 201 `{ mensagem, esporte }`; 400 `{ erros }` (inclui "Local não encontrado." e "Ícone inválido."); 403 para aluno (tela 20) |
 | DELETE | `/api/esportes/:id` | Admin | 204; 404 se não existir; 403 para aluno. Apaga dias, inscrições e avaliações em cascata (tela 08, sem confirmação) |
 
 Formato de cada esporte (mesmos nomes que os antigos mocks, para as telas mudarem pouco):
 
 ```json
 {
-  "id": 2, "nome": "Natação Básica", "descricao": "...", "categoria": "Aquático",
+  "id": 2, "nome": "Natação Básica", "descricao": "...", "categoria": "Aquático", "icone": "natacao",
   "idLocal": 5, "local": "Piscina Olímpica",
   "capacidadeMaxima": 12, "vagas": 12,
   "dias": [2, 4], "diasSemana": "Terça e Quinta",
@@ -117,6 +117,35 @@ Formato de cada inscrição:
 - Sem vagas (confirmadas ≥ capacidade), o pedido é bloqueado e o admin não consegue confirmar.
 - Cancelada ou rejeitada não impede novo pedido: o mesmo registro volta para `em_analise` com a data atualizada (o par esporte + aluno é único).
 - Controle de vagas seguro contra requisições simultâneas: a transação trava a linha do esporte (`SELECT ... FOR UPDATE`) e usa isolamento `READ COMMITTED`. Testado com duas confirmações ao mesmo tempo para a última vaga: só uma passa.
+
+## Avaliações (resenhas) implementadas
+
+Código em `backend/modules/avaliacoes/`. Um aluno tem no máximo uma avaliação por esporte; ela é identificada pelo par `idEsporte` + `idAluno`. O aluno envia a própria pela identidade da sessão.
+
+| Método | Rota | Acesso | Comportamento e respostas |
+|---|---|---|---|
+| GET | `/api/avaliacoes/esporte/:idEsporte` | Sessão | 200 `{ esporte: { id, nome, notaMedia, totalAvaliacoes }, avaliacoes, minhaAvaliacao, podeAvaliar }`. `avaliacoes` = todas as aprovadas, mais recentes primeiro; `minhaAvaliacao` = a do usuário da sessão em qualquer status, ou `null`; `podeAvaliar` = tem inscrição confirmada no esporte. 404 "Esporte não encontrado." (tela 12) |
+| PUT | `/api/avaliacoes/esporte/:idEsporte` | Aluno com inscrição confirmada | Recebe `{ nota, comentario }` (nota inteira de 1 a 5; comentário opcional, até 255 caracteres, salvo com `trim`). Cria ou substitui a avaliação: sem comentário fica `aprovada` (200 `{ mensagem: "Avaliação publicada.", avaliacao }`); com comentário fica `em_analise` (200 `{ mensagem: "Avaliação enviada para análise.", avaliacao }`); 400 `{ erros }`; 403 "Só quem tem inscrição confirmada neste esporte pode avaliar."; 404 (tela 13) |
+| GET | `/api/avaliacoes/pendentes` | Admin | 200 `{ avaliacoes }` em análise, mais antigas primeiro, com `nome` do aluno e `esporte` (tela 21) |
+| PATCH | `/api/avaliacoes/:idEsporte/:idAluno` | Admin | Recebe `{ status: "aprovada" \| "rejeitada" }`; 200 `{ avaliacao }`; 400 status inválido; 404 "Avaliação não encontrada."; 409 "Esta avaliação já foi analisada." (tela 21) |
+
+Formato de cada avaliação:
+
+```json
+{
+  "idEsporte": 6, "idAluno": 3, "nota": 4, "comentario": "Ótima quadra!",
+  "status": "aprovada", "criadoEm": "2026-11-04T18:20:00.000Z",
+  "nome": "Ana", "esporte": "Futebol Society"
+}
+```
+
+`nome` aparece nas listas da tela 12 e do admin; `esporte` só na lista do admin. `comentario` vem `""` quando não há.
+
+### Regras das avaliações (decisões de 04/11/2026)
+- Status: `em_analise` → `aprovada` ou `rejeitada` (admin). Só as aprovadas aparecem para todos e entram na nota.
+- Só avalia quem tem inscrição confirmada no esporte; o admin vê a tela 12, mas não avalia.
+- Enviar de novo substitui nota e comentário. Sem comentário, fica `aprovada` na hora; com comentário, volta para `em_analise` (sai da nota até nova aprovação).
+- Duas decisões ao mesmo tempo na mesma avaliação: o `UPDATE` só vale se ainda estiver em análise, então uma passa e a outra recebe 409.
 
 ## Rotas de diagnóstico
 

@@ -12,8 +12,8 @@
 .popup-sair-card {
   background: white;
   border-radius: 14px;
-  padding: 22px;
-  width: 340px;
+  padding: 24px;
+  width: 400px;
   max-width: 100%;
   display: flex;
   flex-direction: column;

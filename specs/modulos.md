@@ -57,6 +57,6 @@
 ---
 
 ### Fora do MVP essencial (ver `status.md` para tratamento)
-- Resenhas (RF12, RF13, RF21) — secundário, pode usar dado mockado.
-- Busca/filtros (RF06, RF07) — secundário, pode usar dado mockado.
+- Resenhas (RF12, RF13, RF21) — integradas ao banco em 04/11/2026 (`backend/modules/avaliacoes/`, tabela `avaliar`).
+- Busca/filtros (RF06, RF07) — integrados ao banco em 04/11/2026 (`GET /api/esportes?busca=&categoria=`).
 - Eventos (RF14, RF15, RF16, RF22) — se sobrar tempo, pode ficar só visual.

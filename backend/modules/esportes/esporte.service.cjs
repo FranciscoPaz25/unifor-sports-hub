@@ -39,6 +39,7 @@ function paraResposta(modalidade, notas) {
         nome: modalidade.Nome,
         descricao: modalidade.Descricao,
         categoria: modalidade.Categoria,
+        icone: modalidade.Icone,
         idLocal: modalidade.local.idLocal,
         local: modalidade.local.Nome,
         capacidadeMaxima: modalidade.Capacidade,
@@ -59,7 +60,7 @@ async function buscarNotas(idsModalidade) {
         by: ['ModalidadeEsportiva_idModalidade'],
         where: {
             ModalidadeEsportiva_idModalidade: { in: idsModalidade },
-            Status: 'confirmada',
+            Status: 'aprovada',
         },
         _avg: { Nota: true },
         _count: { _all: true },
@@ -71,8 +72,16 @@ async function buscarNotas(idsModalidade) {
     ]));
 }
 
-async function listarEsportes() {
+// filtros: { busca, categoria }. A comparação do MySQL (utf8mb4_0900_ai_ci) já ignora
+// maiúsculas e acentos: "volei" encontra "Vôlei".
+async function listarEsportes({ busca = '', categoria = '' } = {}) {
+    // No LIKE do MySQL, % e _ são curingas: escapa para valerem como texto digitado
+    const buscaEscapada = busca.replace(/[\\%_]/g, '\\$&');
     const modalidades = await prisma.modalidade_esportiva.findMany({
+        where: {
+            ...(busca && { Nome: { contains: buscaEscapada } }),
+            ...(categoria && { Categoria: categoria }),
+        },
         include: relacoesEsporte,
         orderBy: { Nome: 'asc' },
     });
@@ -92,7 +101,7 @@ async function buscarEsporte(idModalidade) {
     const notas = await buscarNotas([idModalidade]);
     // RF08.15: as duas avaliações aprovadas mais recentes
     const avaliacoes = await prisma.avaliar.findMany({
-        where: { ModalidadeEsportiva_idModalidade: idModalidade, Status: 'confirmada' },
+        where: { ModalidadeEsportiva_idModalidade: idModalidade, Status: 'aprovada' },
         orderBy: { Data: 'desc' },
         take: 2,
         select: { Nota: true, Comentario: true, usuario: { select: { Nome: true } } },
@@ -126,6 +135,7 @@ async function criarEsporte(dados, idAdmin) {
             Categoria: dados.categoria,
             Capacidade: dados.capacidadeMaxima,
             Professor: dados.responsavel,
+            Icone: dados.icone,
             HorarioInicio: horarioParaData(dados.horarioInicio),
             HorarioFim: horarioParaData(dados.horarioFim),
             Usuario_idAdmin: idAdmin,
@@ -149,6 +159,7 @@ async function excluirEsporte(idModalidade) {
 }
 
 module.exports = {
+    buscarNotas,
     formatarDias,
     formatarHorario,
     listarEsportes,

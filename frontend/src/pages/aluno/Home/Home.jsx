@@ -1,6 +1,7 @@
 // Tela 04 — Home (RF04)
 import { useEffect, useState } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
+import BarraBusca from '../../../components/BarraBusca/BarraBusca';
 import Card from '../../../components/Card/Card';
 import { chamarApi } from '../../../utils/api';
 import { eventos } from '../../../mocks/eventos';
@@ -32,11 +33,6 @@ function Home() {
     carregar();
   }, []);
 
-  function handleBuscar(e) {
-    e.preventDefault();
-    // TODO: navegar para RF06 Resultados de busca com o termo digitado
-  }
-
   return (
     <div className="home-container">
       <section className="home-saudacao">
@@ -44,19 +40,7 @@ function Home() {
         <p>Encontre modalidades, reserve horários e participe de eventos esportivos da Unifor.</p>
       </section>
 
-      <form className="home-busca" onSubmit={handleBuscar}>
-        <input
-          type="text"
-          placeholder="Buscar esportes ou eventos..."
-          className="home-busca-input"
-        />
-        <button type="button" className="home-busca-filtros">
-          Filtros
-        </button>
-        <button type="submit" className="home-busca-botao">
-          Buscar
-        </button>
-      </form>
+      <BarraBusca />
 
       <section className="home-secao">
         <h2>Esportes em destaque</h2>
@@ -68,6 +52,7 @@ function Home() {
               nome={esporte.nome}
               local={esporte.local}
               vagas={esporte.vagas}
+              icone={esporte.icone}
               onVerDetalhes={() => navigate(`/esportes/${esporte.id}`)}
             />
           ))}

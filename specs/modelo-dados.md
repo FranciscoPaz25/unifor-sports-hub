@@ -73,6 +73,7 @@ Um local pode estar associado a várias modalidades e eventos.
 - HorarioInicio e HorarioFim: campos TIME.
 - Usuario_idAdmin: referência a usuario.idUsuario.
 - Local_idLocal: referência a local.idLocal.
+- Icone: VARCHAR(30), nome do ícone padrão escolhido em Criar esporte (ex.: `futebol`); padrão `geral` (migration `20261104_modalidade_icone`). Os desenhos ficam no frontend (`components/IconeEsporte`).
 
 Os dias são armazenados em modalidade_dia.
 O modelo atual usa o mesmo intervalo de horários para todos os dias da modalidade.
@@ -80,10 +81,10 @@ O modelo atual usa o mesmo intervalo de horários para todos os dias da modalida
 Regras usadas pela API de esportes (25/10/2026):
 - `Usuario_idAdmin` recebe o admin da sessão que criou o esporte.
 - Vagas disponíveis = `Capacidade` − inscrições com status `confirmada` (inscrições `em_analise` não ocupam vaga).
-- Nota média e total de avaliações consideram só `avaliar.Status = confirmada` (resenhas aprovadas).
+- Nota média e total de avaliações consideram só `avaliar.Status = aprovada`.
 - Horários trafegam como texto `HH:MM`; no banco são TIME, gravados como UTC para não sofrer fuso.
 - Excluir uma modalidade apaga em cascata `modalidade_dia`, `inscricao_modalidade` e `avaliar` (FKs `ON DELETE CASCADE`).
-- Não há coluna de imagem: Criar esporte mostra a pré-visualização, mas a imagem não é salva.
+- Imagem: não há foto. Cada modalidade tem um ícone padrão (`Icone`), escolhido numa lista fixa (decisão de 04/11/2026).
 
 ### modalidade_dia
 
@@ -109,10 +110,10 @@ O índice único `inscricao_modalidade_UNIQUE` (modalidade + usuário) continua 
 - ModalidadeEsportiva_idModalidade: referência à modalidade.
 - Nota: inteiro entre 1 e 5.
 - Comentario: VARCHAR(255), opcional.
-- Status: enum `em_analise`, `confirmada` ou `cancelada`; padrão `em_analise`.
-- Data: data de criação, preenchida por padrão com o horário atual.
+- Status: enum `em_analise`, `aprovada` ou `rejeitada`; padrão `em_analise`. Até 04/11/2026 era `em_analise`/`confirmada`/`cancelada`; a migration `20261104_avaliar_status_aprovada` converteu `confirmada` → `aprovada` e `cancelada` → `rejeitada`.
+- Data: data do envio (atualizada quando o aluno edita a avaliação).
 
-A chave composta permite uma avaliação por usuário e modalidade.
+A chave composta permite uma avaliação por usuário e modalidade; editar substitui a anterior. Sem comentário a avaliação fica `aprovada` na hora; com comentário fica `em_analise` (regra da API, decisão de 04/11/2026). Só alunos com inscrição `confirmada` no esporte podem avaliar (regra da API, decisão de 04/11/2026). A FK `fk_aluno_id` não tem cascata: apagar um usuário com avaliações exige apagar as avaliações antes.
 
 ### evento
 
@@ -153,6 +154,6 @@ As constraints CHECK estão documentadas no SQL das migrations.
 - Alinhar a edição de e-mail por perfil: o banco aceita os dois domínios, mas o frontend restringe alunos a `@edu.unifor.br`. A regra no backend deve usar o perfil do banco, não o enviado pelo cliente.
 - Validar permissões: as FKs para usuario não garantem o perfil admin ou aluno.
 - Manter a validação de cadastro de aluno com domínio @edu.unifor.br.
-- Definir armazenamento de imagens; imagem_url ainda não existe no modelo.
+- Fotos de esportes não estão previstas: o modelo guarda só o ícone padrão (`Icone`).
 - Definir o comportamento de cancelamento de inscrição em evento.
 - Implementar controle de vagas no backend, considerando requisições simultâneas.

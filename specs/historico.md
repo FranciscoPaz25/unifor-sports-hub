@@ -2,6 +2,20 @@
 
 > Registro do que entrou na `main`, quando e por quê, para quem chega agora ter o contexto. O estado atual tela a tela fica em `status.md`; as regras fixas, em `decisoes.md`. Entradas mais recentes primeiro.
 
+## 04/11/2026 — Busca, filtros, resenhas, ícones dos esportes e telas mais largas
+
+**O que mudou**
+- **Busca e filtros (telas 06 e 07):** a barra de busca da Home e de Esportes leva à nova tela Resultados de busca (`/esportes/busca`). Ela procura pelo nome, sem diferenciar maiúsculas nem acentos, e filtra por categoria pelo popup de filtros. O backend ganhou `?busca=` e `?categoria=` em `GET /api/esportes`.
+- **Resenhas (telas 12, 13 e 21):** novo módulo `backend/modules/avaliacoes/`. O aluno com inscrição confirmada avalia o esporte de 1 a 5 estrelas, com comentário opcional, na tela Avaliações (`/esportes/:id/resenhas`). O admin aprova ou rejeita em Aceitar resenhas, que deixou de usar dados de mentira.
+- **Ícones dos esportes:** Criar esporte troca o envio de foto por uma lista de 10 ícones azuis (Geral, Futebol, Vôlei, Basquete, Natação, Tênis, Atletismo, Lutas, Ciclismo, Academia). O ícone aparece nos cards e na capa de Detalhes do esporte.
+- **Banco:** migration `20261104_avaliar_status_aprovada` (status das avaliações vira em_analise/aprovada/rejeitada, convertendo os antigos) e `20261104_modalidade_icone` (coluna `Icone`).
+- **Visual:** o `index.css` ainda era o modelo padrão do Vite, que espremia o site numa coluna com bordas, centralizava todo o texto e trocava as cores no modo escuro do sistema (por isso alguns títulos ficavam ilegíveis). Virou um estilo base do projeto, e as telas ficaram mais largas, com navbar fixa no topo e cards com sombra.
+- Removidos `mocks/resenhas.js` e `mocks/esportes.js`. Novos componentes: `BarraBusca`, `Estrelas` e `IconeEsporte`.
+
+**Decisões tomadas (pelo time em 04/11):** só avalia quem tem inscrição confirmada; avaliação só com estrelas, sem comentário, entra aprovada direto (só o texto precisa de moderação); avaliações aparecem como "Aprovada"/"Rejeitada"; o único filtro é categoria; imagens dos esportes são ícones padrão escolhidos numa lista.
+
+**Por quê:** eram as telas secundárias que faltavam ligar ao banco, antes do deploy.
+
 ## 03/11/2026 — Ajustes da rodada de testes manuais
 
 O sistema foi testado tela a tela no banco local (13 passos: cadastro, login, permissões, Home do admin, criar/ver/excluir esporte, inscrição, gerenciar inscrições com limite de vagas, minhas inscrições, configurações e conferência no banco). Tudo passou; os ajustes abaixo saíram dos comentários feitos durante os testes.
@@ -103,4 +117,3 @@ Todas as telas essenciais do MVP feitas em React com dados de mentira (mocks), m
 ## Questões em aberto
 
 - Navbar do admin: o código mostra "Esportes", mas `decisoes.md` lista só Home · Eventos · Gerência · Configurações. Confirmar qual vale.
-- `avaliar.Status` usa `em_analise/confirmada/cancelada`; para resenhas talvez `aprovada/rejeitada` faça mais sentido. Confirmar antes de ligar a tela 21.

@@ -1,0 +1,156 @@
+.resenha-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 100;
+}
+
+.resenha-card {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  width: 480px;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+}
+
+.resenha-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.resenha-topo h2 {
+  font-size: 19px;
+}
+
+.resenha-fechar {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: #666;
+}
+
+.resenha-esporte {
+  margin-top: -10px;
+  color: #003DA5;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.resenha-nota {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.resenha-estrelas {
+  display: flex;
+  gap: 2px;
+}
+
+.resenha-estrela {
+  background: none;
+  border: none;
+  padding: 0 2px;
+  font-size: 34px;
+  line-height: 1;
+  color: #d9dce3;
+  cursor: pointer;
+}
+
+.resenha-estrela.cheia {
+  color: #f5a623;
+}
+
+.resenha-nota-rotulo {
+  font-size: 14px;
+  font-weight: 600;
+  color: #5f6673;
+}
+
+.resenha-comentario {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.resenha-comentario textarea {
+  padding: 10px 12px;
+  border: 1px solid #d5d9e0;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: normal;
+  resize: vertical;
+}
+
+.resenha-comentario textarea:focus {
+  outline: none;
+  border-color: #003DA5;
+  box-shadow: 0 0 0 3px rgba(0, 61, 165, 0.12);
+}
+
+.resenha-contador {
+  align-self: flex-end;
+  font-size: 12px;
+  font-weight: normal;
+  color: #8a919e;
+}
+
+.resenha-aviso {
+  font-size: 13px;
+  color: #5f6673;
+  background: #f4f6fa;
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.resenha-erro {
+  color: #c0392b;
+  background: #fdecea;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.resenha-botoes {
+  display: flex;
+  gap: 10px;
+}
+
+.resenha-botao-cancelar,
+.resenha-botao-enviar {
+  flex: 1;
+  padding: 11px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+}
+
+.resenha-botao-cancelar {
+  background: white;
+  border: 1px solid #ccc;
+  color: #333;
+}
+
+.resenha-botao-enviar {
+  background: #003DA5;
+  color: white;
+}
+
+.resenha-botao-enviar:hover:not(:disabled) {
+  background: #00318a;
+}

@@ -1,0 +1,266 @@
+.avaliacoes-container {
+  max-width: 880px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 32px 24px 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.avaliacoes-aviso {
+  color: #5f6673;
+}
+
+.avaliacoes-link {
+  color: #003DA5;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.avaliacoes-topo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avaliacoes-voltar {
+  font-size: 22px;
+  color: #003DA5;
+  text-decoration: none;
+}
+
+.avaliacoes-topo h1 {
+  color: #003DA5;
+}
+
+/* Resumo: média + barras por nota */
+.avaliacoes-resumo {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  flex-wrap: wrap;
+  background: white;
+  border: 1px solid #e2e4e9;
+  border-radius: 14px;
+  padding: 22px 26px;
+}
+
+.avaliacoes-media {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 120px;
+  font-size: 13px;
+  color: #5f6673;
+}
+
+.avaliacoes-media strong {
+  font-size: 44px;
+  line-height: 1;
+  color: #003DA5;
+}
+
+.avaliacoes-media .estrelas {
+  font-size: 18px;
+}
+
+.avaliacoes-barras {
+  flex: 1;
+  min-width: 220px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  color: #5f6673;
+}
+
+.avaliacoes-barras li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avaliacoes-barras li > span:first-child {
+  width: 30px;
+  white-space: nowrap;
+}
+
+.avaliacoes-barra {
+  flex: 1;
+  height: 8px;
+  border-radius: 999px;
+  background: #eef0f4;
+  overflow: hidden;
+}
+
+.avaliacoes-barra span {
+  display: block;
+  height: 100%;
+  background: #f5a623;
+  border-radius: 999px;
+}
+
+.avaliacoes-barra-total {
+  width: 24px;
+  text-align: right;
+}
+
+.avaliacoes-sucesso {
+  color: #1e7e34;
+  background: #e6f4ea;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+/* Avaliação do próprio aluno */
+.avaliacoes-minha {
+  background: #f7f9fe;
+  border: 1px solid #c9d8f5;
+  border-radius: 14px;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.avaliacoes-minha-topo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avaliacoes-minha-topo h2 {
+  font-size: 16px;
+}
+
+.avaliacoes-minha p {
+  font-size: 14px;
+  color: #333;
+}
+
+.avaliacoes-status {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+
+.avaliacoes-status-em_analise {
+  background: #fff4d6;
+  color: #9a6b00;
+}
+
+.avaliacoes-status-aprovada {
+  background: #e6f4ea;
+  color: #1e7e34;
+}
+
+.avaliacoes-status-rejeitada {
+  background: #fdecea;
+  color: #c0392b;
+}
+
+.avaliacoes-botao,
+.avaliacoes-botao-secundario {
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.avaliacoes-botao {
+  background: #003DA5;
+  color: white;
+  border: none;
+  padding: 14px;
+}
+
+.avaliacoes-botao:hover {
+  background: #00318a;
+}
+
+.avaliacoes-botao-secundario {
+  margin-top: 4px;
+  background: white;
+  color: #003DA5;
+  border: 1px solid #003DA5;
+  padding: 8px 16px;
+  font-size: 14px;
+}
+
+.avaliacoes-botao-secundario:hover {
+  background: #e6edf9;
+}
+
+/* Lista */
+.avaliacoes-lista-secao h2 {
+  margin-bottom: 12px;
+}
+
+.avaliacoes-vazio {
+  font-size: 14px;
+  color: #8a919e;
+}
+
+.avaliacoes-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.avaliacoes-item {
+  background: white;
+  border: 1px solid #e2e4e9;
+  border-radius: 12px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.avaliacoes-item p {
+  font-size: 14px;
+  color: #444;
+  line-height: 1.55;
+}
+
+.avaliacoes-item-topo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avaliacoes-item-topo .estrelas {
+  margin-left: auto;
+}
+
+.avaliacoes-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #e6edf9;
+  color: #003DA5;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.avaliacoes-autor {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+}
+
+.avaliacoes-autor span {
+  font-size: 12px;
+  color: #8a919e;
+}

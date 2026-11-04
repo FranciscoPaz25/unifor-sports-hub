@@ -1,17 +1,16 @@
 .criar-esporte-container {
-  max-width: 600px;
+  max-width: 780px;
   width: 100%;
   margin: 0 auto;
-  padding: 28px 20px 60px;
-  box-sizing: border-box;
-  text-align: left;
+  padding: 32px 24px 64px;
 }
 
 .criar-esporte-cartao {
   background: white;
   border: 1px solid #e2e4e9;
-  border-radius: 12px;
-  padding: 22px 24px;
+  border-radius: 16px;
+  padding: 28px 32px;
+  box-shadow: 0 1px 3px rgba(16, 24, 40, 0.05);
 }
 
 .criar-esporte-topo {
@@ -22,45 +21,43 @@
 }
 
 .criar-esporte-voltar {
-  font-size: 20px;
+  font-size: 22px;
   text-decoration: none;
   color: #003DA5;
 }
 
 .criar-esporte-topo h1 {
-  margin: 0;
-  font-size: 20px;
   color: #003DA5;
 }
 
 .criar-esporte-form {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 18px;
 }
 
 .criar-esporte-form label,
 .criar-esporte-campo {
   display: flex;
   flex-direction: column;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: bold;
-  gap: 4px;
+  gap: 6px;
   color: #333;
 }
 
 .criar-esporte-rotulo {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: bold;
 }
 
 .criar-esporte-form input,
 .criar-esporte-form select,
 .criar-esporte-form textarea {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 14px;
+  padding: 11px 12px;
+  border: 1px solid #d5d9e0;
+  border-radius: 10px;
+  font-size: 15px;
   font-family: inherit;
   color: #222;
   background: white;
@@ -71,55 +68,39 @@
 .criar-esporte-form textarea:focus {
   outline: none;
   border-color: #003DA5;
+  box-shadow: 0 0 0 3px rgba(0, 61, 165, 0.12);
 }
 
-.criar-esporte-upload {
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  border: 1.5px dashed #c5cbd6;
-  border-radius: 10px;
-  background: #f7f9fc;
-  padding: 22px 16px;
-  cursor: pointer;
-  min-height: 110px;
+.criar-esporte-icones {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+  gap: 10px;
 }
 
-.criar-esporte-upload:hover {
-  border-color: #003DA5;
-}
-
-.criar-esporte-upload input[type='file'] {
-  display: none;
-}
-
-.criar-esporte-upload strong {
-  font-size: 13.5px;
-  color: #222;
-}
-
-.criar-esporte-upload img {
-  max-width: 100%;
-  max-height: 180px;
-  border-radius: 8px;
-  object-fit: cover;
-}
-
-.criar-esporte-upload-icone {
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
-  background: #e6edf9;
+.criar-esporte-icone {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  margin-bottom: 4px;
+  gap: 6px;
+  padding: 12px 6px 10px;
+  background: #f7f9fe;
+  border: 1.5px solid #e2e8f4;
+  border-radius: 12px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #444;
+  cursor: pointer;
 }
 
-.criar-esporte-hint {
-  font-size: 11.5px;
-  font-weight: normal;
-  color: #888;
+.criar-esporte-icone:hover {
+  border-color: #9db6e6;
+}
+
+.criar-esporte-icone.selecionado {
+  background: #e6edf9;
+  border-color: #003DA5;
+  color: #003DA5;
+  box-shadow: 0 0 0 3px rgba(0, 61, 165, 0.12);
 }
 
 .criar-esporte-chips {
@@ -187,9 +168,10 @@
 
 .criar-esporte-cancelar,
 .criar-esporte-confirmar {
-  padding: 11px 20px;
-  border-radius: 8px;
-  font-size: 14px;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
   cursor: pointer;
   border: none;
 }

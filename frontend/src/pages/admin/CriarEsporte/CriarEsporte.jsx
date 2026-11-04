@@ -1,10 +1,11 @@
 // Tela 20 — Criar esporte (RF20)
 import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import IconeEsporte from '../../../components/IconeEsporte/IconeEsporte';
 import { chamarApi, mensagemDeErro } from '../../../utils/api';
+import { CATEGORIAS, ICONES_ESPORTE } from '../../../utils/esportes';
 import './CriarEsporte.css';
 
-const categorias = ['Coletivo', 'Individual', 'Luta', 'Aquático', 'Atletismo'];
 // numero = DiaSemana no banco (1 = Segunda ... 7 = Domingo)
 const diasDaSemana = [
   { curto: 'Seg', nome: 'Segunda', numero: 1 },
@@ -16,15 +17,13 @@ const diasDaSemana = [
   { curto: 'Dom', nome: 'Domingo', numero: 7 },
 ];
 
-const TIPOS_ACEITOS = ['image/png', 'image/jpeg', 'image/webp'];
-const TAMANHO_MAXIMO = 5 * 1024 * 1024; // 5MB
-
 function CriarEsporte() {
   const navigate = useNavigate();
   const [locais, setLocais] = useState([]);
   const [enviando, setEnviando] = useState(false);
 
-  const [imagem, setImagem] = useState(null);
+  // Ícone padrão do esporte (imagem sempre genérica, nunca foto real — decisoes.md)
+  const [icone, setIcone] = useState('geral');
   const [nome, setNome] = useState('');
   const [descricao, setDescricao] = useState('');
   const [categoria, setCategoria] = useState('');
@@ -58,26 +57,6 @@ function CriarEsporte() {
     );
   }
 
-  function handleImagemSelecionada(e) {
-    const arquivo = e.target.files[0];
-    if (!arquivo) return;
-
-    // RF20.3
-    if (!TIPOS_ACEITOS.includes(arquivo.type)) {
-      setErro('Formato de imagem inválido. Use PNG, JPG ou WEBP.');
-      e.target.value = '';
-      return;
-    }
-    if (arquivo.size > TAMANHO_MAXIMO) {
-      setErro('A imagem precisa ter no máximo 5MB.');
-      e.target.value = '';
-      return;
-    }
-
-    setErro('');
-    setImagem({ nome: arquivo.name, url: URL.createObjectURL(arquivo) });
-  }
-
   // RF20.13
   const camposObrigatoriosPreenchidos =
     nome.trim() !== '' &&
@@ -106,7 +85,7 @@ function CriarEsporte() {
     }
     setErro('');
 
-    // RF20.15 — grava no banco. A imagem ainda não é enviada: o modelo não tem onde guardá-la.
+    // RF20.15 — grava no banco
     setEnviando(true);
     try {
       const { ok, dados } = await chamarApi('/api/esportes', {
@@ -115,6 +94,7 @@ function CriarEsporte() {
           nome,
           descricao,
           categoria,
+          icone,
           idLocal: Number(local),
           dias: diasDaSemana.filter((d) => diasSelecionados.includes(d.nome)).map((d) => d.numero),
           horarioInicio,
@@ -136,7 +116,7 @@ function CriarEsporte() {
 
     // RF20.16
     setSucesso('Esporte cadastrado com sucesso.');
-    setImagem(null);
+    setIcone('geral');
     setNome('');
     setDescricao('');
     setCategoria('');
@@ -159,27 +139,24 @@ function CriarEsporte() {
         </div>
 
         <form className="criar-esporte-form" onSubmit={handleCadastrar}>
-          <label className="criar-esporte-upload">
-            <input type="file" accept=".png,.jpg,.jpeg,.webp" onChange={handleImagemSelecionada} />
-            {imagem ? (
-              <>
-                <img src={imagem.url} alt="Pré-visualização da imagem da modalidade" />
-                <span className="criar-esporte-hint">{imagem.nome} · clique para trocar</span>
-              </>
-            ) : (
-              <>
-                <span className="criar-esporte-upload-icone" aria-hidden="true">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#003DA5" strokeWidth="1.8">
-                    <rect x="3" y="4" width="18" height="16" rx="2" />
-                    <circle cx="9" cy="10" r="1.6" />
-                    <path d="M21 16l-5-5-8 8" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </span>
-                <strong>Adicionar imagem</strong>
-                <span className="criar-esporte-hint">PNG, JPG ou WEBP até 5MB (recomendado 1200x675) · por enquanto a imagem não é salva</span>
-              </>
-            )}
-          </label>
+          <div className="criar-esporte-campo" role="radiogroup" aria-label="Ícone do esporte">
+            <span className="criar-esporte-rotulo">Ícone do esporte</span>
+            <div className="criar-esporte-icones">
+              {ICONES_ESPORTE.map((opcao) => (
+                <button
+                  type="button"
+                  key={opcao.nome}
+                  role="radio"
+                  aria-checked={icone === opcao.nome}
+                  className={icone === opcao.nome ? 'criar-esporte-icone selecionado' : 'criar-esporte-icone'}
+                  onClick={() => setIcone(opcao.nome)}
+                >
+                  <IconeEsporte nome={opcao.nome} tamanho={30} />
+                  <span>{opcao.rotulo}</span>
+                </button>
+              ))}
+            </div>
+          </div>
 
           <label>
             Nome da modalidade
@@ -205,7 +182,7 @@ function CriarEsporte() {
             Categoria
             <select value={categoria} onChange={(e) => setCategoria(e.target.value)}>
               <option value="">Selecione uma categoria</option>
-              {categorias.map((cat) => (
+              {CATEGORIAS.map((cat) => (
                 <option key={cat} value={cat}>{cat}</option>
               ))}
             </select>

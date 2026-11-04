@@ -1,10 +1,8 @@
 .gerenciar-container {
-  max-width: 720px;
+  max-width: 880px;
   width: 100%;
   margin: 0 auto;
-  padding: 28px 20px 60px;
-  box-sizing: border-box;
-  text-align: left;
+  padding: 32px 24px 64px;
 }
 
 .gerenciar-topo {
@@ -22,7 +20,6 @@
 
 .gerenciar-topo h1 {
   margin: 0;
-  font-size: 20px;
   color: #003DA5;
 }
 

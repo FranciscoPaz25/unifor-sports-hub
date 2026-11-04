@@ -1,6 +1,7 @@
 // Tela 05 — Esportes (RF05)
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import BarraBusca from '../../../components/BarraBusca/BarraBusca';
 import Card from '../../../components/Card/Card';
 import { chamarApi, mensagemDeErro } from '../../../utils/api';
 import './Esportes.css';
@@ -26,28 +27,11 @@ function Esportes() {
     carregar();
   }, []);
 
-  function handleBuscar(e) {
-    e.preventDefault();
-    // TODO: navegar para RF06 Resultados de busca com o termo digitado
-  }
-
   return (
     <div className="esportes-container">
       <h1>Esportes</h1>
 
-      <form className="esportes-busca" onSubmit={handleBuscar}>
-        <input
-          type="text"
-          placeholder="Buscar esportes..."
-          className="esportes-busca-input"
-        />
-        <button type="button" className="esportes-busca-filtros">
-          Filtros
-        </button>
-        <button type="submit" className="esportes-busca-botao">
-          Buscar
-        </button>
-      </form>
+      <BarraBusca />
 
       {carregando && <p className="esportes-aviso">Carregando esportes…</p>}
       {erro && <p className="esportes-aviso">{erro}</p>}
@@ -62,6 +46,7 @@ function Esportes() {
             nome={esporte.nome}
             local={esporte.local}
             vagas={esporte.vagas}
+            icone={esporte.icone}
             onVerDetalhes={() => navigate(`/esportes/${esporte.id}`)}
           />
         ))}

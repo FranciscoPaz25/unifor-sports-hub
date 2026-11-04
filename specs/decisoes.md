@@ -12,9 +12,10 @@
 ## Padrões visuais
 
 - Barra de busca padrão: campo de busca + botão "Filtros" + botão "Buscar" (aparece em Home, Esportes, Resultados de busca).
-- Imagens dos cards são sempre genéricas (nunca fotos reais).
+- Imagens dos cards são sempre genéricas (nunca fotos reais): cada esporte tem um ícone padrão azul, escolhido pelo admin em Criar esporte numa lista fixa (Geral, Futebol, Vôlei, Basquete, Natação, Tênis, Atletismo, Lutas, Ciclismo, Academia). Decisão de 04/11/2026; o envio de foto saiu da tela 20.
 - Tag de vagas padronizada como **"[n] vagas disponíveis"** — nunca "restantes" nem "últimas vagas".
 - Cards de esporte: imagem genérica, nome, local, vagas e botão "Ver detalhes", para aluno e admin. As ações ficam na tela de Detalhes do esporte: aluno vê "Inscrever-se", admin vê "Excluir". Na tela de resultados de busca também mostram dias/horário e nota em estrelas.
+- Busca (tela 06): procura pelo nome do esporte, sem diferenciar maiúsculas nem acentos. Filtros (tela 07): só categoria. Decisão de 04/11/2026.
 - Cards de evento: apenas data, nome, local e horário (sem categoria, descrição, status ou botão na lista da Home).
 - Cor primária: azul institucional Unifor `#003DA5` (ver manual de marca em unifor.br/central-de-marca para confirmar o hex oficial).
 - Fundo branco/cinza claro, cantos arredondados, sombras leves, tipografia sans-serif moderna.
@@ -29,6 +30,14 @@
 - Não existe confirmação automática de inscrição em esporte — toda inscrição nasce `em_analise`.
 - Cancelamento de inscrição (pelo aluno, em esporte ou evento confirmado) age imediatamente, sem popup de confirmação.
 - "Excluir" (ações do ADM em esporte/evento) age direto, sem popup de confirmação.
+
+## Avaliações (resenhas) — decisões de 04/11/2026
+
+- Só avalia quem tem inscrição **confirmada** no esporte. O admin vê as avaliações, mas não avalia.
+- Uma avaliação por aluno e esporte: nota de 1 a 5 estrelas e comentário opcional (até 255 caracteres).
+- Avaliação **só com estrelas** (sem comentário) já entra **"Aprovada"**, sem análise: não há texto para moderar. Com comentário, nasce **"Em análise"** e o admin aprova ou rejeita na tela 21. Para o aluno aparece **"Em análise"**, **"Aprovada"** ou **"Rejeitada"**.
+- Só as aprovadas aparecem para todos e entram na nota do esporte.
+- Editar a avaliação segue a mesma regra: sem comentário fica aprovada na hora; com comentário volta para "Em análise".
 
 ## Autenticação e perfil — decisões de 21/10/2026
 
