@@ -35,9 +35,9 @@
 
 - Só avalia quem tem inscrição **confirmada** no esporte. O admin vê as avaliações, mas não avalia.
 - Uma avaliação por aluno e esporte: nota de 1 a 5 estrelas e comentário opcional (até 255 caracteres).
-- Toda avaliação nasce "Em análise"; o admin aprova ou rejeita na tela 21. Para o aluno aparece **"Em análise"**, **"Aprovada"** ou **"Rejeitada"**.
+- Avaliação **só com estrelas** (sem comentário) já entra **"Aprovada"**, sem análise: não há texto para moderar. Com comentário, nasce **"Em análise"** e o admin aprova ou rejeita na tela 21. Para o aluno aparece **"Em análise"**, **"Aprovada"** ou **"Rejeitada"**.
 - Só as aprovadas aparecem para todos e entram na nota do esporte.
-- Editar a avaliação volta para "Em análise".
+- Editar a avaliação segue a mesma regra: sem comentário fica aprovada na hora; com comentário volta para "Em análise".
 
 ## Autenticação e perfil — decisões de 21/10/2026
 

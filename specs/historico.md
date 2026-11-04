@@ -12,7 +12,7 @@
 - **Visual:** o `index.css` ainda era o modelo padrão do Vite, que espremia o site numa coluna com bordas, centralizava todo o texto e trocava as cores no modo escuro do sistema (por isso alguns títulos ficavam ilegíveis). Virou um estilo base do projeto, e as telas ficaram mais largas, com navbar fixa no topo e cards com sombra.
 - Removidos `mocks/resenhas.js` e `mocks/esportes.js`. Novos componentes: `BarraBusca`, `Estrelas` e `IconeEsporte`.
 
-**Decisões tomadas (pelo time em 04/11):** só avalia quem tem inscrição confirmada; avaliações aparecem como "Aprovada"/"Rejeitada"; o único filtro é categoria; imagens dos esportes são ícones padrão escolhidos numa lista.
+**Decisões tomadas (pelo time em 04/11):** só avalia quem tem inscrição confirmada; avaliação só com estrelas, sem comentário, entra aprovada direto (só o texto precisa de moderação); avaliações aparecem como "Aprovada"/"Rejeitada"; o único filtro é categoria; imagens dos esportes são ícones padrão escolhidos numa lista.
 
 **Por quê:** eram as telas secundárias que faltavam ligar ao banco, antes do deploy.
 

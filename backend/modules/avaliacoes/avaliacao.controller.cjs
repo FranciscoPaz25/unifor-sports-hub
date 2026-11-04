@@ -33,7 +33,12 @@ async function enviar(req, res) {
         case 'sem-inscricao':
             return res.status(403).json({ mensagem: 'Só quem tem inscrição confirmada neste esporte pode avaliar.' });
         default:
-            return res.status(200).json({ mensagem: 'Avaliação enviada para análise.', avaliacao: resultado.avaliacao });
+        {
+            const mensagem = resultado.avaliacao.status === 'aprovada'
+                ? 'Avaliação publicada.'
+                : 'Avaliação enviada para análise.';
+            return res.status(200).json({ mensagem, avaliacao: resultado.avaliacao });
+        }
     }
 }
 

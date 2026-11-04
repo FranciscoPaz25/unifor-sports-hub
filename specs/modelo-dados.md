@@ -113,7 +113,7 @@ O índice único `inscricao_modalidade_UNIQUE` (modalidade + usuário) continua 
 - Status: enum `em_analise`, `aprovada` ou `rejeitada`; padrão `em_analise`. Até 04/11/2026 era `em_analise`/`confirmada`/`cancelada`; a migration `20261104_avaliar_status_aprovada` converteu `confirmada` → `aprovada` e `cancelada` → `rejeitada`.
 - Data: data do envio (atualizada quando o aluno edita a avaliação).
 
-A chave composta permite uma avaliação por usuário e modalidade; editar substitui a anterior e volta para `em_analise`. Só alunos com inscrição `confirmada` no esporte podem avaliar (regra da API, decisão de 04/11/2026). A FK `fk_aluno_id` não tem cascata: apagar um usuário com avaliações exige apagar as avaliações antes.
+A chave composta permite uma avaliação por usuário e modalidade; editar substitui a anterior. Sem comentário a avaliação fica `aprovada` na hora; com comentário fica `em_analise` (regra da API, decisão de 04/11/2026). Só alunos com inscrição `confirmada` no esporte podem avaliar (regra da API, decisão de 04/11/2026). A FK `fk_aluno_id` não tem cascata: apagar um usuário com avaliações exige apagar as avaliações antes.
 
 ### evento
 

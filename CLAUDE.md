@@ -122,7 +122,7 @@ Ao terminar qualquer entrega: atualize `status.md`, registre em `historico.md` e
 - Cancelar inscrição (aluno) e Excluir esporte/evento (admin) agem direto, **sem** popup. Sair da conta tem popup (tela 18).
 - Detalhes do esporte (tela 08) é compartilhada: aluno vê "Inscrever-se", admin vê "Excluir". Os cards de esporte mostram "Ver detalhes" para os dois.
 - Tag de vagas sempre "**[n] vagas disponíveis**".
-- Avaliações: só quem tem inscrição confirmada avalia; nascem "Em análise" e o admin aprova (`aprovada`) ou rejeita (`rejeitada`) na tela 21; só as aprovadas aparecem e contam na nota; editar volta para análise.
+- Avaliações: só quem tem inscrição confirmada avalia; só estrelas (sem comentário) entra `aprovada` direto; com comentário nasce "Em análise" e o admin aprova (`aprovada`) ou rejeita (`rejeitada`) na tela 21; só as aprovadas aparecem e contam na nota; editar segue a mesma regra.
 - Imagem do esporte = ícone padrão azul escolhido numa lista (`Icone` no banco); nunca foto.
 - E-mail de aluno: só `@edu.unifor.br`. Matrícula: 7 dígitos, `^[0-9]{2}[1-2][0-9]{4}$`.
 - Senha (cadastro e troca): 15 a 128 caracteres, sem `trim`; armazenada só como hash Argon2.

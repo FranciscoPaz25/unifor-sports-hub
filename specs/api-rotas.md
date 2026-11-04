@@ -125,7 +125,7 @@ Código em `backend/modules/avaliacoes/`. Um aluno tem no máximo uma avaliaçã
 | Método | Rota | Acesso | Comportamento e respostas |
 |---|---|---|---|
 | GET | `/api/avaliacoes/esporte/:idEsporte` | Sessão | 200 `{ esporte: { id, nome, notaMedia, totalAvaliacoes }, avaliacoes, minhaAvaliacao, podeAvaliar }`. `avaliacoes` = todas as aprovadas, mais recentes primeiro; `minhaAvaliacao` = a do usuário da sessão em qualquer status, ou `null`; `podeAvaliar` = tem inscrição confirmada no esporte. 404 "Esporte não encontrado." (tela 12) |
-| PUT | `/api/avaliacoes/esporte/:idEsporte` | Aluno com inscrição confirmada | Recebe `{ nota, comentario }` (nota inteira de 1 a 5; comentário opcional, até 255 caracteres, salvo com `trim`). Cria ou substitui a avaliação, que volta para `em_analise`; 200 `{ mensagem: "Avaliação enviada para análise.", avaliacao }`; 400 `{ erros }`; 403 "Só quem tem inscrição confirmada neste esporte pode avaliar."; 404 (tela 13) |
+| PUT | `/api/avaliacoes/esporte/:idEsporte` | Aluno com inscrição confirmada | Recebe `{ nota, comentario }` (nota inteira de 1 a 5; comentário opcional, até 255 caracteres, salvo com `trim`). Cria ou substitui a avaliação: sem comentário fica `aprovada` (200 `{ mensagem: "Avaliação publicada.", avaliacao }`); com comentário fica `em_analise` (200 `{ mensagem: "Avaliação enviada para análise.", avaliacao }`); 400 `{ erros }`; 403 "Só quem tem inscrição confirmada neste esporte pode avaliar."; 404 (tela 13) |
 | GET | `/api/avaliacoes/pendentes` | Admin | 200 `{ avaliacoes }` em análise, mais antigas primeiro, com `nome` do aluno e `esporte` (tela 21) |
 | PATCH | `/api/avaliacoes/:idEsporte/:idAluno` | Admin | Recebe `{ status: "aprovada" \| "rejeitada" }`; 200 `{ avaliacao }`; 400 status inválido; 404 "Avaliação não encontrada."; 409 "Esta avaliação já foi analisada." (tela 21) |
 
@@ -144,7 +144,7 @@ Formato de cada avaliação:
 ### Regras das avaliações (decisões de 04/11/2026)
 - Status: `em_analise` → `aprovada` ou `rejeitada` (admin). Só as aprovadas aparecem para todos e entram na nota.
 - Só avalia quem tem inscrição confirmada no esporte; o admin vê a tela 12, mas não avalia.
-- Enviar de novo substitui nota e comentário e volta para `em_analise` (sai da nota até nova aprovação).
+- Enviar de novo substitui nota e comentário. Sem comentário, fica `aprovada` na hora; com comentário, volta para `em_analise` (sai da nota até nova aprovação).
 - Duas decisões ao mesmo tempo na mesma avaliação: o `UPDATE` só vale se ainda estiver em análise, então uma passa e a outra recebe 409.
 
 ## Rotas de diagnóstico

@@ -72,7 +72,8 @@ async function listarDoEsporte(idUsuario, idModalidade) {
     };
 }
 
-// Tela 13. Enviar de novo substitui a avaliação anterior e ela volta para análise.
+// Tela 13. Enviar de novo substitui a avaliação anterior.
+// Só estrelas (sem comentário) já entra aprovada; com comentário vai para análise do admin (decisão de 04/11/2026).
 async function enviarMinha(idUsuario, idModalidade, dados) {
     const modalidade = await prisma.modalidade_esportiva.findUnique({
         where: { idModalidade },
@@ -81,6 +82,7 @@ async function enviarMinha(idUsuario, idModalidade, dados) {
     if (!modalidade) return { status: 'esporte-nao-encontrado' };
     if (!await temInscricaoConfirmada(idUsuario, idModalidade)) return { status: 'sem-inscricao' };
 
+    const novoStatus = dados.comentario ? 'em_analise' : 'aprovada';
     const avaliacao = await prisma.avaliar.upsert({
         where: chave(idUsuario, idModalidade),
         create: {
@@ -88,11 +90,12 @@ async function enviarMinha(idUsuario, idModalidade, dados) {
             ModalidadeEsportiva_idModalidade: idModalidade,
             Nota: dados.nota,
             Comentario: dados.comentario,
+            Status: novoStatus,
         },
         update: {
             Nota: dados.nota,
             Comentario: dados.comentario,
-            Status: 'em_analise',
+            Status: novoStatus,
             Data: new Date(),
         },
     });

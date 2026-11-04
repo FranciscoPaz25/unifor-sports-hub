@@ -58,9 +58,9 @@ function Resenhas() {
     total: avaliacoes.filter((a) => a.nota === n).length,
   }));
 
-  function handleEnviada() {
+  function handleEnviada(mensagem) {
     setMostrarPopup(false);
-    setSucesso('Avaliação enviada para análise.');
+    setSucesso(mensagem || 'Avaliação enviada.');
     setVersao((v) => v + 1);
   }
 

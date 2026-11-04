@@ -33,7 +33,7 @@ function PopupResenha({ esporte, avaliacaoAtual, onEnviada, onClose }) {
         setErro(mensagemDeErro(dados, 'Não foi possível enviar a avaliação.'));
         return;
       }
-      onEnviada(dados.avaliacao);
+      onEnviada(dados.mensagem);
     } catch {
       setErro('Não foi possível enviar a avaliação. Tente novamente.');
     } finally {
@@ -84,7 +84,7 @@ function PopupResenha({ esporte, avaliacaoAtual, onEnviada, onClose }) {
           <span className="resenha-contador">{comentario.length}/{LIMITE_COMENTARIO}</span>
         </label>
 
-        <p className="resenha-aviso">A avaliação aparece para todos depois que o administrador aprovar.</p>
+        <p className="resenha-aviso">Só com estrelas, a avaliação aparece na hora. Com comentário, aparece depois que o administrador aprovar.</p>
 
         {erro && <p className="resenha-erro">{erro}</p>}
 

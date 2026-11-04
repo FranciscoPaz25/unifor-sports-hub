@@ -67,7 +67,7 @@ Numeração igual à do documento do projeto (protótipo de baixa fidelidade). A
 | RF06 Resultados de busca | ✅ pronto (barra de busca, filtros ativos removíveis, total, cards com dias/horário e nota, estado vazio) | ✅ `GET /api/esportes?busca=&categoria=`; busca ignora maiúsculas e acentos |
 | RF07 Popup de filtros | ✅ pronto (categoria; Limpar e Aplicar) | ✅ filtro por categoria (decisão de 04/11/2026) |
 | RF12 Resenhas | ✅ pronto (média, barras por nota, sua avaliação com status, lista das aprovadas) | ✅ `GET /api/avaliacoes/esporte/:id` |
-| RF13 Popup resenha | ✅ pronto (1 a 5 estrelas, comentário opcional até 255 caracteres) | ✅ `PUT /api/avaliacoes/esporte/:id`; só com inscrição confirmada; reenviar volta para análise |
+| RF13 Popup resenha | ✅ pronto (1 a 5 estrelas, comentário opcional até 255 caracteres) | ✅ `PUT /api/avaliacoes/esporte/:id`; só com inscrição confirmada; só estrelas entra aprovada, com comentário vai para análise |
 | RF21 Aceitar resenhas | ✅ pronto (aceitar/rejeitar resenhas pendentes) | ✅ `GET /api/avaliacoes/pendentes` e `PATCH /api/avaliacoes/:idEsporte/:idAluno` |
 
 ## Grupo "se sobrar tempo" (pode ficar só visual)
