@@ -246,6 +246,50 @@ ainda não tiver os locais e o admin, rode `npm run seed`. No frontend, rode
 - Admin: o criado pelo seed (`SEED_ADMIN_EMAIL` ou `SEED_ADMIN_MATRICULA` com `SEED_ADMIN_SENHA`).
 - Aluno: crie pela tela de Cadastro (`/cadastro`), com e-mail `@edu.unifor.br`.
 
+## Deploy (site publicado)
+
+Em produção, o **próprio backend entrega o site**: o React é compilado (`frontend/dist`) e o Express
+serve essas páginas junto com a API, num endereço só. Isso é necessário porque o cookie de sessão
+(`SameSite=Lax`) só é enviado quando site e API estão no mesmo endereço. O banco MySQL fica num
+serviço à parte.
+
+Plano escolhido em 04/11/2026 (grátis): **Render** (site + API) e **Aiven** (MySQL).
+
+**Comandos do serviço web no Render** (raiz do repositório, ambiente Node):
+
+| Campo | Valor |
+|---|---|
+| Build Command | `cd frontend && npm ci --include=dev && npm run build && cd ../backend && npm ci --include=dev && npm run preparar-banco` |
+| Start Command | `cd backend && npm start` |
+
+- `npm run preparar-banco` gera o Prisma Client, aplica as migrations e roda o seed. Pode rodar a cada
+  deploy: o seed só cria o que falta e nunca muda a senha de um admin que já existe.
+- `--include=dev` é necessário porque, com `NODE_ENV=production`, o npm pularia o Vite e o Prisma CLI.
+
+**Variáveis de ambiente no Render** (preencher no painel, nunca no GitHub):
+
+| Variável | Valor |
+|---|---|
+| `NODE_ENV` | `production` (liga o cookie `Secure` e faz o backend servir o site) |
+| `DATABASE_URL` | "Service URI" do MySQL no Aiven (já vem com `?ssl-mode=REQUIRED`) |
+| `DATABASE_CA_PATH` | `/etc/secrets/ca.pem` — o certificado do Aiven (`ca.pem`, baixado em Connection information) vai como **Secret File** no Render, com o nome `ca.pem` |
+| `SEED_ADMIN_SENHA` | senha **nova** do admin de produção (15 a 128 caracteres) |
+| `SEED_ADMIN_EMAIL`, `SEED_ADMIN_MATRICULA`, `SEED_ADMIN_NOME` | opcionais (padrão do `.env.example`) |
+
+`CORS_ORIGINS` e `VITE_API_URL` não são necessários em produção: site e API ficam no mesmo endereço.
+
+**Por que o certificado:** a conexão entre o Render e o Aiven passa pela internet, então é criptografada
+(TLS). O `ca.pem` permite ao backend conferir que está falando com o banco verdadeiro. Sem
+`DATABASE_CA_PATH` (banco local no Docker), o backend conecta direto, como antes. No plano grátis o
+Aiven desliga o banco depois de um tempo sem uso: antes de uma apresentação, confira no painel do
+Aiven se o serviço está "Running" (se não, clique em Power on).
+Para simular a produção no seu computador: `npx vite build` no frontend e, no backend,
+`NODE_ENV=production npm start` (abre o site em `http://localhost:3000`).
+
+**Limites do plano grátis:** o Render "dorme" após uns 15 minutos sem acesso e demora cerca de
+1 minuto para acordar; como a sessão fica na memória, quem estava logado precisa entrar de novo.
+Antes de uso real por alunos ainda faltam a proteção contra CSRF e o limite de tentativas de login.
+
 ## Fluxo de trabalho no Git
 
 - `main` — branch estável, integrada pelo time.

@@ -156,6 +156,6 @@ Ordem do time (autenticação → esportes → inscrições → configurações)
 
 Testes manuais tela a tela feitos em 03/11/2026; busca, filtros, resenhas, ícones e o visual mais largo entraram em 04/11/2026 (ver `specs/historico.md`). Próximos passos:
 
-1. Testar no navegador as telas de 04/11 (06, 07, 12, 13, 21, Criar esporte com ícone).
-2. Deploy (a combinar com o time).
+1. ~~Testar no navegador as telas de 04/11~~ (feito em 04/11/2026).
+2. Deploy no Render (site + API) com MySQL no Aiven, em andamento. Em produção o backend serve o site compilado; guia no `README.md` (seção Deploy).
 3. Depois, conforme o tempo: eventos (14, 15, 16, 22) e navbar no celular.

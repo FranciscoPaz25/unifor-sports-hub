@@ -1,5 +1,7 @@
 // Endereço do backend. Configure VITE_API_URL em frontend/.env (ver .env.example).
-export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+// Sem VITE_API_URL: no `npm run dev` usa http://localhost:3000; no site publicado (build)
+// usa o mesmo endereço do site, porque em produção o próprio backend entrega as páginas.
+export const API_URL = import.meta.env.VITE_API_URL ?? (import.meta.env.DEV ? 'http://localhost:3000' : '');
 
 // Chama a API com o cookie de sessão e devolve { ok, status, dados }.
 // `corpo` vira JSON. Em falha de rede lança erro (tratar com try/catch na tela).

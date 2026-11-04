@@ -5,6 +5,8 @@ node_modules/
 .env
 .env.*
 !.env.example
+# Certificado do banco de produção (Aiven), baixado por cada um
+*.pem
 
 # Código gerado pelo Prisma
 /backend/generated/
