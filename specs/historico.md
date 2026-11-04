@@ -2,6 +2,12 @@
 
 > Registro do que entrou na `main`, quando e por quê, para quem chega agora ter o contexto. O estado atual tela a tela fica em `status.md`; as regras fixas, em `decisoes.md`. Entradas mais recentes primeiro.
 
+## 04/11/2026 — Site publicado
+
+O sistema está no ar em **https://unifor-sports-hub.onrender.com** (Render, plano Free, branch `main`, região Oregon) com o MySQL no Aiven (plano Free, América do Norte). O primeiro deploy aplicou as migrations e o seed (seis locais e o admin, com senha própria de produção definida no painel do Render). Cada merge na `main` gera um deploy novo automaticamente.
+
+**Limites do plano grátis:** o Render dorme após uns 15 minutos sem acesso (o primeiro acesso depois disso leva cerca de 1 minuto e quem estava logado precisa entrar de novo); o Aiven desliga o banco depois de um tempo sem uso (religar em Power on no painel). Antes de uso real por alunos ainda faltam CSRF e limite de tentativas de login.
+
 ## 04/11/2026 — Preparação para o deploy
 
 **O que mudou**

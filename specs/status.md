@@ -99,7 +99,7 @@ Numeração igual à do documento do projeto (protótipo de baixa fidelidade). A
 | `id` em `inscricao_modalidade` | ✅ migration `20261025_inscricao_modalidade_id`: `id` autoincremento como chave primária; par modalidade + usuário continua único |
 | Seed (dados iniciais) | ✅ `npm run seed`: seis locais e um admin (dados em `SEED_ADMIN_*` no `.env`); pode ser repetido sem duplicar |
 | Endereços da API e CORS | ✅ frontend usa `VITE_API_URL` (`utils/api.js`); backend lê `CORS_ORIGINS` do `.env` — padrão `localhost` |
-| Produção (04/11/2026) | ✅ com `NODE_ENV=production`, o backend entrega o site compilado (`frontend/dist`) no mesmo endereço da API; `npm start` e `npm run preparar-banco` (generate + migrate + seed). Testado localmente em banco descartável. 🟡 Publicação no Render + Aiven em andamento |
+| Produção (04/11/2026) | ✅ com `NODE_ENV=production`, o backend entrega o site compilado (`frontend/dist`) no mesmo endereço da API; `npm start` e `npm run preparar-banco` (generate + migrate + seed). Testado localmente em banco descartável. ✅ Publicado em 04/11/2026: https://unifor-sports-hub.onrender.com (Render, plano Free) com MySQL no Aiven (plano Free); cada merge na `main` gera um deploy novo |
 | Backend ↔ banco | ✅ cliente Prisma compartilhado em `backend/lib/prisma.cjs`; consulta e atualização de usuários |
 | Sessões | ✅ em memória, uma por usuário, expiração após 15 minutos de inatividade; reinício exige novo login |
 | Proteção de páginas | ✅ `RotaProtegida` consulta o perfil; `ExigirPerfil` separa telas de aluno e de admin (quem não tem o perfil vai para a própria home); `/esportes`, `/esportes/busca`, `/esportes/:id` e `/esportes/:id/resenhas` são compartilhadas |
@@ -114,7 +114,7 @@ Numeração igual à do documento do projeto (protótipo de baixa fidelidade). A
 - **Módulo de autenticação completo no backend:** cadastro, login, sessão, logout, perfil próprio, troca de senha e autorização de admin. Recuperação de senha (RF03) fica fora do MVP.
 - **Módulo de esportes integrado:** listar, detalhar, criar e excluir (telas 04, 05, 08, 20).
 - **Módulo de inscrições integrado:** pedir, acompanhar, cancelar, aceitar e rejeitar (telas 09, 10, 11, 23). O fluxo central do MVP funciona de ponta a ponta com o banco.
-- **Próxima etapa:** telas novas testadas no navegador em 04/11/2026. Deploy em andamento (Render + Aiven): o código já está pronto para produção, falta publicar (guia no `README.md`). Eventos (14, 15, 16, 22) continuam sem backend. Não existe edição de esporte (a tela 20 só cria).
+- **Próxima etapa:** telas novas testadas no navegador em 04/11/2026. Site publicado em https://unifor-sports-hub.onrender.com (Render + Aiven, guia no `README.md`). Eventos (14, 15, 16, 22) continuam sem backend. Não existe edição de esporte (a tela 20 só cria).
 - **Histórico do que foi feito e por quê:** ver `historico.md`.
 
 ## Verificação da entrega de 04/11/2026
