@@ -9,6 +9,8 @@
 - O frontend publicado chama a API no mesmo endereço do site; no `npm run dev` continua usando `http://localhost:3000` (ou `VITE_API_URL`).
 - Backend ganhou `npm start` (produção) e `npm run preparar-banco` (gera o Prisma Client, aplica migrations e roda o seed). `.node-version` fixa o Node 24 para o serviço de hospedagem.
 - Guia de deploy no `README.md`.
+- `lib/prisma.cjs`: com `DATABASE_CA_PATH`, a conexão usa TLS conferindo o certificado do Aiven (e espera até 10 s para conectar, porque o banco fica na América do Norte). Sem essa variável, nada muda no banco local.
+- Banco do Aiven criado (MySQL 8.4, plano Free) e com as 6 migrations aplicadas em 04/11/2026; locais e admin são criados pelo seed no deploy do Render.
 
 **Decisão:** deploy grátis no Render (site + API) com MySQL no Aiven. Site e API no mesmo endereço porque o cookie de sessão (`SameSite=Lax`) não é enviado entre domínios diferentes.
 

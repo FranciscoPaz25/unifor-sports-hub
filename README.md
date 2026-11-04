@@ -271,11 +271,18 @@ Plano escolhido em 04/11/2026 (grátis): **Render** (site + API) e **Aiven** (My
 | Variável | Valor |
 |---|---|
 | `NODE_ENV` | `production` (liga o cookie `Secure` e faz o backend servir o site) |
-| `DATABASE_URL` | endereço do MySQL do Aiven |
+| `DATABASE_URL` | "Service URI" do MySQL no Aiven (já vem com `?ssl-mode=REQUIRED`) |
+| `DATABASE_CA_PATH` | `/etc/secrets/ca.pem` — o certificado do Aiven (`ca.pem`, baixado em Connection information) vai como **Secret File** no Render, com o nome `ca.pem` |
 | `SEED_ADMIN_SENHA` | senha **nova** do admin de produção (15 a 128 caracteres) |
 | `SEED_ADMIN_EMAIL`, `SEED_ADMIN_MATRICULA`, `SEED_ADMIN_NOME` | opcionais (padrão do `.env.example`) |
 
 `CORS_ORIGINS` e `VITE_API_URL` não são necessários em produção: site e API ficam no mesmo endereço.
+
+**Por que o certificado:** a conexão entre o Render e o Aiven passa pela internet, então é criptografada
+(TLS). O `ca.pem` permite ao backend conferir que está falando com o banco verdadeiro. Sem
+`DATABASE_CA_PATH` (banco local no Docker), o backend conecta direto, como antes. No plano grátis o
+Aiven desliga o banco depois de um tempo sem uso: antes de uma apresentação, confira no painel do
+Aiven se o serviço está "Running" (se não, clique em Power on).
 Para simular a produção no seu computador: `npx vite build` no frontend e, no backend,
 `NODE_ENV=production npm start` (abre o site em `http://localhost:3000`).
 
