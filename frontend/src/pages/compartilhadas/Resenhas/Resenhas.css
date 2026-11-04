@@ -199,6 +199,38 @@
   background: #e6edf9;
 }
 
+/* Editar e Excluir da própria avaliação, lado a lado */
+.avaliacoes-minha-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-self: flex-start;
+}
+
+.avaliacoes-botao-excluir {
+  margin-top: 4px;
+  background: white;
+  color: #c0392b;
+  border: 1px solid #c0392b;
+  border-radius: 10px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.avaliacoes-botao-excluir:hover {
+  background: #fdecea;
+}
+
+.avaliacoes-erro {
+  color: #b42318;
+  background: #fdecea;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
 /* Lista */
 .avaliacoes-lista-secao h2 {
   margin-bottom: 12px;

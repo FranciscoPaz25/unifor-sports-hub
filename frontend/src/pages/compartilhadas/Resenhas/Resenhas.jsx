@@ -20,6 +20,8 @@ function Resenhas() {
   const [aviso, setAviso] = useState('Carregando…');
   const [mostrarPopup, setMostrarPopup] = useState(false);
   const [sucesso, setSucesso] = useState('');
+  const [erro, setErro] = useState('');
+  const [excluindo, setExcluindo] = useState(false);
   // Muda depois de enviar uma avaliação, para recarregar a lista
   const [versao, setVersao] = useState(0);
 
@@ -60,8 +62,30 @@ function Resenhas() {
 
   function handleEnviada(mensagem) {
     setMostrarPopup(false);
+    setErro('');
     setSucesso(mensagem || 'Avaliação enviada.');
     setVersao((v) => v + 1);
+  }
+
+  // Exclui a própria avaliação direto, sem popup (como os outros "Excluir" do sistema)
+  async function handleExcluir() {
+    if (excluindo) return;
+    setExcluindo(true);
+    setSucesso('');
+    setErro('');
+    try {
+      const { ok, dados: resposta } = await chamarApi(`/api/avaliacoes/esporte/${esporte.id}`, { metodo: 'DELETE' });
+      if (!ok) {
+        setErro(mensagemDeErro(resposta, 'Não foi possível excluir a avaliação.'));
+        return;
+      }
+      setSucesso('Avaliação excluída.');
+      setVersao((v) => v + 1);
+    } catch {
+      setErro('Não foi possível excluir a avaliação.');
+    } finally {
+      setExcluindo(false);
+    }
   }
 
   return (
@@ -97,6 +121,7 @@ function Resenhas() {
       </section>
 
       {sucesso && <p className="avaliacoes-sucesso">{sucesso}</p>}
+      {erro && <p className="avaliacoes-erro">{erro}</p>}
 
       {minhaAvaliacao ? (
         <section className="avaliacoes-minha">
@@ -108,11 +133,21 @@ function Resenhas() {
           </div>
           <Estrelas nota={minhaAvaliacao.nota} />
           {minhaAvaliacao.comentario && <p>{minhaAvaliacao.comentario}</p>}
-          {podeAvaliar && (
-            <button type="button" className="avaliacoes-botao-secundario" onClick={() => setMostrarPopup(true)}>
-              Editar avaliação
+          <div className="avaliacoes-minha-acoes">
+            {podeAvaliar && (
+              <button type="button" className="avaliacoes-botao-secundario" onClick={() => setMostrarPopup(true)}>
+                Editar avaliação
+              </button>
+            )}
+            <button
+              type="button"
+              className="avaliacoes-botao-excluir"
+              onClick={handleExcluir}
+              disabled={excluindo}
+            >
+              {excluindo ? 'Excluindo…' : 'Excluir avaliação'}
             </button>
-          )}
+          </div>
         </section>
       ) : podeAvaliar ? (
         <button type="button" className="avaliacoes-botao" onClick={() => setMostrarPopup(true)}>

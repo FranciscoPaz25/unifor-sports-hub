@@ -150,6 +150,49 @@ async function criarEsporte(dados, idAdmin) {
     return { status: 'criado', esporte: await buscarEsporte(criada.idModalidade) };
 }
 
+// Tela 20 em modo edição. dados já validados por validarCriacaoEsporte.
+// Mexe na capacidade, então segue a mesma regra das inscrições (inscricao.service.cjs): trava a
+// linha do esporte com FOR UPDATE e conta as confirmadas em READ COMMITTED, para que uma
+// confirmação ao mesmo tempo não deixe mais confirmados do que a capacidade nova.
+async function editarEsporte(idModalidade, dados) {
+    return prisma.$transaction(async (tx) => {
+        const linhas = await tx.$queryRaw`
+            SELECT idModalidade FROM modalidade_esportiva WHERE idModalidade = ${idModalidade} FOR UPDATE`;
+        if (linhas.length === 0) return { status: 'nao-encontrado' };
+
+        const local = await tx.local.findUnique({ where: { idLocal: dados.idLocal }, select: { idLocal: true } });
+        if (!local) return { status: 'local-inexistente' };
+
+        const confirmadas = await tx.inscricao_modalidade.count({
+            where: { ModalidadeEsportiva_idModalidade: idModalidade, status: 'confirmada' },
+        });
+        if (dados.capacidadeMaxima < confirmadas) {
+            return { status: 'capacidade-menor', confirmadas };
+        }
+
+        // Os dias são trocados por inteiro: apaga os antigos e grava os escolhidos
+        await tx.modalidade_esportiva.update({
+            where: { idModalidade },
+            data: {
+                Nome: dados.nome,
+                Descricao: dados.descricao,
+                Categoria: dados.categoria,
+                Capacidade: dados.capacidadeMaxima,
+                Professor: dados.responsavel,
+                Icone: dados.icone,
+                HorarioInicio: horarioParaData(dados.horarioInicio),
+                HorarioFim: horarioParaData(dados.horarioFim),
+                Local_idLocal: dados.idLocal,
+                modalidade_dia: {
+                    deleteMany: {},
+                    create: dados.dias.map((dia) => ({ DiaSemana: dia })),
+                },
+            },
+        });
+        return { status: 'editado' };
+    }, { isolationLevel: 'ReadCommitted' });
+}
+
 // Dias, inscrições e avaliações da modalidade são apagados em cascata pelo banco
 async function excluirEsporte(idModalidade) {
     const resultado = await prisma.modalidade_esportiva.deleteMany({
@@ -165,5 +208,6 @@ module.exports = {
     listarEsportes,
     buscarEsporte,
     criarEsporte,
+    editarEsporte,
     excluirEsporte,
 };

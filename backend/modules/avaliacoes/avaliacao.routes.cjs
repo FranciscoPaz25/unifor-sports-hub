@@ -1,5 +1,5 @@
 const express = require('express');
-const { doEsporte, enviar, pendentes, decidir } = require('./avaliacao.controller.cjs');
+const { doEsporte, enviar, excluir, pendentes, decidir } = require('./avaliacao.controller.cjs');
 const autenticar = require('../../middlewares/autenticar.cjs');
 const exigirAdmin = require('../../middlewares/exigir-admin.cjs');
 
@@ -9,5 +9,6 @@ router.get('/pendentes', autenticar, exigirAdmin, pendentes);
 // Avaliações de um esporte; o aluno envia a própria pela identidade da sessão
 router.get('/esporte/:idEsporte', autenticar, doEsporte);
 router.put('/esporte/:idEsporte', autenticar, enviar);
+router.delete('/esporte/:idEsporte', autenticar, excluir);
 router.patch('/:idEsporte/:idAluno', autenticar, exigirAdmin, decidir);
 module.exports = router;

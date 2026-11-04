@@ -120,9 +120,9 @@ Ao terminar qualquer entrega: atualize `status.md`, registre em `historico.md` e
 - Toda inscrição em esporte nasce `em_analise`; só o admin confirma (`confirmada`) ou rejeita (`rejeitada`) na tela 23. O aluno cancela (`cancelada`). Após cancelada/rejeitada, pode pedir de novo (o registro volta para `em_analise`).
 - Vagas = capacidade − inscrições confirmadas. Sem vaga, o pedido é bloqueado e o admin não confirma. Qualquer código que mexa em vagas deve usar a mesma transação com trava (`inscricao.service.cjs`).
 - Cancelar inscrição (aluno) e Excluir esporte/evento (admin) agem direto, **sem** popup. Sair da conta tem popup (tela 18).
-- Detalhes do esporte (tela 08) é compartilhada: aluno vê "Inscrever-se", admin vê "Excluir". Os cards de esporte mostram "Ver detalhes" para os dois.
+- Detalhes do esporte (tela 08) é compartilhada: aluno vê "Inscrever-se", admin vê "Editar" e "Excluir" (editar reaproveita a tela 20). Os cards de esporte mostram "Ver detalhes" para os dois.
 - Tag de vagas sempre "**[n] vagas disponíveis**".
-- Avaliações: só quem tem inscrição confirmada avalia; só estrelas (sem comentário) entra `aprovada` direto; com comentário nasce "Em análise" e o admin aprova (`aprovada`) ou rejeita (`rejeitada`) na tela 21; só as aprovadas aparecem e contam na nota; editar segue a mesma regra.
+- Avaliações: só quem tem inscrição confirmada avalia; só estrelas (sem comentário) entra `aprovada` direto; com comentário nasce "Em análise" e o admin aprova (`aprovada`) ou rejeita (`rejeitada`) na tela 21; só as aprovadas aparecem e contam na nota; editar segue a mesma regra; o aluno pode excluir a própria avaliação.
 - Imagem do esporte = ícone padrão azul escolhido numa lista (`Icone` no banco); nunca foto.
 - E-mail de aluno: só `@edu.unifor.br`. Matrícula: 7 dígitos, `^[0-9]{2}[1-2][0-9]{4}$`.
 - Senha (cadastro e troca): 15 a 128 caracteres, sem `trim`; armazenada só como hash Argon2.
@@ -147,7 +147,7 @@ Ao terminar qualquer entrega: atualize `status.md`, registre em `historico.md` e
 4. Testes automatizados: `npm test` do backend é placeholder.
 5. A busca procura só esportes (eventos ainda não têm backend).
 6. Navbar não se adapta ao celular (rolagem lateral a 375 px em todas as telas internas).
-7. Não existe edição de esporte (a tela 20 só cria).
+7. ~~Edição de esporte~~ feita em 04/11/2026 (tela 20 em modo edição, `PUT /api/esportes/:id`).
 8. Questão em aberto em `specs/historico.md` ("Esportes" na navbar do admin) — **pergunte ao usuário antes de implementar algo que dependa dela.**
 
 ## 11. Próximos passos
@@ -157,5 +157,5 @@ Ordem do time (autenticação → esportes → inscrições → configurações)
 Testes manuais tela a tela feitos em 03/11/2026; busca, filtros, resenhas, ícones e o visual mais largo entraram em 04/11/2026 (ver `specs/historico.md`). Próximos passos:
 
 1. ~~Testar no navegador as telas de 04/11~~ (feito em 04/11/2026).
-2. Deploy no Render (site + API) com MySQL no Aiven, em andamento. Em produção o backend serve o site compilado; guia no `README.md` (seção Deploy).
+2. ~~Deploy~~ feito em 04/11/2026: https://unifor-sports-hub.onrender.com (Render Free + MySQL no Aiven Free). Em produção o backend serve o site compilado; cada merge na `main` gera deploy novo. Guia no `README.md` (seção Deploy).
 3. Depois, conforme o tempo: eventos (14, 15, 16, 22) e navbar no celular.

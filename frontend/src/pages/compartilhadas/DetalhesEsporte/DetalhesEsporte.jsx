@@ -164,14 +164,23 @@ function DetalhesEsporte() {
       {/* RF08.13 / RF08.17 */}
       {tipoUsuario === 'admin' ? (
         <>
-          <button
-            type="button"
-            className="detalhes-botao detalhes-botao-excluir"
-            onClick={handleExcluir}
-            disabled={excluindo}
-          >
-            {excluindo ? 'Excluindo…' : 'Excluir'}
-          </button>
+          <div className="detalhes-acoes-admin">
+            <button
+              type="button"
+              className="detalhes-botao detalhes-botao-editar"
+              onClick={() => navigate(`/admin/esportes/${esporte.id}/editar`)}
+            >
+              Editar
+            </button>
+            <button
+              type="button"
+              className="detalhes-botao detalhes-botao-excluir"
+              onClick={handleExcluir}
+              disabled={excluindo}
+            >
+              {excluindo ? 'Excluindo…' : 'Excluir'}
+            </button>
+          </div>
           {erroExcluir && <p className="detalhes-erro">{erroExcluir}</p>}
         </>
       ) : (
