@@ -1,6 +1,6 @@
-// Tela 20 — Criar esporte (RF20)
+// Tela 20 — Criar esporte (RF20). Com :id na rota, vira "Editar esporte" (o U do CRUD).
 import { useEffect, useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 import IconeEsporte from '../../../components/IconeEsporte/IconeEsporte';
 import { chamarApi, mensagemDeErro } from '../../../utils/api';
 import { CATEGORIAS, ICONES_ESPORTE } from '../../../utils/esportes';
@@ -19,6 +19,9 @@ const diasDaSemana = [
 
 function CriarEsporte() {
   const navigate = useNavigate();
+  const { id } = useParams();
+  const editando = Boolean(id);
+  const voltarPara = editando ? `/esportes/${id}` : '/admin/gerencia';
   const [locais, setLocais] = useState([]);
   const [enviando, setEnviando] = useState(false);
 
@@ -50,6 +53,34 @@ function CriarEsporte() {
     }
     carregarLocais();
   }, []);
+
+  // Modo edição: preenche o formulário com os dados atuais do esporte
+  useEffect(() => {
+    if (!editando) return;
+    async function carregarEsporte() {
+      try {
+        const { ok, dados } = await chamarApi(`/api/esportes/${id}`);
+        if (!ok) {
+          setErro(mensagemDeErro(dados, 'Não foi possível carregar o esporte.'));
+          return;
+        }
+        const e = dados.esporte;
+        setIcone(e.icone);
+        setNome(e.nome);
+        setDescricao(e.descricao);
+        setCategoria(e.categoria);
+        setLocal(String(e.idLocal));
+        setDiasSelecionados(diasDaSemana.filter((d) => e.dias.includes(d.numero)).map((d) => d.nome));
+        setHorarioInicio(e.horarioInicio);
+        setHorarioFim(e.horarioFim);
+        setResponsavel(e.responsavel);
+        setCapacidadeMaxima(String(e.capacidadeMaxima));
+      } catch {
+        setErro('Não foi possível carregar o esporte.');
+      }
+    }
+    carregarEsporte();
+  }, [editando, id]);
 
   function toggleDia(dia) {
     setDiasSelecionados((atual) =>
@@ -85,11 +116,11 @@ function CriarEsporte() {
     }
     setErro('');
 
-    // RF20.15 — grava no banco
+    // RF20.15 — grava no banco (POST cria; PUT altera o esporte existente)
     setEnviando(true);
     try {
-      const { ok, dados } = await chamarApi('/api/esportes', {
-        metodo: 'POST',
+      const { ok, dados } = await chamarApi(editando ? `/api/esportes/${id}` : '/api/esportes', {
+        metodo: editando ? 'PUT' : 'POST',
         corpo: {
           nome,
           descricao,
@@ -104,14 +135,20 @@ function CriarEsporte() {
         },
       });
       if (!ok) {
-        setErro(mensagemDeErro(dados, 'Não foi possível cadastrar o esporte.'));
+        setErro(mensagemDeErro(dados, editando ? 'Não foi possível salvar as alterações.' : 'Não foi possível cadastrar o esporte.'));
         return;
       }
     } catch {
-      setErro('Não foi possível cadastrar o esporte.');
+      setErro(editando ? 'Não foi possível salvar as alterações.' : 'Não foi possível cadastrar o esporte.');
       return;
     } finally {
       setEnviando(false);
+    }
+
+    // Edição salva: volta para os detalhes, que já mostram os dados novos
+    if (editando) {
+      navigate(`/esportes/${id}`);
+      return;
     }
 
     // RF20.16
@@ -132,10 +169,10 @@ function CriarEsporte() {
     <div className="criar-esporte-container">
       <div className="criar-esporte-cartao">
         <div className="criar-esporte-topo">
-          <Link to="/admin/gerencia" className="criar-esporte-voltar" aria-label="Voltar para Gerência">
+          <Link to={voltarPara} className="criar-esporte-voltar" aria-label={editando ? 'Voltar para o esporte' : 'Voltar para Gerência'}>
             ←
           </Link>
-          <h1>Criar esporte</h1>
+          <h1>{editando ? 'Editar esporte' : 'Criar esporte'}</h1>
         </div>
 
         <form className="criar-esporte-form" onSubmit={handleCadastrar}>
@@ -252,11 +289,13 @@ function CriarEsporte() {
           {sucesso && <p className="criar-esporte-sucesso">{sucesso}</p>}
 
           <div className="criar-esporte-botoes">
-            <button type="button" className="criar-esporte-cancelar" onClick={() => navigate('/admin/gerencia')}>
+            <button type="button" className="criar-esporte-cancelar" onClick={() => navigate(voltarPara)}>
               Cancelar
             </button>
             <button type="submit" className="criar-esporte-confirmar" disabled={!camposObrigatoriosPreenchidos || enviando}>
-              {enviando ? 'Cadastrando…' : 'Cadastrar esporte'}
+              {editando
+                ? (enviando ? 'Salvando…' : 'Salvar alterações')
+                : (enviando ? 'Cadastrando…' : 'Cadastrar esporte')}
             </button>
           </div>
         </form>

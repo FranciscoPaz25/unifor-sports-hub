@@ -48,7 +48,7 @@ Numeração igual à do documento do projeto (protótipo de baixa fidelidade). A
 | RF10 Minhas inscrições | ✅ pronto (lista, status, estado vazio) | ✅ inscrições em esporte de `GET /api/inscricoes-esporte` (inclui "Rejeitada"); inscrições em evento só entram quando o módulo de eventos existir |
 | RF17 Configurações | ✅ pronto (editar perfil, trocar senha, sair da conta) | ✅ perfil real, atualização de nome/e-mail e troca de senha conectados; regra de domínio por perfil no backend ainda pendente |
 | RF19 Gerência | ✅ interface implementada, com links para funções administrativas | ❌ sem integração com backend |
-| RF20 Criar esporte | ✅ formulário implementado; campo Local virou lista dos locais do banco | ✅ `POST /api/esportes` (só admin) grava modalidade, dias e o ícone escolhido numa lista de ícones padrão (o envio de foto saiu: imagens são sempre genéricas) |
+| RF20 Criar esporte | ✅ formulário implementado; campo Local virou lista dos locais do banco | ✅ `POST /api/esportes` (só admin) grava modalidade, dias e o ícone escolhido numa lista de ícones padrão (o envio de foto saiu: imagens são sempre genéricas). Desde 04/11/2026 a mesma tela edita (`/admin/esportes/:id/editar`, botão "Editar" nos Detalhes, `PUT /api/esportes/:id`): o esporte tem CRUD completo |
 | RF23 Gerenciar inscrições | ✅ lista de pendências, aprovação e rejeição implementadas | ✅ `GET /api/inscricoes-esporte/pendentes` e `PATCH /api/inscricoes-esporte/:id`; não confirma além da capacidade |
 
 ## Grupo "sempre fácil" (baixo custo, não cortar)
@@ -66,7 +66,7 @@ Numeração igual à do documento do projeto (protótipo de baixa fidelidade). A
 |---|---|---|
 | RF06 Resultados de busca | ✅ pronto (barra de busca, filtros ativos removíveis, total, cards com dias/horário e nota, estado vazio) | ✅ `GET /api/esportes?busca=&categoria=`; busca ignora maiúsculas e acentos |
 | RF07 Popup de filtros | ✅ pronto (categoria; Limpar e Aplicar) | ✅ filtro por categoria (decisão de 04/11/2026) |
-| RF12 Resenhas | ✅ pronto (média, barras por nota, sua avaliação com status, lista das aprovadas) | ✅ `GET /api/avaliacoes/esporte/:id` |
+| RF12 Resenhas | ✅ pronto (média, barras por nota, sua avaliação com status, Editar e Excluir, lista das aprovadas) | ✅ `GET /api/avaliacoes/esporte/:id`; "Excluir avaliação" usa `DELETE /api/avaliacoes/esporte/:id` (CRUD completo desde 04/11/2026) |
 | RF13 Popup resenha | ✅ pronto (1 a 5 estrelas, comentário opcional até 255 caracteres) | ✅ `PUT /api/avaliacoes/esporte/:id`; só com inscrição confirmada; só estrelas entra aprovada, com comentário vai para análise |
 | RF21 Aceitar resenhas | ✅ pronto (aceitar/rejeitar resenhas pendentes) | ✅ `GET /api/avaliacoes/pendentes` e `PATCH /api/avaliacoes/:idEsporte/:idAluno` |
 
@@ -114,7 +114,7 @@ Numeração igual à do documento do projeto (protótipo de baixa fidelidade). A
 - **Módulo de autenticação completo no backend:** cadastro, login, sessão, logout, perfil próprio, troca de senha e autorização de admin. Recuperação de senha (RF03) fica fora do MVP.
 - **Módulo de esportes integrado:** listar, detalhar, criar e excluir (telas 04, 05, 08, 20).
 - **Módulo de inscrições integrado:** pedir, acompanhar, cancelar, aceitar e rejeitar (telas 09, 10, 11, 23). O fluxo central do MVP funciona de ponta a ponta com o banco.
-- **Próxima etapa:** telas novas testadas no navegador em 04/11/2026. Site publicado em https://unifor-sports-hub.onrender.com (Render + Aiven, guia no `README.md`). Eventos (14, 15, 16, 22) continuam sem backend. Não existe edição de esporte (a tela 20 só cria).
+- **Próxima etapa:** telas novas testadas no navegador em 04/11/2026. Site publicado em https://unifor-sports-hub.onrender.com (Render + Aiven, guia no `README.md`). Eventos (14, 15, 16, 22) continuam sem backend. Esporte tem CRUD completo (criar, ver, editar e excluir).
 - **Histórico do que foi feito e por quê:** ver `historico.md`.
 
 ## Verificação da entrega de 04/11/2026

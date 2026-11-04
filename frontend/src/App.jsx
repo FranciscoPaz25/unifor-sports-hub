@@ -66,6 +66,7 @@ function App() {
             <Route path="eventos" element={<EmConstrucao />} />
             <Route path="gerencia" element={<Gerencia />} />
             <Route path="gerencia/criar-esporte" element={<CriarEsporte />} />
+            <Route path="esportes/:id/editar" element={<CriarEsporte />} />
             <Route
               path="gerencia/inscricoes"
               element={<GerenciarInscricoes />}

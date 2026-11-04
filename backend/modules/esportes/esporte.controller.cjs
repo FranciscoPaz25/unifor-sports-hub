@@ -1,4 +1,4 @@
-const { listarEsportes, buscarEsporte, criarEsporte, excluirEsporte } = require('./esporte.service.cjs');
+const { listarEsportes, buscarEsporte, criarEsporte, editarEsporte, excluirEsporte } = require('./esporte.service.cjs');
 const { lerFiltrosBusca, lerIdEsporte, validarCriacaoEsporte } = require('./esporte.validacao.cjs');
 
 const NAO_ENCONTRADO = { mensagem: 'Esporte não encontrado.' };
@@ -37,6 +37,35 @@ async function criar(req, res) {
     });
 }
 
+// Tela 20 em modo edição (só admin). Mesmos campos e regras de Criar esporte.
+async function editar(req, res) {
+    const id = lerIdEsporte(req.params.id);
+    if (!id) {
+        return res.status(404).json(NAO_ENCONTRADO);
+    }
+    const { erros, dados } = validarCriacaoEsporte(req.body);
+    if (erros.length > 0) {
+        return res.status(400).json({ erros });
+    }
+
+    const resultado = await editarEsporte(id, dados);
+    switch (resultado.status) {
+        case 'nao-encontrado':
+            return res.status(404).json(NAO_ENCONTRADO);
+        case 'local-inexistente':
+            return res.status(400).json({ erros: ['Local não encontrado.'] });
+        case 'capacidade-menor':
+            return res.status(409).json({
+                mensagem: `A capacidade não pode ser menor que as ${resultado.confirmadas} inscrições já confirmadas.`,
+            });
+        default:
+            return res.status(200).json({
+                mensagem: 'Esporte atualizado com sucesso.',
+                esporte: await buscarEsporte(id),
+            });
+    }
+}
+
 // Tela 08, botão "Excluir" (só admin). Age direto, sem confirmação (decisoes.md)
 async function excluir(req, res) {
     const id = lerIdEsporte(req.params.id);
@@ -47,4 +76,4 @@ async function excluir(req, res) {
     return res.status(204).end();
 }
 
-module.exports = { listar, detalhar, criar, excluir };
+module.exports = { listar, detalhar, criar, editar, excluir };

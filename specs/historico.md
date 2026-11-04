@@ -2,6 +2,18 @@
 
 > Registro do que entrou na `main`, quando e por quê, para quem chega agora ter o contexto. O estado atual tela a tela fica em `status.md`; as regras fixas, em `decisoes.md`. Entradas mais recentes primeiro.
 
+## 04/11/2026 — Editar esporte e excluir avaliação (CRUD completo)
+
+**O que mudou**
+- Avaliações: nova rota `DELETE /api/avaliacoes/esporte/:idEsporte`, usando só a identidade da sessão. Na tela 12, "Excluir avaliação" ao lado de "Editar avaliação" apaga a própria avaliação, que sai da lista e da nota na hora.
+- Inscrições continuam sem exclusão física: cancelar muda o status para "Cancelada" (exclusão lógica), para manter o histórico e permitir pedir de novo.
+- Nova rota `PUT /api/esportes/:id` (só admin), com a mesma validação de Criar esporte. Roda numa transação com trava na linha do esporte (igual às inscrições) e recusa com 409 uma capacidade menor que as inscrições já confirmadas.
+- A tela 20 ganhou o modo edição em `/admin/esportes/:id/editar`: abre preenchida, salva e volta para os Detalhes. Os Detalhes do esporte mostram "Editar" ao lado de "Excluir" para o admin.
+
+**Por quê:** o esporte já podia ser criado, lido e excluído; faltava alterar para o CRUD completo pedido na entrega final.
+
+**Testes:** banco descartável — edição de todos os campos, capacidade abaixo/igual aos confirmados, dados inválidos, esporte inexistente, aluno (403) e sem login (401); tela conferida no navegador.
+
 ## 04/11/2026 — Site publicado
 
 O sistema está no ar em **https://unifor-sports-hub.onrender.com** (Render, plano Free, branch `main`, região Oregon) com o MySQL no Aiven (plano Free, América do Norte). O primeiro deploy aplicou as migrations e o seed (seis locais e o admin, com senha própria de produção definida no painel do Render). Cada merge na `main` gera um deploy novo automaticamente.

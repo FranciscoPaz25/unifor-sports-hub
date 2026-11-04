@@ -181,6 +181,22 @@
   background-color: #00318a;
 }
 
+/* Admin: Editar e Excluir lado a lado */
+.detalhes-acoes-admin {
+  display: flex;
+  gap: 12px;
+}
+
+.detalhes-botao-editar {
+  background-color: white;
+  color: #003DA5;
+  border: 1.5px solid #003DA5;
+}
+
+.detalhes-botao-editar:hover {
+  background-color: #e6edf9;
+}
+
 .detalhes-botao-excluir {
   background-color: #c0392b;
 }

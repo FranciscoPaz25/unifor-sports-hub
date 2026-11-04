@@ -1,4 +1,4 @@
-const { listarDoEsporte, enviarMinha, listarPendentes, decidirAvaliacao } = require('./avaliacao.service.cjs');
+const { listarDoEsporte, enviarMinha, excluirMinha, listarPendentes, decidirAvaliacao } = require('./avaliacao.service.cjs');
 const { validarAvaliacao } = require('./avaliacao.validacao.cjs');
 const { lerIdEsporte } = require('../esportes/esporte.validacao.cjs');
 
@@ -42,6 +42,16 @@ async function enviar(req, res) {
     }
 }
 
+// Tela 12, "Excluir avaliação" (dono da avaliação). Age direto, sem popup, como os outros "Excluir".
+async function excluir(req, res) {
+    const idEsporte = lerIdEsporte(req.params.idEsporte);
+    const excluida = idEsporte && await excluirMinha(req.auth.idUsuario, idEsporte);
+    if (!excluida) {
+        return res.status(404).json({ mensagem: 'Avaliação não encontrada.' });
+    }
+    return res.status(204).end();
+}
+
 // Tela 21 (admin)
 async function pendentes(req, res) {
     const avaliacoes = await listarPendentes();
@@ -70,4 +80,4 @@ async function decidir(req, res) {
     }
 }
 
-module.exports = { doEsporte, enviar, pendentes, decidir };
+module.exports = { doEsporte, enviar, excluir, pendentes, decidir };

@@ -30,6 +30,7 @@
 - Não existe confirmação automática de inscrição em esporte — toda inscrição nasce `em_analise`.
 - Cancelamento de inscrição (pelo aluno, em esporte ou evento confirmado) age imediatamente, sem popup de confirmação.
 - "Excluir" (ações do ADM em esporte/evento) age direto, sem popup de confirmação.
+- Editar esporte (decisão de 04/11/2026): botão "Editar" ao lado de "Excluir" nos Detalhes (só admin), que abre a tela 20 já preenchida. A capacidade nova não pode ficar abaixo das inscrições confirmadas; as inscrições existentes continuam valendo.
 
 ## Avaliações (resenhas) — decisões de 04/11/2026
 
@@ -37,6 +38,7 @@
 - Uma avaliação por aluno e esporte: nota de 1 a 5 estrelas e comentário opcional (até 255 caracteres).
 - Avaliação **só com estrelas** (sem comentário) já entra **"Aprovada"**, sem análise: não há texto para moderar. Com comentário, nasce **"Em análise"** e o admin aprova ou rejeita na tela 21. Para o aluno aparece **"Em análise"**, **"Aprovada"** ou **"Rejeitada"**.
 - Só as aprovadas aparecem para todos e entram na nota do esporte.
+- O aluno pode excluir a própria avaliação na tela 12 ("Excluir avaliação", direto, sem popup); depois pode avaliar de novo. Decisão de 04/11/2026, para o CRUD completo.
 - Editar a avaliação segue a mesma regra: sem comentário fica aprovada na hora; com comentário volta para "Em análise".
 
 ## Autenticação e perfil — decisões de 21/10/2026

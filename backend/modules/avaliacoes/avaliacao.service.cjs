@@ -102,6 +102,15 @@ async function enviarMinha(idUsuario, idModalidade, dados) {
     return { status: 'enviada', avaliacao: paraResposta(avaliacao) };
 }
 
+// Tela 12, "Excluir avaliação": o aluno apaga a própria avaliação (o D do CRUD).
+// Usa só a identidade da sessão; sai da lista e da nota na hora. Retorna false se não havia avaliação.
+async function excluirMinha(idUsuario, idModalidade) {
+    const { count } = await prisma.avaliar.deleteMany({
+        where: { Usuario_idAluno: idUsuario, ModalidadeEsportiva_idModalidade: idModalidade },
+    });
+    return count > 0;
+}
+
 // Tela 21: avaliações em análise, mais antigas primeiro
 async function listarPendentes() {
     const avaliacoes = await prisma.avaliar.findMany({
@@ -136,6 +145,7 @@ async function decidirAvaliacao(idModalidade, idAluno, novoStatus) {
 module.exports = {
     listarDoEsporte,
     enviarMinha,
+    excluirMinha,
     listarPendentes,
     decidirAvaliacao,
 };
