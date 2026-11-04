@@ -1,30 +1,11 @@
 // Tela 08 — Detalhes do esporte (RF08) — aluno vê "Inscrever-se", ADM vê "Excluir"
 import { useEffect, useState } from 'react';
 import { useParams, useOutletContext, useNavigate, Link } from 'react-router-dom';
+import Estrelas from '../../../components/Estrelas/Estrelas';
+import IconeEsporte from '../../../components/IconeEsporte/IconeEsporte';
 import { chamarApi, mensagemDeErro } from '../../../utils/api';
 import PopupInscricaoEsporte from '../../../popups/PopupInscricaoEsporte/PopupInscricaoEsporte';
 import './DetalhesEsporte.css';
-
-function Estrelas({ nota }) {
-  const cheias = Math.round(nota);
-  return (
-    <span className="estrelas" aria-label={`${nota} de 5 estrelas`}>
-      {[1, 2, 3, 4, 5].map((i) => (
-        <span key={i} className={i <= cheias ? 'estrela cheia' : 'estrela'}>★</span>
-      ))}
-    </span>
-  );
-}
-
-// Ícone genérico de bola (RF08.3 — imagem sempre genérica, nunca foto real)
-function IconeBola({ tamanho = 26, cor = '#003DA5' }) {
-  return (
-    <svg width={tamanho} height={tamanho} viewBox="0 0 24 24" fill="none" stroke={cor} strokeWidth="1.8">
-      <circle cx="12" cy="12" r="9" />
-      <path d="M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18M3.5 9h17M3.5 15h17" strokeLinecap="round" />
-    </svg>
-  );
-}
 
 const iconesInfo = {
   local: (
@@ -134,20 +115,16 @@ function DetalhesEsporte() {
 
   return (
     <div className="detalhes-container">
-      {/* RF08.3 */}
-      <div
-        className={esporte.imagem ? 'detalhes-capa detalhes-capa-imagem' : 'detalhes-capa'}
-        style={esporte.imagem ? { backgroundImage: `url(${esporte.imagem})` } : undefined}
-      >
-        {!esporte.imagem && (
-          <span className="detalhes-capa-fundo" aria-hidden="true">
-            <IconeBola tamanho={150} cor="rgba(0, 61, 165, 0.1)" />
-          </span>
-        )}
-        <span className="detalhes-capa-icone" aria-hidden="true">
-          <IconeBola />
+      {/* RF08.3 — ícone padrão escolhido em Criar esporte (imagem sempre genérica) */}
+      <div className="detalhes-capa">
+        <span className="detalhes-capa-fundo">
+          <IconeEsporte nome={esporte.icone} tamanho={170} cor="rgba(0, 61, 165, 0.09)" />
+        </span>
+        <span className="detalhes-capa-icone">
+          <IconeEsporte nome={esporte.icone} tamanho={40} />
         </span>
         <h1>{esporte.nome}</h1>
+        <span className="detalhes-capa-categoria">{esporte.categoria}</span>
       </div>
 
       <div className="detalhes-resumo">

@@ -1,0 +1,126 @@
+.filtros-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 100;
+}
+
+.filtros-card {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  width: 440px;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+}
+
+.filtros-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.filtros-topo h2 {
+  font-size: 19px;
+}
+
+.filtros-fechar {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: #666;
+}
+
+.filtros-grupo {
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+.filtros-grupo legend {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  padding: 0;
+}
+
+.filtros-opcoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.filtros-opcao {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 14px;
+  border: 1px solid #d5d9e0;
+  border-radius: 999px;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  user-select: none;
+}
+
+.filtros-opcao:hover {
+  border-color: #003DA5;
+}
+
+.filtros-opcao.selecionada {
+  background: #003DA5;
+  border-color: #003DA5;
+  color: white;
+  font-weight: 600;
+}
+
+/* O círculo do radio fica escondido: a opção inteira vira o botão */
+.filtros-opcao input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.filtros-opcao:has(input:focus-visible) {
+  outline: 2px solid #003DA5;
+  outline-offset: 2px;
+}
+
+.filtros-botoes {
+  display: flex;
+  gap: 10px;
+}
+
+.filtros-botao-limpar,
+.filtros-botao-aplicar {
+  flex: 1;
+  padding: 11px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+}
+
+.filtros-botao-limpar {
+  background: white;
+  border: 1px solid #ccc;
+  color: #333;
+}
+
+.filtros-botao-aplicar {
+  background: #003DA5;
+  color: white;
+}
+
+.filtros-botao-aplicar:hover {
+  background: #00318a;
+}

@@ -1,6 +1,6 @@
 # Status atual — Unifor Sports Hub
 
-> Atualizar esta tabela conforme as telas avançam. Última atualização: 02/11/2026.
+> Atualizar esta tabela conforme as telas avançam. Última atualização: 04/11/2026.
 
 ## Onde fica cada tela
 
@@ -13,14 +13,14 @@ Numeração igual à do documento do projeto (protótipo de baixa fidelidade). A
 | 03 | Esqueceu a senha | `pages/auth/EsqueceuSenha/` |
 | 04 | Home | `pages/aluno/Home/` |
 | 05 | Esportes | `pages/aluno/Esportes/` |
-| 06 | Resultados de busca | — (vai em `pages/aluno/`) |
-| 07 | Popup de filtros de busca | — (vai em `popups/`) |
+| 06 | Resultados de busca | `pages/aluno/ResultadosBusca/` (rota `/esportes/busca`, compartilhada) |
+| 07 | Popup de filtros de busca | `popups/PopupFiltros/` |
 | 08 | Detalhes do esporte | `pages/compartilhadas/DetalhesEsporte/` |
 | 09 | Popup de confirmar inscrição no esporte | `popups/PopupInscricaoEsporte/` |
 | 10 | Minhas inscrições | `pages/aluno/MinhasInscricoes/` |
 | 11 | Detalhes da inscrição | `pages/aluno/DetalhesInscricao/` |
-| 12 | Avaliações (resenhas) | — (vai em `pages/aluno/`) |
-| 13 | Popup de enviar resenha | — (vai em `popups/`) |
+| 12 | Avaliações (resenhas) | `pages/compartilhadas/Resenhas/` (rota `/esportes/:id/resenhas`) |
+| 13 | Popup de enviar resenha | `popups/PopupResenha/` |
 | 14 | Eventos | — (vai em `pages/compartilhadas/`) |
 | 15 | Detalhes do evento | — (vai em `pages/compartilhadas/`) |
 | 16 | Popup de inscrição no evento | — (vai em `popups/`) |
@@ -33,7 +33,7 @@ Numeração igual à do documento do projeto (protótipo de baixa fidelidade). A
 | 23 | Gerenciar inscrições | `pages/admin/GerenciarInscricoes/` |
 | — | Home do admin (sem número próprio) | `pages/admin/HomeAdmin/` |
 
-`components/` guarda só peças reutilizáveis (Navbar, Layout, Card, RotaProtegida, ExigirPerfil).
+`components/` guarda só peças reutilizáveis (Navbar, Layout, Card, RotaProtegida, ExigirPerfil, BarraBusca, Estrelas, IconeEsporte).
 
 ## Grupo essencial (backend + banco reais)
 
@@ -41,14 +41,14 @@ Numeração igual à do documento do projeto (protótipo de baixa fidelidade). A
 |---|---|---|
 | RF01 Login | ✅ pronto, com validação e mensagens de erro | ✅ `POST /api/auth/login`, senha verificada com Argon2 e sessão em cookie; redireciona aluno para `/home` e admin para `/admin/home` |
 | RF02 Cadastro | ✅ pronto (validação de e-mail institucional, matrícula de 7 dígitos, senha de 15 a 128 caracteres com indicador de força, confirmação) | ✅ `POST /api/auth/cadastro` cria o aluno no banco (hash Argon2); e-mail/matrícula repetidos → 409; abre a sessão e leva direto à Home |
-| RF04 Home | ✅ pronto (saudação, busca, destaque de esportes e eventos) | 🟡 usuário real e 4 primeiros esportes de `GET /api/esportes`; eventos continuam em mock |
-| RF05 Esportes | ✅ pronto (catálogo completo, busca) | ✅ `GET /api/esportes` (ordem alfabética); busca e filtros ainda não funcionam (telas 06/07) |
-| RF08 Detalhes do esporte | ✅ pronto (nota, informações, avaliações, variação ADM "Excluir") | ✅ `GET /api/esportes/:id`; "Excluir" do admin usa `DELETE /api/esportes/:id`; nota e avaliações vêm de `avaliar` (só aprovadas) |
+| RF04 Home | ✅ pronto (saudação, busca, destaque de esportes e eventos) | 🟡 usuário real e 4 primeiros esportes de `GET /api/esportes`; a busca leva à tela 06; eventos continuam em mock |
+| RF05 Esportes | ✅ pronto (catálogo completo, busca) | ✅ `GET /api/esportes` (ordem alfabética); a busca e os filtros levam à tela 06 |
+| RF08 Detalhes do esporte | ✅ pronto (nota, informações, avaliações, variação ADM "Excluir") | ✅ `GET /api/esportes/:id`; "Excluir" do admin usa `DELETE /api/esportes/:id`; nota e avaliações vêm de `avaliar` (só aprovadas); capa com o ícone escolhido e a categoria |
 | RF09 Popup inscrição no esporte | ✅ pronto (confirmação, validação de já-inscrito/vagas) | ✅ `POST /api/inscricoes-esporte`; bloqueia sem vagas ou se já inscrito |
 | RF10 Minhas inscrições | ✅ pronto (lista, status, estado vazio) | ✅ inscrições em esporte de `GET /api/inscricoes-esporte` (inclui "Rejeitada"); inscrições em evento só entram quando o módulo de eventos existir |
 | RF17 Configurações | ✅ pronto (editar perfil, trocar senha, sair da conta) | ✅ perfil real, atualização de nome/e-mail e troca de senha conectados; regra de domínio por perfil no backend ainda pendente |
 | RF19 Gerência | ✅ interface implementada, com links para funções administrativas | ❌ sem integração com backend |
-| RF20 Criar esporte | ✅ formulário implementado; campo Local virou lista dos locais do banco | ✅ `POST /api/esportes` (só admin) grava modalidade e dias; a imagem ainda não é salva (não há coluna no modelo) |
+| RF20 Criar esporte | ✅ formulário implementado; campo Local virou lista dos locais do banco | ✅ `POST /api/esportes` (só admin) grava modalidade, dias e o ícone escolhido numa lista de ícones padrão (o envio de foto saiu: imagens são sempre genéricas) |
 | RF23 Gerenciar inscrições | ✅ lista de pendências, aprovação e rejeição implementadas | ✅ `GET /api/inscricoes-esporte/pendentes` e `PATCH /api/inscricoes-esporte/:id`; não confirma além da capacidade |
 
 ## Grupo "sempre fácil" (baixo custo, não cortar)
@@ -64,11 +64,11 @@ Numeração igual à do documento do projeto (protótipo de baixa fidelidade). A
 
 | Tela | Visual (React) | Conectado ao backend/banco |
 |---|---|---|
-| RF06 Resultados de busca | ⬜ não iniciado | — |
-| RF07 Popup de filtros | ⬜ não iniciado | — |
-| RF12 Resenhas | ⬜ não iniciado | — |
-| RF13 Popup resenha | ⬜ não iniciado | — |
-| RF21 Aceitar resenhas | ✅ pronto (aceitar/rejeitar resenhas pendentes) | ❌ usa `mocks/resenhas.js` |
+| RF06 Resultados de busca | ✅ pronto (barra de busca, filtros ativos removíveis, total, cards com dias/horário e nota, estado vazio) | ✅ `GET /api/esportes?busca=&categoria=`; busca ignora maiúsculas e acentos |
+| RF07 Popup de filtros | ✅ pronto (categoria; Limpar e Aplicar) | ✅ filtro por categoria (decisão de 04/11/2026) |
+| RF12 Resenhas | ✅ pronto (média, barras por nota, sua avaliação com status, lista das aprovadas) | ✅ `GET /api/avaliacoes/esporte/:id` |
+| RF13 Popup resenha | ✅ pronto (1 a 5 estrelas, comentário opcional até 255 caracteres) | ✅ `PUT /api/avaliacoes/esporte/:id`; só com inscrição confirmada; reenviar volta para análise |
+| RF21 Aceitar resenhas | ✅ pronto (aceitar/rejeitar resenhas pendentes) | ✅ `GET /api/avaliacoes/pendentes` e `PATCH /api/avaliacoes/:idEsporte/:idAluno` |
 
 ## Grupo "se sobrar tempo" (pode ficar só visual)
 
@@ -85,8 +85,9 @@ Numeração igual à do documento do projeto (protótipo de baixa fidelidade). A
 |---|---|
 | Frontend (Vite + React) | ✅ rodando, porta 5173 |
 | React Router | ✅ instalado e configurado, com NavLink ativo na navbar |
-| Navbar | ✅ avatar e nome do usuário real; atualiza o nome após salvar o perfil |
-| Mocks compartilhados | 🟡 Esportes e inscrições em esporte usam o banco. Continuam em mock: eventos (`mocks/eventos.js`) e resenhas (`mocks/resenhas.js` e `mocks/esportes.js`, usados por Aceitar resenhas) |
+| Navbar | ✅ avatar e nome do usuário real; atualiza o nome após salvar o perfil; fixa no topo ao rolar |
+| Estilo base (`index.css`) | ✅ desde 04/11/2026: fundo cinza-claro, cores sempre claras, telas mais largas (até 1160 px nas listas e 880 px nos detalhes). Antes era o modelo do Vite, que espremia tudo numa coluna e trocava as cores no modo escuro |
+| Mocks compartilhados | 🟡 Esportes, inscrições em esporte e avaliações usam o banco. Continua em mock só eventos (`mocks/eventos.js`) |
 | Controle de vagas | ✅ transação com `SELECT ... FOR UPDATE` no esporte e isolamento `READ COMMITTED`; duas confirmações simultâneas para a última vaga → só uma passa |
 | Chamadas à API no frontend | ✅ `utils/api.js`: `chamarApi(caminho, { metodo, corpo })` envia o cookie e devolve `{ ok, status, dados }`; `mensagemDeErro(dados, padrao)` monta o texto de erro |
 | Backend (Node + Express) | ✅ porta 3000; rotas de cadastro, autenticação e perfil, middlewares de sessão, autorização de admin e tratamento de erros |
@@ -94,24 +95,32 @@ Numeração igual à do documento do projeto (protótipo de baixa fidelidade). A
 | Prisma | ✅ versão 7.10.1, schema com oito tabelas e configuração por `DATABASE_URL` |
 | Histórico de migrations | ✅ `0_init` registrada como aplicada |
 | Correção da matrícula | 🟡 migration `20261018_corrige_matricula` criada; confirmar aplicação |
+| Avaliações e ícones (04/11/2026) | ✅ migrations `20261104_avaliar_status_aprovada` (`avaliar.Status`: em_analise / aprovada / rejeitada, convertendo os valores antigos) e `20261104_modalidade_icone` (coluna `Icone`, padrão `geral`) |
 | `id` em `inscricao_modalidade` | ✅ migration `20261025_inscricao_modalidade_id`: `id` autoincremento como chave primária; par modalidade + usuário continua único |
 | Seed (dados iniciais) | ✅ `npm run seed`: seis locais e um admin (dados em `SEED_ADMIN_*` no `.env`); pode ser repetido sem duplicar |
 | Endereços da API e CORS | ✅ frontend usa `VITE_API_URL` (`utils/api.js`); backend lê `CORS_ORIGINS` do `.env` — padrão `localhost` |
 | Backend ↔ banco | ✅ cliente Prisma compartilhado em `backend/lib/prisma.cjs`; consulta e atualização de usuários |
 | Sessões | ✅ em memória, uma por usuário, expiração após 15 minutos de inatividade; reinício exige novo login |
-| Proteção de páginas | ✅ `RotaProtegida` consulta o perfil; `ExigirPerfil` separa telas de aluno e de admin (quem não tem o perfil vai para a própria home); `/esportes` e `/esportes/:id` são compartilhadas |
+| Proteção de páginas | ✅ `RotaProtegida` consulta o perfil; `ExigirPerfil` separa telas de aluno e de admin (quem não tem o perfil vai para a própria home); `/esportes`, `/esportes/busca`, `/esportes/:id` e `/esportes/:id/resenhas` são compartilhadas |
 | Autorização de admin (backend) | ✅ middleware `exigir-admin.cjs` (usar depois de `autenticar`): lê `TipoUsuario` do banco; 403 para quem não é admin. Aplicar em toda rota administrativa nova |
 
 ## Resumo rápido
 
 - **Telas essenciais:** todas com interface e ligadas ao banco, incluindo a Home do admin (`/admin/home`), que mostra inscrições pendentes, esportes cadastrados e atalhos.
 - **"Sempre fácil" com interface pronta:** 3 de 3; RF18 integrado, RF11 ainda em mocks, RF03 fora do MVP no backend.
-- **Extras já prontos (visual):** RF21 Aceitar resenhas e RF22 Criar evento.
+- **Busca e resenhas integradas (04/11/2026):** telas 06, 07, 12, 13 e 21 ligadas ao banco.
+- **Extra só visual:** RF22 Criar evento.
 - **Módulo de autenticação completo no backend:** cadastro, login, sessão, logout, perfil próprio, troca de senha e autorização de admin. Recuperação de senha (RF03) fica fora do MVP.
 - **Módulo de esportes integrado:** listar, detalhar, criar e excluir (telas 04, 05, 08, 20).
 - **Módulo de inscrições integrado:** pedir, acompanhar, cancelar, aceitar e rejeitar (telas 09, 10, 11, 23). O fluxo central do MVP funciona de ponta a ponta com o banco.
-- **Próxima etapa:** testar o sistema no banco local de cada integrante (telas e operações de dados). Resenhas, eventos e busca são secundários e ainda não têm backend. Não existe edição de esporte (a tela 20 só cria).
+- **Próxima etapa:** testar as telas novas no banco local; depois o deploy. Eventos (14, 15, 16, 22) continuam sem backend. Não existe edição de esporte (a tela 20 só cria).
 - **Histórico do que foi feito e por quê:** ver `historico.md`.
+
+## Verificação da entrega de 04/11/2026
+
+- API em MySQL 8.4 descartável, 37 verificações: busca sem acento ("volei" acha "Vôlei de Praia"), sem diferenciar maiúsculas, `%` tratado como texto, busca + categoria juntas; ícone padrão e ícone inválido (400); avaliar sem inscrição ou com inscrição em análise (403); nota fora de 1 a 5 e comentário com mais de 255 caracteres (400 com os dois erros); aluno não lista nem decide pendentes (403); duas decisões ao mesmo tempo na mesma avaliação → uma 200 e outra 409; aprovada entra na nota do esporte, da tela 12 e da busca; reenviar volta para análise e sai da nota; rejeitada aparece só para o autor; admin vê a tela 12 sem poder avaliar; sem login → 401.
+- Migration de status testada com linhas no formato antigo: `confirmada` → `aprovada`, `cancelada` → `rejeitada`, `em_analise` mantido.
+- Telas conferidas por capturas do navegador (Edge sem janela) a 1366 px e 375 px: Login, Cadastro, Home, Esportes, popup de filtros, Resultados (termo, categoria e vazio), Detalhes, Avaliações, popup de resenha, Minhas inscrições, Configurações, Home do admin, Gerência, Aceitar resenhas, Criar esporte e Gerenciar inscrições. Os cliques e envios pelas telas não foram feitos por mim; ficam para o teste manual. Lint e build sem erros.
 
 ## Verificação da entrega de 02/11/2026
 

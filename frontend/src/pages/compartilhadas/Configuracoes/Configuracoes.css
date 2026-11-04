@@ -1,7 +1,8 @@
 .config-container {
-  max-width: 480px;
+  max-width: 640px;
+  width: 100%;
   margin: 0 auto;
-  padding: 28px 20px 60px;
+  padding: 32px 24px 64px;
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -9,7 +10,6 @@
 
 .config-container h1 {
   margin: 0;
-  font-size: 22px;
   color: #003DA5;
 }
 

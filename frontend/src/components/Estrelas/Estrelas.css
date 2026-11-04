@@ -1,0 +1,10 @@
+.estrelas {
+  color: #d9dce3;
+  font-size: 14px;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+.estrela.cheia {
+  color: #f5a623;
+}

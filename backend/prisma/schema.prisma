@@ -96,6 +96,7 @@ model modalidade_esportiva {
   Usuario_idAdmin      Int
   Local_idLocal        Int
   HorarioInicio        DateTime               @db.Time(0)
+  Icone                String                 @default("geral") @db.VarChar(30)
   avaliar              avaliar[]
   inscricao_modalidade inscricao_modalidade[]
   modalidade_dia       modalidade_dia[]
@@ -130,8 +131,8 @@ enum inscricao_modalidade_status {
 
 enum avaliar_Status {
   em_analise
-  confirmada
-  cancelada
+  aprovada
+  rejeitada
 }
 
 enum usuario_TipoUsuario {

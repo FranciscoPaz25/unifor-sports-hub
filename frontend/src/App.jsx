@@ -9,11 +9,13 @@ import EsqueceuSenha from './pages/auth/EsqueceuSenha/EsqueceuSenha';
 
 import Home from './pages/aluno/Home/Home';
 import Esportes from './pages/aluno/Esportes/Esportes';
+import ResultadosBusca from './pages/aluno/ResultadosBusca/ResultadosBusca';
 import MinhasInscricoes from './pages/aluno/MinhasInscricoes/MinhasInscricoes';
 import DetalhesInscricao from './pages/aluno/DetalhesInscricao/DetalhesInscricao';
 
 import DetalhesEsporte from './pages/compartilhadas/DetalhesEsporte/DetalhesEsporte';
 import Configuracoes from './pages/compartilhadas/Configuracoes/Configuracoes';
+import Resenhas from './pages/compartilhadas/Resenhas/Resenhas';
 
 import HomeAdmin from './pages/admin/HomeAdmin/HomeAdmin';
 import Gerencia from './pages/admin/Gerencia/Gerencia';
@@ -42,7 +44,9 @@ function App() {
         <Route element={<Layout />}>
           {/* Compartilhadas: aluno e admin (o admin chega aqui pelo "Esportes" da navbar) */}
           <Route path="/esportes" element={<Esportes />} />
+          <Route path="/esportes/busca" element={<ResultadosBusca />} />
           <Route path="/esportes/:id" element={<DetalhesEsporte />} />
+          <Route path="/esportes/:id/resenhas" element={<Resenhas />} />
 
           {/* Só aluno */}
           <Route element={<ExigirPerfil perfil="aluno" />}>

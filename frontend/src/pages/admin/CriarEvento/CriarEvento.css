@@ -1,10 +1,8 @@
 .criar-evento-container {
-  max-width: 600px;
+  max-width: 780px;
   width: 100%;
   margin: 0 auto;
-  padding: 28px 20px 60px;
-  box-sizing: border-box;
-  text-align: left;
+  padding: 32px 24px 64px;
 }
 
 .criar-evento-cartao {
@@ -29,7 +27,6 @@
 
 .criar-evento-topo h1 {
   margin: 0;
-  font-size: 20px;
   color: #003DA5;
 }
 

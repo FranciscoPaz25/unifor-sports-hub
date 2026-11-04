@@ -1,13 +1,11 @@
 .det-inscricao-container {
-  max-width: 720px;
+  max-width: 880px;
   width: 100%;
   margin: 0 auto;
-  padding: 28px 20px 60px;
-  box-sizing: border-box;
+  padding: 32px 24px 64px;
   display: flex;
   flex-direction: column;
   gap: 20px;
-  text-align: left;
 }
 
 .det-inscricao-cabecalho {
@@ -18,7 +16,6 @@
 
 .det-inscricao-cabecalho h1 {
   margin: 0;
-  font-size: 22px;
   color: #003DA5;
 }
 

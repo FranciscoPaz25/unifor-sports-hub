@@ -1,5 +1,18 @@
 const HORARIO = /^([01][0-9]|2[0-3]):[0-5][0-9]$/;
 
+// Ícones padrão que o admin pode escolher em Criar esporte. Os desenhos ficam no
+// frontend (components/IconeEsporte); manter as duas listas com os mesmos nomes.
+const ICONES = [
+    'geral', 'futebol', 'volei', 'basquete', 'natacao', 'tenis',
+    'atletismo', 'luta', 'ciclismo', 'academia',
+];
+
+// Filtros da tela 06 (?busca=&categoria=). Valores vazios são ignorados.
+function lerFiltrosBusca(query) {
+    const texto = (valor) => (typeof valor === 'string' ? valor.trim().slice(0, 255) : '');
+    return { busca: texto(query?.busca), categoria: texto(query?.categoria) };
+}
+
 // Converte o :id da URL; null se não for um inteiro positivo
 function lerIdEsporte(valor) {
     const id = Number(valor);
@@ -23,7 +36,7 @@ function validarCriacaoEsporte(corpo) {
     const erros = [];
     const {
         nome, descricao, categoria, idLocal, dias,
-        horarioInicio, horarioFim, responsavel, capacidadeMaxima,
+        horarioInicio, horarioFim, responsavel, capacidadeMaxima, icone,
     } = corpo ?? {};
 
     const dados = {
@@ -36,7 +49,13 @@ function validarCriacaoEsporte(corpo) {
         horarioInicio,
         horarioFim,
         dias: null,
+        // Sem ícone escolhido, fica o genérico
+        icone: icone === undefined || icone === '' ? 'geral' : icone,
     };
+
+    if (!ICONES.includes(dados.icone)) {
+        erros.push('Ícone inválido.');
+    }
 
     if (!Number.isInteger(dados.idLocal) || dados.idLocal < 1) {
         erros.push('Selecione um local.');
@@ -68,6 +87,8 @@ function validarCriacaoEsporte(corpo) {
 }
 
 module.exports = {
+    ICONES,
+    lerFiltrosBusca,
     lerIdEsporte,
     validarCriacaoEsporte,
 };

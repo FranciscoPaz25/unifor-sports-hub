@@ -1,8 +1,8 @@
 .resenhas-container {
-  max-width: 680px;
+  max-width: 880px;
+  width: 100%;
   margin: 0 auto;
-  padding: 28px 20px 60px;
-  text-align: left;
+  padding: 32px 24px 64px;
 }
 
 .resenhas-topo {
@@ -13,14 +13,12 @@
 }
 
 .resenhas-voltar {
-  font-size: 20px;
+  font-size: 22px;
   text-decoration: none;
   color: #003DA5;
 }
 
 .resenhas-topo h1 {
-  margin: 0;
-  font-size: 20px;
   color: #003DA5;
 }
 
@@ -34,14 +32,15 @@
 .resenhas-lista {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
 .resenhas-card {
   background: white;
   border: 1px solid #e2e4e9;
-  border-radius: 10px;
-  padding: 14px 16px;
+  border-radius: 12px;
+  padding: 18px 20px;
+  box-shadow: 0 1px 3px rgba(16, 24, 40, 0.05);
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -62,34 +61,46 @@
 }
 
 .resenhas-autor strong {
-  font-size: 14.5px;
+  font-size: 15px;
   color: #222;
 }
 
+.resenhas-data {
+  font-size: 12px;
+  color: #8a919e;
+}
+
 .resenhas-tag {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: bold;
-  padding: 2px 9px;
+  padding: 3px 10px;
   border-radius: 999px;
   background: #e6edf9;
   color: #003DA5;
   white-space: nowrap;
 }
 
-.resenhas-estrelas {
-  color: #ddd;
-  font-size: 15px;
-  white-space: nowrap;
-}
-
-.resenhas-estrela.cheia {
-  color: #f5a623;
+.resenhas-card-topo .estrelas {
+  font-size: 16px;
 }
 
 .resenhas-comentario {
-  font-size: 13px;
+  font-size: 14px;
   color: #444;
-  line-height: 1.5;
+  line-height: 1.55;
+}
+
+.resenhas-comentario em {
+  color: #8a919e;
+}
+
+.resenhas-erro {
+  color: #c0392b;
+  background: #fdecea;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 14px;
 }
 
 .resenhas-botoes {
@@ -100,9 +111,10 @@
 
 .resenhas-botao-aceitar,
 .resenhas-botao-rejeitar {
-  padding: 8px 18px;
+  padding: 9px 20px;
   border-radius: 8px;
-  font-size: 13px;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
   border: none;
 }
@@ -115,4 +127,12 @@
 .resenhas-botao-rejeitar {
   background: #fdecea;
   color: #c0392b;
+}
+
+.resenhas-botao-aceitar:hover:not(:disabled) {
+  background-color: #00318a;
+}
+
+.resenhas-botao-rejeitar:hover:not(:disabled) {
+  background: #f9d6d2;
 }
