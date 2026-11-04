@@ -2,6 +2,18 @@
 
 > Registro do que entrou na `main`, quando e por quê, para quem chega agora ter o contexto. O estado atual tela a tela fica em `status.md`; as regras fixas, em `decisoes.md`. Entradas mais recentes primeiro.
 
+## 04/11/2026 — Preparação para o deploy
+
+**O que mudou**
+- Com `NODE_ENV=production`, o backend entrega também o site React compilado (`frontend/dist`), e as rotas do React (`/home`, `/esportes/3`…) recebem o `index.html`. Rotas `/api/...` inexistentes respondem 404 em JSON ("Rota não encontrada.").
+- O frontend publicado chama a API no mesmo endereço do site; no `npm run dev` continua usando `http://localhost:3000` (ou `VITE_API_URL`).
+- Backend ganhou `npm start` (produção) e `npm run preparar-banco` (gera o Prisma Client, aplica migrations e roda o seed). `.node-version` fixa o Node 24 para o serviço de hospedagem.
+- Guia de deploy no `README.md`.
+
+**Decisão:** deploy grátis no Render (site + API) com MySQL no Aiven. Site e API no mesmo endereço porque o cookie de sessão (`SameSite=Lax`) não é enviado entre domínios diferentes.
+
+**Por quê:** publicar o sistema para a apresentação da disciplina.
+
 ## 04/11/2026 — Busca, filtros, resenhas, ícones dos esportes e telas mais largas
 
 **O que mudou**

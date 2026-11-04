@@ -1,4 +1,6 @@
 require('dotenv/config');
+const path = require('path');
+const fs = require('fs');
 const router = require('./modules/auth/auth.routes.cjs');
 const express = require('express');
 const cors = require('cors');
@@ -31,13 +33,31 @@ app.use('/api/inscricoes-esporte', inscricaoRoutes);
 app.use('/api/avaliacoes', avaliacaoRoutes);
 const PORT = Number(process.env.PORT) || 3000;
 
-app.get('/', (req, res) => {
-  res.send('Backend do Unifor Sports Hub está rodando!');
-});
-
 app.get('/api/teste', (req, res) => {
   res.json({ mensagem: 'Conexão entre frontend e backend funcionando!' });
 });
+
+// Qualquer outro /api/... que não existe responde em JSON, em vez de cair no site
+app.use('/api', (req, res) => {
+  res.status(404).json({ mensagem: 'Rota não encontrada.' });
+});
+
+// Em produção, o próprio backend entrega o site React compilado (frontend/dist).
+// Site e API ficam no mesmo endereço, o que o cookie de sessão (SameSite=Lax) exige.
+const PASTA_SITE = path.join(__dirname, '..', 'frontend', 'dist');
+const servirSite = process.env.NODE_ENV === 'production' && fs.existsSync(path.join(PASTA_SITE, 'index.html'));
+
+if (servirSite) {
+  app.use(express.static(PASTA_SITE));
+  // Rotas do React (/home, /esportes/3...) recebem o index.html; quem decide a tela é o React Router
+  app.get('/{*caminho}', (req, res) => {
+    res.sendFile(path.join(PASTA_SITE, 'index.html'));
+  });
+} else {
+  app.get('/', (req, res) => {
+    res.send('Backend do Unifor Sports Hub está rodando!');
+  });
+}
 
 app.use(tratarErros); // 4º: registra o middleware de tratamento de erros
 
