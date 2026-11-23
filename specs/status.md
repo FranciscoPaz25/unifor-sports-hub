@@ -31,6 +31,7 @@ Numeração igual à do documento do projeto (protótipo de baixa fidelidade). A
 | 21 | Aceitar resenhas | `pages/admin/AceitarResenhas/` |
 | 22 | Criar evento | `pages/admin/CriarEvento/` |
 | 23 | Gerenciar inscrições | `pages/admin/GerenciarInscricoes/` |
+| 24 | Ajuda (nova, 23/11/2026) | `pages/compartilhadas/Ajuda/` |
 | — | Home do admin (sem número próprio) | `pages/admin/HomeAdmin/` |
 
 `components/` guarda só peças reutilizáveis (Navbar, Layout, Card, RotaProtegida, ExigirPerfil, BarraBusca, Estrelas, IconeEsporte).
@@ -50,6 +51,7 @@ Numeração igual à do documento do projeto (protótipo de baixa fidelidade). A
 | RF19 Gerência | ✅ interface implementada, com links para funções administrativas | ❌ sem integração com backend |
 | RF20 Criar esporte | ✅ formulário implementado; campo Local virou lista dos locais do banco | ✅ `POST /api/esportes` (só admin) grava modalidade, dias e o ícone escolhido numa lista de ícones padrão (o envio de foto saiu: imagens são sempre genéricas). Desde 04/11/2026 a mesma tela edita (`/admin/esportes/:id/editar`, botão "Editar" nos Detalhes, `PUT /api/esportes/:id`): o esporte tem CRUD completo |
 | RF23 Gerenciar inscrições | ✅ lista de pendências, aprovação e rejeição implementadas | ✅ `GET /api/inscricoes-esporte/pendentes` e `PATCH /api/inscricoes-esporte/:id`; não confirma além da capacidade |
+| RF24 Ajuda | ✅ passo a passo, legenda de status e perguntas frequentes, com conteúdo por perfil; aberta pelo botão "?" da navbar | — (só frontend, não precisa de API) |
 
 ## Grupo "sempre fácil" (baixo custo, não cortar)
 

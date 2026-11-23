@@ -95,7 +95,7 @@ Convenções:
 
 ## 6. ⚠️ Numeração: "RFnn" no código ≠ "RFnn" do documento acadêmico
 
-- **No repositório**, `RFnn` = número da **tela** (01 a 23), conforme o protótipo de baixa fidelidade. Ex.: `RF11` = tela Detalhes da inscrição; `RF23` = Gerenciar inscrições.
+- **No repositório**, `RFnn` = número da **tela** (01 a 24), conforme o protótipo de baixa fidelidade (a 24, Ajuda, foi acrescentada depois). Ex.: `RF11` = tela Detalhes da inscrição; `RF23` = Gerenciar inscrições.
 - **No `documentacaoWeb-1.3.docx`** (entregável da disciplina, fora do repo), `RF11` = "Controlar disponibilidade de vagas"; não existe RF23.
 
 Ao falar de requisito, diga sempre "tela 11" ou "RF11 do docx".
@@ -133,7 +133,7 @@ Ao terminar qualquer entrega: atualize `status.md`, registre em `historico.md` e
 
 ## 9. Estado atual (04/11/2026)
 
-**Integrado ao banco:** Cadastro (02), Login (01), Home (04: usuário e esportes), Esportes (05), Detalhes do esporte (08, inclusive Excluir), Popup inscrição (09), Minhas inscrições (10, só esportes por enquanto), Detalhes da inscrição (11), Configurações (17), Sair da conta (18), Criar esporte (20, com ícone padrão), Gerenciar inscrições (23), Home do admin, Resultados de busca (06), Popup de filtros (07), Avaliações (12), Popup de resenha (13), Aceitar resenhas (21), autorização por perfil (frontend e backend). O fluxo central do MVP funciona de ponta a ponta.
+**Integrado ao banco:** Cadastro (02), Login (01), Home (04: usuário e esportes), Esportes (05), Detalhes do esporte (08, inclusive Excluir), Popup inscrição (09), Minhas inscrições (10, só esportes por enquanto), Detalhes da inscrição (11), Configurações (17), Sair da conta (18), Criar esporte (20, com ícone padrão), Gerenciar inscrições (23), Home do admin, Resultados de busca (06), Popup de filtros (07), Avaliações (12), Popup de resenha (13), Aceitar resenhas (21), autorização por perfil (frontend e backend). Ajuda (24, criada em 23/11/2026, só frontend, aberta pelo "?" da navbar). O fluxo central do MVP funciona de ponta a ponta.
 
 **Visual pronto, ainda em mocks:** Home (04: eventos), Gerência (19, é só um menu), Criar evento (22). Esqueceu a senha (03) é só visual (fora do MVP no backend).
 

@@ -74,3 +74,25 @@
   font-size: 14.5px;
   white-space: nowrap;
 }
+
+/* Botão de ajuda (tela 24) */
+.navbar-ajuda {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.7);
+  color: white;
+  font-size: 15px;
+  font-weight: bold;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 6px;
+}
+
+.navbar-ajuda:hover,
+.navbar-ajuda-ativo {
+  background: white;
+  color: #003DA5;
+}
