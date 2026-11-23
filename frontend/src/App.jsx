@@ -16,6 +16,7 @@ import DetalhesInscricao from './pages/aluno/DetalhesInscricao/DetalhesInscricao
 import DetalhesEsporte from './pages/compartilhadas/DetalhesEsporte/DetalhesEsporte';
 import Configuracoes from './pages/compartilhadas/Configuracoes/Configuracoes';
 import Resenhas from './pages/compartilhadas/Resenhas/Resenhas';
+import Ajuda from './pages/compartilhadas/Ajuda/Ajuda';
 
 import HomeAdmin from './pages/admin/HomeAdmin/HomeAdmin';
 import Gerencia from './pages/admin/Gerencia/Gerencia';
@@ -47,6 +48,7 @@ function App() {
           <Route path="/esportes/busca" element={<ResultadosBusca />} />
           <Route path="/esportes/:id" element={<DetalhesEsporte />} />
           <Route path="/esportes/:id/resenhas" element={<Resenhas />} />
+          <Route path="/ajuda" element={<Ajuda />} />
 
           {/* Só aluno */}
           <Route element={<ExigirPerfil perfil="aluno" />}>

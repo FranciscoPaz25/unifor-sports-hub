@@ -8,6 +8,7 @@
 - **Navbar do ADM:** Home | Eventos | Gerência | Configurações.
 - Navbar mostra logotipo (sem subtítulo institucional), avatar e nome do usuário — **sem cargo** (nada de "Estudante Atleta" ou similares).
 - Sem sino de notificações, sem seta de voltar dentro da navbar, sem subtítulos abaixo dos títulos de seção.
+- Botão "?" ao lado do avatar (aluno e admin) abre a tela 24 — Ajuda (23/11/2026). Não é um item da lista acima.
 
 ## Padrões visuais
 

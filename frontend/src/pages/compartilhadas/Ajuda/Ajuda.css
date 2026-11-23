@@ -1,0 +1,166 @@
+.ajuda-container {
+  max-width: 880px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 32px 24px 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.ajuda-cabecalho {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ajuda-cabecalho h1 {
+  color: var(--azul);
+}
+
+.ajuda-cabecalho p {
+  color: var(--texto-suave);
+  font-size: 15px;
+}
+
+.ajuda-secao {
+  background: white;
+  border: 1px solid var(--borda);
+  border-radius: 12px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Passo a passo */
+.ajuda-passos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ajuda-passo {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.ajuda-passo-numero {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--azul);
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ajuda-passo-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ajuda-passo-texto h3 {
+  margin: 4px 0 0;
+  font-size: 15.5px;
+}
+
+.ajuda-passo-texto p {
+  font-size: 14px;
+  color: var(--texto-suave);
+}
+
+.ajuda-passo-link {
+  align-self: flex-start;
+  margin-top: 2px;
+  font-size: 13.5px;
+  font-weight: bold;
+  color: var(--azul);
+  text-decoration: none;
+}
+
+.ajuda-passo-link:hover {
+  text-decoration: underline;
+}
+
+/* Status (mesmas cores de Minhas inscrições) */
+.ajuda-status {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 14px;
+}
+
+.ajuda-status li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ajuda-tag {
+  flex-shrink: 0;
+  min-width: 96px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+.ajuda-tag-analise {
+  background: #fff4d6;
+  color: #a9760a;
+}
+
+.ajuda-tag-confirmada {
+  background: #e1f5e8;
+  color: #1f8a44;
+}
+
+.ajuda-tag-rejeitada,
+.ajuda-tag-cancelada {
+  background: #fdecea;
+  color: #c0392b;
+}
+
+/* Perguntas frequentes */
+.ajuda-perguntas {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ajuda-pergunta {
+  border: 1px solid var(--borda);
+  border-radius: 10px;
+  padding: 0 14px;
+}
+
+.ajuda-pergunta summary {
+  cursor: pointer;
+  padding: 12px 0;
+  font-size: 14.5px;
+  font-weight: bold;
+}
+
+.ajuda-pergunta[open] summary {
+  color: var(--azul);
+}
+
+.ajuda-pergunta p {
+  padding: 0 0 12px;
+  font-size: 14px;
+  color: var(--texto-suave);
+}

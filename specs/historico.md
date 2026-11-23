@@ -2,6 +2,15 @@
 
 > Registro do que entrou na `main`, quando e por quê, para quem chega agora ter o contexto. O estado atual tela a tela fica em `status.md`; as regras fixas, em `decisoes.md`. Entradas mais recentes primeiro.
 
+## 23/11/2026 — Tela de ajuda (tela 24) e documentação 1.9
+
+**O que mudou**
+- Nova tela 24 — Ajuda (`/ajuda`, compartilhada): passo a passo das tarefas principais, legenda dos status de inscrição e perguntas frequentes. O conteúdo muda conforme o perfil (aluno ou admin). Não usa API.
+- A navbar ganhou um botão "?" ao lado do avatar, que abre a Ajuda. Ele fica fora da lista de itens fixos da navbar (ver `decisoes.md`).
+- Documentação acadêmica `documentacaoWeb-1.9` (fora do repositório, em `docs/`): seções numeradas, sumário automático, texto justificado, prints das telas reais no lugar do protótipo (telas 14 a 16 continuam com o protótipo, pois ainda não existem) e requisitos RF24 da tela de ajuda.
+
+**Por quê:** pedido do time para orientar quem usa o app pela primeira vez e para a documentação refletir as telas entregues.
+
 ## 04/11/2026 — Editar esporte e excluir avaliação (CRUD completo)
 
 **O que mudou**

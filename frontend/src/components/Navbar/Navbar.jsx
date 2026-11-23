@@ -34,6 +34,15 @@ function Navbar({ tipoUsuario, nomeUsuario }) {
       </div>
 
       <div className="navbar-usuario">
+        {/* Tela 24 — Ajuda: botão "?" ao lado do avatar, fora dos itens fixos da navbar */}
+        <NavLink
+          to="/ajuda"
+          className={({ isActive }) => `navbar-ajuda${isActive ? ' navbar-ajuda-ativo' : ''}`}
+          title="Ajuda"
+          aria-label="Ajuda"
+        >
+          ?
+        </NavLink>
         <span className="navbar-avatar">{iniciais}</span>
         <span className="navbar-nome">{nomeUsuario}</span>
       </div>
